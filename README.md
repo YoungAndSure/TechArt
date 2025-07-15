@@ -1,1 +1,1 @@
-TechArt means Technical Artical or Technology's Art(just for fun)
+TechArt means Technical Artical
