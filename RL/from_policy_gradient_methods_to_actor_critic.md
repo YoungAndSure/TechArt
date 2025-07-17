@@ -66,8 +66,9 @@ G_t = \sum_{k=0}^{t-1} \gamma^k r_k + \sum_{k=t}^T \gamma^{k-t} r_k
 
 ## Baseline法降方差
 
-baseline法降低方差的思路挺有意思，通过一个示例说明。
+baseline法降低方差的思路挺有意思，通过一个示例说明。  
 
+![图片描述](images/variance_reduction_using_mean_as_baseline.png)
 如图，以$`y = \bar{G}`$为基准，生成了一些随机点，平均值为9.63，方差为151.08。  
 方差计算公式：
 ```math
@@ -77,6 +78,7 @@ Var = \frac{1}{N} \sum_{i=1}^N (G_i - \bar{G})^2
 从公式可以看到，计算方差的基准是平均值。但是一条直线，并不能体现出随机点的趋势。  
 再看另一个曲线：
 
+![图片描述](images/baseline_method_variance_reduction_verification.png)
 通过对随机点拟合，拟合出的函数为$` V_\phi(s) `$（图中蓝色的线），这样，每个点都有了一个拟合的$` V_\phi(s) `$，会体现出随机点的趋势。以$` V_\phi(s) `$为基准计算方差：
 ```math
 Var = \frac{1}{N} \sum_{i=1}^N (G_i - V_\phi(s_i))^2
