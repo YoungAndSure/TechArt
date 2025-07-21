@@ -26,7 +26,7 @@ return = R_0 + \gamma R_1 + \gamma^2 R_2 ....
 ```
 而状态价值是某状态之后（t时刻起）折扣奖励累积——的期望：  
 ```math
-v_\pi(s) = E(G_t|S_t=s)
+v_\pi(s) = E[G_t|S_t=s]
 ```
 ```math
   G_t = R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3}....
@@ -74,7 +74,7 @@ p(r|s,a) = \sum_{s' \in \mathcal{S}} p(s', r | s, a)
 talk is cheap，不推导一下后续变换的时候总是不能快速反应过来。  
 
 ```math
-v_\pi(s) = \mathbb{E}(G_t|S_t=s)
+v_\pi(s) = \mathbb{E}[G_t|S_t=s]
 
 ```
 ```math
@@ -89,17 +89,17 @@ G_t = R_{t+1}+\gamma G_{t+1}
 ```
 so
 ```math
-v_\pi(s) = \mathbb{E}(R_{t+1}+\gamma G_{t+1}|S_t=s)
+v_\pi(s) = \mathbb{E}[R_{t+1}+\gamma G_{t+1}|S_t=s]
 ```
 由于期望是线性的，于是分成两部分：
 ```math
-v_{\pi}(s) = \mathbb{E}(R_{t+1}|S_t=s) + \gamma \mathbb{E}(G_{t+1}|S_t=s)
+v_{\pi}(s) = \mathbb{E}[R_{t+1}|S_t=s] + \gamma \mathbb{E}[G_{t+1}|S_t=s]
 ```
 前半部分是即时奖励，后半部分是未来奖励。先看即使奖励：
 ```math
 \begin{align}
-\mathbb{E}(R_{t+1}|S_t=s)\\
-=\sum_{a\in\mathcal{A}}\pi(a|s)\mathbb{E}(r|S_t=s,A_t=a)\\
+\mathbb{E}[R_{t+1}|S_t=s]\\
+=\sum_{a\in\mathcal{A}}\pi(a|s)\mathbb{E}[r|S_t=s,A_t=a]\\
 =\sum_{a\in\mathcal{A}}\pi(a|s)\sum_{r\in\mathcal{R}}p(r|S_t=s,A_t=a)r
 \end{align}
 ```
