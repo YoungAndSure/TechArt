@@ -78,8 +78,10 @@ v_\pi(s) = \mathbb{E}(G_t|S_t=s)
 
 ```
 ```math
+\begin{align}
 G_t = R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3}....\\
 G_{t+1} = R_{t+2} + \gamma R_{t+3} + \gamma^2 R_{t+4}...
+\end{align}
 ```
 so
 ```math
@@ -95,9 +97,11 @@ v_{\pi}(s) = \mathbb{E}(R_{t+1}|S_t=s) + \gamma \mathbb{E}(G_{t+1}|S_t=s)
 ```
 前半部分是即时奖励，后半部分是未来奖励。先看即使奖励：
 ```math
+\begin{align}
 \mathbb{E}(R_{t+1}|S_t=s)\\
 =\sum_{a\in\mathcal{A}}\pi(a|s)\mathbb{E}(r|S_t=s,A_t=a)\\
 =\sum_{a\in\mathcal{A}}\pi(a|s)\sum_{r\in\mathcal{R}}p(r|S_t=s,A_t=a)r
+\end{align}
 ```
 
 *推导过程中发现一个错误写法，把书中的$`S_t=s`$写成了$`s=S_t`$，混淆了符号。$`S_t`$是t时刻的随机变量，而s是随机变量的取值。反过来是错误的写法*
