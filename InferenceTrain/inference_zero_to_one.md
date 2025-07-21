@@ -43,9 +43,9 @@ class Tensor {
 - protobuf。训练、预估都用相同的proto定义即可，有很好的压缩、序列化/反序列化、兼容性 等性能。
 - boost.serilize。支持C++原生数据结构的序列化。兼容性稍差。  
 
-以上的可读性都比较差，如果要保证可读性，可以用json。不过，对于参数来说，应该不需要保证可读性吧，应该没人会直接拉个tensor出来看内容吧。。
+以上的可读性都比较差，如果要保证可读性，可以用json。不过，对于参数来说，应该不需要保证可读性吧，应该没人会直接拉个tensor出来看内容
   
   
 实际上，tensorflow确实是用的proto来序列化tensor的：  
 https://github.com/tngan/tensornode/blob/master/tensorflow/core/framework/tensor.proto  
-而pytorch
+而pytorch用的是pickle。
