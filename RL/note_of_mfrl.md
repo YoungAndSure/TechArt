@@ -121,11 +121,15 @@ v_{\pi}(s) = \mathbb{E}[R_{t+1}|S_t=s] + \gamma \mathbb{E}[G_{t+1}|S_t=s]
 ```math
 \mathbb{E}[G_{t+1}|S_t=s] = \sum_{s'\in\mathcal{S}}\mathbb{E}[G_{t+1}|S_t=s,S_{t+1}=s']p(S_{t+1}=s'|S_t=s)
 ```
-理解一下上述等式。如果把$`S_t=s`$条件下的$`G_t`$当做一个样本空间$`\Omega`$， $`(S_t=s,S_{t+1}=s')`$是$`\Omega`$的子集。且遍历$`S_t=s`$条件下$`S_{t+1}`$可以取值的所有$`s'`$的子空间，合在一起，就是空间$`\Omega`$。因此，根据联合概率公式：
+尝试推导了一下上式，但卡住了，最后问了下deepseek，推导过程很详细，直接贴过来了：
 ```math
-p(y) = \sum_{x}p(x,y)
-```
-可以得出：
-```math
-p(S_t=s) = \sum_{s'\in\mathcal{S}}p(S_t=s, S_{t+1}=s')
+\begin{align*}
+\mathbb{E}[G_{t+1} \mid S_t = s] 
+&= \sum_{g} g \cdot p(G_{t+1} = g \mid S_t = s) & \text{(条件期望定义)} \\
+&= \sum_{g} g \cdot \left[ \sum_{s' \in \mathcal{S}} p(G_{t+1} = g, S_{t+1} = s' \mid S_t = s) \right] & \text{(全概率公式)} \\
+&= \sum_{g} g \cdot \left[ \sum_{s' \in \mathcal{S}} p(G_{t+1} = g \mid S_t = s, S_{t+1} = s') \cdot p(S_{t+1} = s' \mid S_t = s) \right] & \text{(条件概率分解)} \\
+&= \sum_{s' \in \mathcal{S}} \sum_{g} g \cdot p(G_{t+1} = g \mid S_t = s, S_{t+1} = s') \cdot p(S_{t+1} = s' \mid S_t = s) & \text{(交换求和顺序)} \\
+&= \sum_{s' \in \mathcal{S}} \left[ \sum_{g} g \cdot p(G_{t+1} = g \mid S_t = s, S_{t+1} = s') \right] \cdot p(S_{t+1} = s' \mid S_t = s) & \text{(提取公因子)} \\
+&= \sum_{s' \in \mathcal{S}} \mathbb{E}[G_{t+1} \mid S_t = s, S_{t+1} = s'] \cdot p(S_{t+1} = s' \mid S_t = s) & \text{(条件期望定义)}
+\end{align*}
 ```
