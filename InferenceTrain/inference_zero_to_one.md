@@ -48,4 +48,15 @@ class Tensor {
   
 实际上，tensorflow确实是用的proto来序列化tensor的：  
 https://github.com/tngan/tensornode/blob/master/tensorflow/core/framework/tensor.proto  
-而pytorch用的是pickle。
+而pytorch用的是pickle。pickle是调用了pytorch提供的接口，将底层的内存序列化。  
+
+#### 模型如何保存
+nn.Module通过state_dict()方法打包参数。
+state_dict是一个字典，可以将参数命名保存。  
+
+#### 参数如何传输加载
+在2020年之前见过最原始的传输加载方式。  
+模型dump成文件之后，通过rsync将文件拉取到线上服务器中（如精排服务），起一个进程解析文件，load进共享内存。精排读取共享内存，通过特征查找参数，进行运算。  
+那时候只是个刚毕业的菜鸡，看不到系统全貌，实际并不清楚这块在做什么，为什么这么做。  
+后来就有了中台团队负责的预估服务，用来加载模型、预估。精排只需要发送抽取好的特征过去，就可以返回分数。自那以后，就没再接触过预估服务了。  
+
