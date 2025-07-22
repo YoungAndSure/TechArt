@@ -98,9 +98,9 @@ v_{\pi}(s) = \mathbb{E}[R_{t+1}|S_t=s] + \gamma \mathbb{E}[G_{t+1}|S_t=s]
 前半部分是即时奖励，后半部分是未来奖励。先看即使奖励：
 ```math
 \begin{align}
-\mathbb{E}[R_{t+1}|S_t=s]\\
-=\sum_{a\in\mathcal{A}}\pi(a|s)\mathbb{E}[r|S_t=s,A_t=a]\\
-=\sum_{a\in\mathcal{A}}\pi(a|s)\sum_{r\in\mathcal{R}}p(r|S_t=s,A_t=a)r
+\mathbb{E}[R_{t+1}|S_t=s]
+&=\sum_{a\in\mathcal{A}}\pi(a|s)\mathbb{E}[r|S_t=s,A_t=a]\\
+&=\sum_{a\in\mathcal{A}}\pi(a|s)\sum_{r\in\mathcal{R}}p(r|S_t=s,A_t=a)r
 \end{align}
 ```
 
@@ -147,10 +147,49 @@ p(x,y,z)=p(x,y|z)p(z)
 p(x|y,z)p(y|z)=p(x,y|z)
 ```
   
-回到开始，继续：
+回到未来奖励，继续：
 ```math
 \begin{align}
 \mathbb{E}[G_{t+1}|S_t=s] &= \sum_{s'\in\mathcal{S}}\mathbb{E}[G_{t+1}|S_t=s,S_{t+1}=s']p(S_{t+1}=s'|S_t=s)\\
-&=\sum_{s'\in\mathcal{S}}\mathbb{E}[G_{t+1}|S_t=s]p(S_{t+1}=s'|S_t=s)
+&=\sum_{s'\in\mathcal{S}}\mathbb{E}[G_{t+1}|S_{t+1}=s']p(S_{t+1}=s'|S_t=s)
+\end{align}
+```
+这里成立是因为马尔科夫过程：
+```math
+p(s_{t+1} \mid s_t, a_t, s_{t-1}, a_{t-1}, \ldots, s_0, a_0) = p(s_{t+1} \mid s_t, a_t)
+```
+```math
+p(r_{t+1} \mid s_t, a_t, s_{t-1}, a_{t-1}, \ldots, s_0, a_0) = p(r_{t+1} \mid s_t, a_t)
+```
+$`G_{t+1}`$是状态$`S_{t+1}`$之后获取的累计奖励，和状态$`S_t`$无关，也就是独立。  
+继续：
+```math
+\begin{align}
+\mathbb{E}[G_{t+1}|S_t=s] &= \sum_{s'\in\mathcal{S}}\mathbb{E}[G_{t+1}|S_t=s,S_{t+1}=s']p(S_{t+1}=s'|S_t=s)\\
+&=\sum_{s'\in\mathcal{S}}\mathbb{E}[G_{t+1}|S_{t+1}=s']p(S_{t+1}=s'|S_t=s)\\
+&=\sum_{s'\in\mathcal{S}}v_{\pi}(s')p(S_{t+1}=s'|S_t=s)
+\end{align}
+```
+由于：
+```math
+\begin{align}
+p(S_{t+1}=s'|S_t=s) = \sum_{a\in\mathcal{A}}p(S_{t+1}=s'|S_t=s,A_t=a)\pi(A_t=a|S_t=s)
+\end{align}
+```
+代入后：
+```math
+\begin{align}
+\mathbb{E}[G_{t+1}|S_t=s] &= \sum_{s'\in\mathcal{S}}\mathbb{E}[G_{t+1}|S_t=s,S_{t+1}=s']p(S_{t+1}=s'|S_t=s)\\
+&=\sum_{s'\in\mathcal{S}}\mathbb{E}[G_{t+1}|S_{t+1}=s']p(S_{t+1}=s'|S_t=s)\\
+&=\sum_{s'\in\mathcal{S}}v_{\pi}(s')p(S_{t+1}=s'|S_t=s)\\
+&=\sum_{s'\in\mathcal{S}}v_{\pi}(s')\sum_{a\in\mathcal{A}}p(S_{t+1}=s'|S_t=s,A_t=a)\pi(A_t=a|S_t=s)
+\end{align}
+```
+以上就是未来奖励了。实际上这里推导的核心目标就是引出$`v_\pi(s')`$，也就下一个状态的价值。这样才能组成一个可解的贝尔曼方程。  
+将即使奖励和未来奖励放到一起： 
+```math
+\begin{align}
+\mathbb{E}[R_{t+1}|S_t=s]
+&=\sum_{a\in\mathcal{A}}\pi(A_t=a|S_t=s)\sum_{r\in\mathcal{R}}p(r|S_t=s,A_t=a)r + \sum_{s'\in\mathcal{S}}v_{\pi}(s')\sum_{a\in\mathcal{A}}p(S_{t+1}=s'|S_t=s,A_t=a)\pi(A_t=a|S_t=s)
 \end{align}
 ```
