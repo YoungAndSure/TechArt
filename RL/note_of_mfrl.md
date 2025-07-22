@@ -113,10 +113,6 @@ v_{\pi}(s) = \mathbb{E}[R_{t+1}|S_t=s] + \gamma \mathbb{E}[G_{t+1}|S_t=s]
 \mathbb{E}[G_{t+1}|S_t=s]
 ```
 是当状态为s时，下一个状态之后的累计奖励的期望。
-根据全期望公式：
-```math
-\mathbb{E}[X] = \mathbb{E}[\mathbb{E}[X|Y]] = \sum_{y}\mathbb{E}[X|Y=y] P(Y=y)
-```
 引入$`S_{t+1}`$，即下一个状态：
 ```math
 \mathbb{E}[G_{t+1}|S_t=s] = \sum_{s'\in\mathcal{S}}\mathbb{E}[G_{t+1}|S_t=s,S_{t+1}=s']p(S_{t+1}=s'|S_t=s)
@@ -132,4 +128,26 @@ v_{\pi}(s) = \mathbb{E}[R_{t+1}|S_t=s] + \gamma \mathbb{E}[G_{t+1}|S_t=s]
 &= \sum_{s' \in \mathcal{S}} \left[ \sum_{g} g \cdot p(G_{t+1} = g \mid S_t = s, S_{t+1} = s') \right] \cdot p(S_{t+1} = s' \mid S_t = s) & \text{(提取公因子)} \\
 &= \sum_{s' \in \mathcal{S}} \mathbb{E}[G_{t+1} \mid S_t = s, S_{t+1} = s'] \cdot p(S_{t+1} = s' \mid S_t = s) & \text{(条件期望定义)}
 \end{align*}
+```
+>这么直接看答案可能不太好，容易以为懂了，但是自己推还是不会  
+
+以上公式中“条件概率分解”步骤的推导（这回不是deepseek了，自己推的）：
+```math
+p(x,y,z) = p(x|y,z)p(y,z)\\
+= p(x|y,z)p(y|z)p(z)\\
+
+```
+另一种分解法：
+```math
+p(x,y,z)=p(x,y|z)p(z)
+```
+消掉$`p(z)`$:
+```math
+p(x|y,z)p(y|z)=p(x,y|z)
+```
+  
+回到开始，继续：
+```math
+\mathbb{E}[G_{t+1}|S_t=s] = \sum_{s'\in\mathcal{S}}\mathbb{E}[G_{t+1}|S_t=s,S_{t+1}=s']p(S_{t+1}=s'|S_t=s)\\
+=\sum_{s'\in\mathcal{S}}\mathbb{E}[G_{t+1}|S_t=s]p(S_{t+1}=s'|S_t=s)
 ```
