@@ -133,9 +133,10 @@ v_{\pi}(s) = \mathbb{E}[R_{t+1}|S_t=s] + \gamma \mathbb{E}[G_{t+1}|S_t=s]
 
 以上公式中“条件概率分解”步骤的推导（这回不是deepseek了，自己推的）：
 ```math
+\begin{align}
 p(x,y,z) = p(x|y,z)p(y,z)\\
-= p(x|y,z)p(y|z)p(z)\\
-
+= p(x|y,z)p(y|z)p(z)
+\end{align}
 ```
 另一种分解法：
 ```math
@@ -148,6 +149,8 @@ p(x|y,z)p(y|z)=p(x,y|z)
   
 回到开始，继续：
 ```math
+\begin{align}
 \mathbb{E}[G_{t+1}|S_t=s] = \sum_{s'\in\mathcal{S}}\mathbb{E}[G_{t+1}|S_t=s,S_{t+1}=s']p(S_{t+1}=s'|S_t=s)\\
 =\sum_{s'\in\mathcal{S}}\mathbb{E}[G_{t+1}|S_t=s]p(S_{t+1}=s'|S_t=s)
+\end{align}
 ```
