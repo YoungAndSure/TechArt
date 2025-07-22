@@ -189,7 +189,7 @@ p(S_{t+1}=s'|S_t=s) = \sum_{a\in\mathcal{A}}p(S_{t+1}=s'|S_t=s,A_t=a)\pi(A_t=a|S
 将即使奖励和未来奖励放到一起： 
 ```math
 \begin{align}
-\mathbb{E}[R_{t+1}|S_t=s]
-&=\sum_{a\in\mathcal{A}}\pi(A_t=a|S_t=s)\sum_{r\in\mathcal{R}}p(r|S_t=s,A_t=a)r + \sum_{s'\in\mathcal{S}}v_{\pi}(s')\sum_{a\in\mathcal{A}}p(S_{t+1}=s'|S_t=s,A_t=a)\pi(A_t=a|S_t=s)
+v_{\pi}(s) &= \mathbb{E}[R_{t+1}|S_t=s] + \gamma \mathbb{E}[G_{t+1}|S_t=s]\\
+&=\sum_{a\in\mathcal{A}}\pi(A_t=a|S_t=s)\sum_{r\in\mathcal{R}}p(r|S_t=s,A_t=a)r + \gamma\sum_{s'\in\mathcal{S}}v_{\pi}(s')\sum_{a\in\mathcal{A}}p(S_{t+1}=s'|S_t=s,A_t=a)\pi(A_t=a|S_t=s)
 \end{align}
 ```
