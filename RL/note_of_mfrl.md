@@ -236,3 +236,30 @@ v_{\pi}(s)
 v_{k+1}=r_\pi + \gamma P_\pi(s'|s)v_{k}\ \ \ (k=0,1,2...\infty)
 ```
 注意，这里是$`v_{k+1}`$，不是$`v_\pi(s)`$，不是个函数了，而是个向量。本身这是个未知量，Closed-form solution中使用线性代数的方法解未知量。这里使用了迭代法逐步更新解未知量。k代表迭代次数，趋于无穷。  
+需要证明当$`k->\infty`$时$`v_k->v_\pi`$，$`v_\pi`$是贝尔曼方程的解，也是个向量。  
+设：
+```math
+\delta_k=v_\pi - v_k
+```
+等价于证明$`\delta_k->0`$
+
+```math
+\begin{align}
+\delta_{k+1} &= v_\pi - v_{k+1}\\
+&=v_\pi - (r_\pi + \gamma P_\pi(s'|s)v_k)\\
+&=v_\pi - r_\pi - \gamma P_\pi(s'|s)v_k \\
+&=v_\pi - r_\pi - \gamma P_\pi(s'|s)(v_\pi - \delta_k)\\
+&=v_\pi - r_\pi - \gamma P_\pi(s'|s)v_\pi +  \gamma P_\pi(s'|s)\delta_k \\
+&=\gamma P_\pi(s'|s)\delta_k + v_\pi - (r_\pi + \gamma P_\pi(s'|s)v_\pi)
+\end{align}
+```
+由于
+```math
+v_\pi = r_\pi + \gamma P_\pi(s'|s)v_\pi
+```
+因此：
+```math
+\delta_{k+1} = \gamma P_\pi(s'|s)\delta_k
+```
+是个递归结构，又已知$`\gamma`$和$`P_\pi(s'|s)`$都小于1大于0，所以当$`k->\infty`$时$`\delta_{k+1}->0`$
+
