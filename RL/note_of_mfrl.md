@@ -191,8 +191,30 @@ p(S_{t+1}=s'|S_t=s) = \sum_{a\in\mathcal{A}}p(S_{t+1}=s'|S_t=s,A_t=a)\pi(A_t=a|S
 \begin{align}
 v_{\pi}(s) &= \mathbb{E}[R_{t+1}|S_t=s] + \gamma \mathbb{E}[G_{t+1}|S_t=s]\\
 &=\sum_{a\in\mathcal{A}}\pi(A_t=a|S_t=s)\sum_{r\in\mathcal{R}}p(r|S_t=s,A_t=a)r + \gamma\sum_{s'\in\mathcal{S}}v_{\pi}(s')\sum_{a\in\mathcal{A}}p(S_{t+1}=s'|S_t=s,A_t=a)\pi(A_t=a|S_t=s)\\
-&=\sum_{a\in\mathcal{A}}\pi(A_t=a|S_t=s)[\sum_{r\in\mathcal{R}}p(r|S_t=s,A_t=a)r+\gamma\sum_{s'\in\mathcal{S}}v_{\pi}(s')p(S_{t+1}=s'|S_t=s,A_t=a)\pi(A_t=a|S_t=s)]
+&=\sum_{a\in\mathcal{A}}\pi(A_t=a|S_t=s)[\sum_{r\in\mathcal{R}}p(r|S_t=s,A_t=a)r+\gamma\sum_{s'\in\mathcal{S}}v_{\pi}(s')p(S_{t+1}=s'|S_t=s,A_t=a)]
 \end{align}
 ```
-其中$`p(r|S_t=s,A_t=a)`$和$`p(S_{t+1}=s'|S_t=s,A_t=a)`$是$`p(S_{t+1}=s',R_t=r,S_t=s,A_t=a)`$的边缘概率：
-
+以上尽量把所有简写都展开了，忘了展开r，r其实是$`R_t=r`$。其中$`p(r|S_t=s,A_t=a)`$和$`p(S_{t+1}=s'|S_t=s,A_t=a)`$是$`p(S_{t+1}=s',R_t=r|S_t=s,A_t=a)`$的边缘概率：
+```math
+p(R_t=r|S_t=s,A_t=a)=\sum_{s'\in\mathcal{S}}p(R_t=r,S_{t+1}=s'|S_t=s,A_t=a)
+```
+```math
+p(S_{t+1}=s'|S_t=s,A_t=a)=\sum_{r\in\mathcal{R}}p(R_t=r,S_{t+1}=s'|S_t=s,A_t=a)
+```
+因此：
+```math
+\begin{align}
+v_{\pi}(s)
+&=\sum_{a\in\mathcal{A}}\pi(A_t=a|S_t=s)[\sum_{r\in\mathcal{R}}p(r|S_t=s,A_t=a)r+\gamma\sum_{s'\in\mathcal{S}}v_{\pi}(s')p(S_{t+1}=s'|S_t=s,A_t=a)]\\
+&=\sum_{a\in\mathcal{A}}\pi(A_t=a|S_t=s)[\sum_{r\in\mathcal{R}}\sum_{s'\in\mathcal{S}}p(R_t=r,S_{t+1}=s'|S_t=s,A_t=a)r + \gamma\sum_{s'\in\mathcal{S}}v_{\pi}(s')\sum_{r\in\mathcal{R}}p(R_t=r,S_{t+1}=s'|S_t=s,A_t=a)\\
+&=\sum_{a\in\mathcal{A}}\pi(A_t=a|S_t=s)\sum_{r\in\mathcal{R}}\sum_{s'\in\mathcal{S}}p(R_t=r,S_{t+1}=s'|S_t=s,A_t=a)[r+\gamma v_\pi(s')]
+\end{align}
+```
+以上就是贝尔曼方程。  
+《深度学习入门4：强化学习》中，将奖励看做$`S_t、S_t、S_{t+1}`$的函数。《数学原理》里也提到了这种做法。这种可以对方程进行简化，r只和$`S_{t+1}`$有关：
+```math
+\begin{align}
+v_{\pi}(s)
+&=\sum_{a\in\mathcal{A}}\pi(A_t=a|S_t=s)\sum_{s'\in\mathcal{S}}p(S_{t+1}=s'|S_t=s,A_t=a)[r(s')+\gamma v_\pi(s')]
+\end{align}
+```
