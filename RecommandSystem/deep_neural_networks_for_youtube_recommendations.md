@@ -1,0 +1,1 @@
+>这个模型结构跟word2vector好像，感觉彻底理解word2vector会有帮助。

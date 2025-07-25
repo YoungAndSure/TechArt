@@ -1,1 +1,0 @@
->这玩意儿跟word2vector好像，可能是我还不够专业。感觉彻底理解word2vector会有帮助
