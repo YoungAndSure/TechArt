@@ -105,6 +105,66 @@ A = \begin{pmatrix}
 \end{align}
 ```
 
+#### 总结
+以上都是书中内容，回答了四个重要问题：  
+- 如何表示一个词的含义
+- 如何在计算机中表达词关系
+- 如何表示词向量
+- 如何计算词相似度
+
+每一步的方案都不唯一，但这些问题给出了一个思考的框架。  
+
+#### 降低噪声
+以上共现矩阵用计数来表示词意。但有的词，比如the，在很多词的前面都会有，却并不表示the和这些词之间有含义上的联系。为了解决这个问题，有了PMI：
+```math
+\mathrm{PMI}(x, y)=\log _{2}\frac{P(x, y)}{P(x)P(y)}
+```
+将共现矩阵表示为 C，将单词 x 和 y 的共现次数表示为 C(x, y)，将 单词 x 和 y 的出现次数分别表示为 C(x)、C(y)，将语料库的单词数量记为 N，则式可以重写为:
+```math
+\mathrm{PMI}(x,y)=\log_{2}\frac{P(x,y)}{P(x)P(y)}=\log_{2}\frac{\dfrac{C(x,y)}{N}}{\dfrac{C(x)}{N}\dfrac{C(y)}{N}}=\log_{2}\frac{C(x,y)\cdot N}{C(x)C(y)}
+```
+用词本身出现的次数做分母，降低了本身是高频词的影响。  
+用PMI重新计算共现矩阵，生成PMI矩阵：
+```math
+\mathrm{PMI\_Matrix} = 
+\begin{pmatrix}
+& \texttt{you} & \texttt{say} & \texttt{goodbye} & \texttt{and} & \texttt{i} & \texttt{hello} \\
+\texttt{you}     & 0 & 1.807 & 0 & 0 & 0 & 0 \\
+\texttt{say}     & 1.807 & 0 & 0.322 & -0.263 & 0.322 & 1.807 \\
+\texttt{goodbye} & 0 & 0.322 & 0 & 1.585 & 0 & 0 \\
+\texttt{and}     & 0 & -0.263 & 1.585 & 0 & 1.585 & 0 \\
+\texttt{i}       & 0 & 0.322 & 0 & 1.585 & 0 & 0 \\
+\texttt{hello}   & 0 & 1.807 & 0 & 0 & 0 & 0
+\end{pmatrix}
+```
+矩阵中有负数项，比如and和say，为什么呢，可以公式推导什么时候PMI会小于0：
+```math
+\begin{align}
+C(x,y)*N &< C(x)*C(y)\\
+C(x,y) &< \frac{C(x)*C(y)}{N}
+\end{align}
+```
+也就是两个词共同出现的次数远小于本身出现的次数，PMI就是负的。  
+特别是如果两个词从来都没有共现过，PMI将为$`-\infty`$。  
+因此，定义PPMI，将PMI负值截断为0：
+```math
+\mathrm{PPMI}(x,y)=\operatorname*{max}(0,\mathrm{PMI}(x,y))
+```
+PPMI矩阵：
+```math
+\text{PPMI} = 
+\begin{pmatrix}
+ & \texttt{you} & \texttt{say} & \texttt{goodbye} & \texttt{and} & \texttt{i} & \texttt{hello} \\
+\texttt{you}     & 0 & 1.807 & 0 & 0 & 0 & 0 \\
+\texttt{say}     & 1.807 & 0 & 0.322 & 0 & 0.322 & 1.807 \\
+\texttt{goodbye} & 0 & 0.322 & 0 & 1.585 & 0 & 0 \\
+\texttt{and}     & 0 & 0 & 1.585 & 0 & 1.585 & 0 \\
+\texttt{i}       & 0 & 0.322 & 0 & 1.585 & 0 & 0 \\
+\texttt{hello}   & 0 & 1.807 & 0 & 0 & 0 & 0
+\end{pmatrix}
+```
+以上都是书中有的内容，不作细究。
+后面重点看下书中没有细说的内容。
 
 >SVD可以用来降维，但不是用来降维的，鱼书在这一点上有误导
 
