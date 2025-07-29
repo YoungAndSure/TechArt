@@ -82,7 +82,7 @@ A = \begin{pmatrix}
 #### 如何计算词相似度
 可以用余弦相似度：
 ```math
-similarityß(\boldsymbol{x},\boldsymbol{y}) = 
+\mathrm{similarity}(\boldsymbol{x},\boldsymbol{y}) = 
 \frac{ 
     \boldsymbol{x} \cdot \boldsymbol{y} 
 }{ 
@@ -101,7 +101,7 @@ similarityß(\boldsymbol{x},\boldsymbol{y}) =
 \|\mathbf{v}_{\text{goodbye}}\| = \sqrt{0^2 + 1^2 + 0^2 + 1^2 + 0^2 + 0^2} = \sqrt{2} \\
 \|\mathbf{v}_{\text{hello}}\|   = \sqrt{0^2 + 1^2 + 0^2 + 0^2 + 0^2 + 0^2} = \sqrt{1} = 1 \\
 \sqrt{2} \times 1 \approx 1.4142\\
-\operatorname{similarity} = \frac{1}{\sqrt{2}} \approx 0.7071
+\mathrm{similarity} = \frac{1}{\sqrt{2}} \approx 0.7071
 \end{align}
 ```
 
