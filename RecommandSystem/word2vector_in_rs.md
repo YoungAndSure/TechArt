@@ -82,7 +82,7 @@ A = \begin{pmatrix}
 #### 如何计算词相似度
 可以用余弦相似度：
 ```math
-\operatorname{similarity}(\boldsymbol{x},\boldsymbol{y}) = 
+similarityß(\boldsymbol{x},\boldsymbol{y}) = 
 \frac{ 
     \boldsymbol{x} \cdot \boldsymbol{y} 
 }{ 
