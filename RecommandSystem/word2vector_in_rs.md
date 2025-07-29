@@ -13,14 +13,97 @@
 #### 如何表示一个词的含义？
 分布假设：一个词的含义由上下文决定。  
 "you say goodbye and i say hello"，say的含义由you和goodbye决定。上下文窗口是可以调整的，比如上例窗口为1.  
-
-｜word｜contexts(window=1)｜contexts(window=2)|
-|----|----|----|
-|you|say|say,goodbye|
+  
+| word | contexts(window=1) | contexts(window=2) |
+|------|---------------------|---------------------|
+|you|say|say,goodbye|  
 |say|you,goodbye|you,goodbye,and|
 |goodbye|say,and|you,say,and,i|
 
 以此类推
+
+#### 如何在计算机中表示词关系
+共现矩阵。  
+```math
+% 需引入 amsmath 宏包
+A = \begin{pmatrix}
+& \texttt{you} & \texttt{say} & \texttt{goodbye} & \texttt{and} & \texttt{i} & \texttt{hello} \\
+\texttt{you}     & 0 & 1 & 0 & 0 & 0 & 0 \\
+\texttt{say}     & 1 & 0 & 1 & 1 & 1 & 1 \\
+\texttt{goodbye} & 0 & 1 & 0 & 1 & 0 & 0 \\
+\texttt{and}     & 0 & 1 & 1 & 0 & 1 & 0 \\
+\texttt{i}       & 0 & 1 & 0 & 1 & 0 & 0 \\
+\texttt{hello}   & 0 & 1 & 0 & 0 & 0 & 0
+\end{pmatrix}
+```
+不赘述书中内容了。
+
+#### 如何表示词
+词向量,直接从共现矩阵取出：
+```math
+
+% "you" 的词向量
+\mathbf{v}_{\text{you}} = 
+\begin{pmatrix}
+0 & 1 & 0 & 0 & 0 & 0 
+\end{pmatrix}
+\\
+% "say" 的词向量
+\mathbf{v}_{\text{say}} = 
+\begin{pmatrix}
+1 & 0 & 1 & 1 & 1 & 1 
+\end{pmatrix}
+\\
+% "goodbye" 的词向量
+\mathbf{v}_{\text{goodbye}} = 
+\begin{pmatrix}
+0 & 1 & 0 & 1 & 0 & 0 
+\end{pmatrix}
+\\
+% "and" 的词向量
+\mathbf{v}_{\text{and}} = 
+\begin{pmatrix}
+0 & 1 & 1 & 0 & 1 & 0 
+\end{pmatrix}
+\\
+% "i" 的词向量
+\mathbf{v}_{\text{i}} = 
+\begin{pmatrix}
+0 & 1 & 0 & 1 & 0 & 0 
+\end{pmatrix}
+\\
+% "hello" 的词向量
+\mathbf{v}_{\text{hello}} = 
+\begin{pmatrix}
+0 & 1 & 0 & 0 & 0 & 0 
+\end{pmatrix}
+```
+
+#### 如何计算词相似度
+可以用余弦相似度：
+```math
+\operatorname{similarity}(\boldsymbol{x},\boldsymbol{y}) = 
+\frac{ 
+    \boldsymbol{x} \cdot \boldsymbol{y} 
+}{ 
+    \|\boldsymbol{x}\| \|\boldsymbol{y}\| 
+} = 
+\frac{ 
+    x_1 y_1 + \cdots + x_n y_n 
+}{ 
+    \sqrt{x_1^2 + \cdots + x_n^2} \cdot \sqrt{y_1^2 + \cdots + y_n^2} 
+}
+```
+如hello和goodbye的相似度：
+```math
+\begin{align}
+\mathbf{v}_{\text{goodbye}} \cdot \mathbf{v}_{\text{hello}} = (0\times0) + (1\times1) + (0\times0) + (1\times0) + (0\times0) + (0\times0) = 0 + 1 + 0 + 0 + 0 + 0 = 1 \\
+\|\mathbf{v}_{\text{goodbye}}\| = \sqrt{0^2 + 1^2 + 0^2 + 1^2 + 0^2 + 0^2} = \sqrt{2} \\
+\|\mathbf{v}_{\text{hello}}\|   = \sqrt{0^2 + 1^2 + 0^2 + 0^2 + 0^2 + 0^2} = \sqrt{1} = 1 \\
+\sqrt{2} \times 1 \approx 1.4142\\
+\operatorname{similarity} = \frac{1}{\sqrt{2}} \approx 0.7071
+\end{align}
+```
 
 
 >SVD可以用来降维，但不是用来降维的，鱼书在这一点上有误导
