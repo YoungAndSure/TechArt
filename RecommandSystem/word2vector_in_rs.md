@@ -148,7 +148,7 @@ C(x,y) &< \frac{C(x)*C(y)}{N}
 特别是如果两个词从来都没有共现过，PMI将为$`-\infty`$。  
 因此，定义PPMI，将PMI负值截断为0：
 ```math
-\mathrm{PPMI}(x,y)=\operatorname*{max}(0,\mathrm{PMI}(x,y))
+\mathrm{PPMI}(x,y)=\mathrm{max}(0,\mathrm{PMI}(x,y))
 ```
 PPMI矩阵：
 ```math
@@ -166,6 +166,7 @@ PPMI矩阵：
 以上都是书中有的内容，不作细究。
 后面重点看下书中没有细说的内容。
 
+#### 奇异值分解
 >SVD可以用来降维，但不是用来降维的，鱼书在这一点上有误导
 
 
