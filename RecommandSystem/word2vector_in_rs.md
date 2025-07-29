@@ -12,9 +12,15 @@
 
 #### 如何表示一个词的含义？
 分布假设：一个词的含义由上下文决定。  
-"you say goodbye and i say hello"，say的含义由you和goodbye决定。上下文窗口是可以调整的，比如上例窗口为1.
+"you say goodbye and i say hello"，say的含义由you和goodbye决定。上下文窗口是可以调整的，比如上例窗口为1.  
 
+｜word｜contexts(window=1)｜contexts(window=2)|
+|----|----|----|
+|you|say|say,goodbye|
+|say|you,goodbye|you,goodbye,and|
+|goodbye|say,and|you,say,and,i|
 
+以此类推
 
 
 >SVD可以用来降维，但不是用来降维的，鱼书在这一点上有误导
