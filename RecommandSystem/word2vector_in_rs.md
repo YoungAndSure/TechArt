@@ -41,37 +41,41 @@ A = \begin{pmatrix}
 #### 如何表示词
 词向量,直接从共现矩阵取出：
 ```math
-
 % "you" 的词向量
 \mathbf{v}_{\text{you}} = 
 \begin{pmatrix}
 0 & 1 & 0 & 0 & 0 & 0 
 \end{pmatrix}
-\\
+```
+```math
 % "say" 的词向量
 \mathbf{v}_{\text{say}} = 
 \begin{pmatrix}
 1 & 0 & 1 & 1 & 1 & 1 
 \end{pmatrix}
-\\
+```
+```math
 % "goodbye" 的词向量
 \mathbf{v}_{\text{goodbye}} = 
 \begin{pmatrix}
 0 & 1 & 0 & 1 & 0 & 0 
 \end{pmatrix}
-\\
+```
+```math
 % "and" 的词向量
 \mathbf{v}_{\text{and}} = 
 \begin{pmatrix}
 0 & 1 & 1 & 0 & 1 & 0 
 \end{pmatrix}
-\\
+```
+```math
 % "i" 的词向量
 \mathbf{v}_{\text{i}} = 
 \begin{pmatrix}
 0 & 1 & 0 & 1 & 0 & 0 
 \end{pmatrix}
-\\
+```
+```math
 % "hello" 的词向量
 \mathbf{v}_{\text{hello}} = 
 \begin{pmatrix}
