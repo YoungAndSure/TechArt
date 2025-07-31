@@ -287,6 +287,48 @@ U = V = \begin{pmatrix}
 因此，用$`U_k`$作为降维后的词向量。
 
 ### skip-gram
-word2vector和矩阵分解比实在太跳跃了，思考的方式完全不一样，找不到一个好的切入点。  
-矩阵分解更像是一个填字游戏，把要解决的问题转化为一个矩阵，矩阵中有有值的，有空值的。矩阵分解试图通过数学推导找到有值的项的共性，分解好之后预测空值的项。
+矩阵分解更像是一个填字游戏，把要解决的问题转化成一个矩阵，矩阵中有已知有未知。矩阵分解试图将已知分解，通过重组分解后的已知来推测未知，也就是填那些矩阵中未知的空。  
+其实严格来讲，机器学习做的就是挖掘数据中的已知，预估未知这样的事。只是矩阵分解用的是数学工具挖掘，深度学习用网络结构+反向传播挖掘。  
+  
+#### 概率 
+同样是分布假设，skip-gram通过条件概率建模。  
+skip-gram拿中心词为条件，context作为中心词条件下的条件概率。比如上文的"you say goodbye and i say hello",window是1时，中心词是say,context是i和hello的概率为：
+```math
+P(w_{hello},w_{i}|w_{say})
+```
+假设中心词生成context是独立的，则整句话出现的概率是：
+```math
+P(w_{you},w_{say}...w_{hello}) = P(w_{say}|w_{you})P(w_{you},w_{goobye}|w_{say})....P(w_{say}|w_{hello})
+```
+总结下，对于第t个词，它的m个上下文出现的概率是：
+```math
+\prod_{\substack{-m \leq j \leq m \\ j \neq 0}} P\left( w_{(t+j)} \mid w_{(t)} \right)
+```
+注意，不管是第几个context，都只跟中心词有关，且相互独立。  
+对于一个长度为T的句子出现的概率为：
+```math
+P(w_1,w_2...w_t)=\prod_{t=1}^{T}\prod_{\substack{-m \leq j \leq m \\ j \neq 0}} P\left( w_{(t+j)} \mid w_{(t)} \right)
+```
+skip-gram的目标是提升真实出现的句子的概率。通过取log简化乘法计算为加法，并加负号转为最小化问题：
+```math
+\begin{align}
+-\mathrm{log}P(w_1,w_2...w_t)
+&=-\mathrm{log}\prod_{t=1}^{T}\prod_{\substack{-m \leq j \leq m \\ j \neq 0}} P\left( w_{(t+j)} \mid w_{(t)} \right)\\
+&=\sum_{t=1}^{T}\sum_{\substack{-m \leq j \leq m \\ j \neq 0}} -\mathrm{log}P\left( w_{(t+j)} \mid w_{(t)} \right)
+\end{align}
+```
 
+#### 向量
+word2vector继承了矩阵分解的结论，直接将word编码为稠密向量。context用$`u_{context}`$表示，中心词用$`v_{center}`$表示,词表用$`\mathcal{V}`$表示。利用softmax分母和为1的性质，将模型输出通过softmax，来生成概率，因此对于某个context词生成的概率模型表示：  
+```math
+P\left( w_{context} \mid w_{centor} \right) = \frac{\mathrm{exp}(u_{context}^T v_{center})}{\sum_{u_i\in\mathcal{V}}\mathrm{exp}(u_i^Tv_{centor})}
+```
+对于整句话的生成概率模型表示：
+```math
+-\sum_{t=1}^{T}\sum_{\substack{-m \leq j \leq m \\ j \neq 0}} \mathrm{log}\frac{\mathrm{exp}(u_{(t+j)}^T v_{t})}{\sum_{u_i\in\mathcal{V}}\mathrm{exp}(u_i^Tv_{t})} = -\sum_{t=1}^{T}\sum_{\substack{-m \leq j \leq m \\ j \neq 0}} [u_{(t+j)}^T v_{t}-\mathrm{log}\sum_{u_i\in\mathcal{V}}\mathrm{exp}(u_i^Tv_{t})]
+```
+假设window设为2，展开内层累加直观感受下：
+```math
+-\sum_{t=1}^{T} [(u_{(t-2)}^T v_{t} + u_{(t-1)}^T v_{t} + u_{(t+1)}^T v_{t} + u_{(t+2)}^T v_{t}) - 4\mathrm{log}\sum_{u_i\in\mathcal{V}}\mathrm{exp}(u_i^Tv_{t})]
+```
+>《动手学深度学习》讨厌的一点：先讲了skip-gram和cbow的公式，但并没有立即开始基于公式建模，而是开始继续讲优化。我没有基于最基本的公式建模，没有对基本公式有深入的把握，怎么能深刻理解到哪里需要优化、为什么优化？这时候继续看优化，懵逼。转去看后面的代码实现，代码是优化后的，我还是懵逼。直接卡这了。不得不先看CBOW的公式，结合鱼书中的源码理解基本公式，再转去看skip-gram的公式，尝试建立起基本的模型。鱼书好的一点就在这，每讲一点，立即尝试编码，然后再引出一点，这样每一步走的都瓷实。
