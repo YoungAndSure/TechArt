@@ -393,7 +393,6 @@ v_t = v_t P(u_{t+j}|v_t)
 #### CBOW
 >留个问题，为什么CBOW向量乘完要取$`\frac{1}{2m}`$，而skip-gram不用乘？
 
-##### 概率
 CBOW是已知context的条件下，中间词出现的概率为：
 ```math
     P(w_{center}|w_{context})
@@ -406,7 +405,10 @@ P(w_1,w_2...w_t)=\prod_{t=1}^{T} P\left( w_{(t)} \mid w_{(t-j)}...w_{(t-1)},w_{(
 ```math
 -\mathrm{log}P(w_1,w_2...w_t)=-\sum_{t=1}^{T} \mathrm{log}P\left( w_{(t)} \mid w_{(t-j)}...w_{(t-1)},w_{(t+1)}...w_{(t+j)} \right)
 ```
-对$`P\left( w_{(t)} \mid w_{(t-j)}...w_{(t-1)},w_{(t+1)}...w_{(t+j)} \right)`$建模：
+对$`P\left( w_{(t)} \mid w_{(t-j)}...w_{(t-1)},w_{(t+1)}...w_{(t+j)} \right)`$建模,我们保持和skip-gram一样的$`u`$和$`v`$表示：
 ```math
-P\left( w_{(t)} \mid w_{(t-j)}...w_{(t-1)},w_{(t+1)}...w_{(t+j)} \right) = \frac{\mathrm{exp}(u_{(centor)})}{}
+P\left( w_{(t)} \mid w_{(t-j)}...w_{(t-1)},w_{(t+1)}...w_{(t+j)} \right) = \frac{\mathrm{exp}(\frac{1}{2j}(u_{t-j}+...+u_{t-1}+u_{t+1}+...+u_{t+j})^Tv_t)}{\sum_{v_i\in\mathcal{V}}\mathrm{exp}(\frac{1}{2j}(u_{t-j}+...+u_{t-1}+u_{t+1}+...+u_{t+j})^Tv_i)}
 ```
+和skip-gram不一样的是，skip-gram输入是一个词center，输出多个词，通过context词的期望来衡量损失。而cbow是输入多个词context，输出一个词center。为了衡量所有context词和center词的关系，这里认为所有context词同等重要，因此对context向量加和取了平均。  
+>这里意识到一个过去没有意识到的点，对向量做合并时，如果认为同等重要，则可以取平均，如果认为有的更重要，可以通过加权将对应向量融入到结果中。算法经常加来加去的，就是在调各种特征的重要度。  
+
