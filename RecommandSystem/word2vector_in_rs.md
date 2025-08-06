@@ -329,7 +329,7 @@ word2vector用向量来表示一个词。且center词的向量和context词的�
 > 另一个问题，为什么center和contexts必须分属不同的embeddding矩阵？为什么不能共用一个矩阵？  
 这个我开始都没发现。实现了一个cbow之后，发现损失有负的，后来才发现文档里写了必须用不同的embedding矩阵。这个后面结合公式分析一下。
 
-假设词表$`\mathcal{V}`$长度为vocab_size，embedding的深度为ndim，context词的embedding矩阵用$`u`$表示，$`u`$是一个vocab_size行ndim列的矩阵，每行对应一个词的embedding向量。center词的embedding矩阵用$`v`$表示，$`v`$也是一个ocab_size行ndim列的矩阵。  
+假设词表$`\mathcal{V}`$长度为vocab_size，embedding的深度为ndim，context词的embedding矩阵用$`u`$表示，$`u`$是一个vocab_size行ndim列的矩阵，每行对应一个词的embedding向量。center词的embedding矩阵用$`v`$表示，$`v`$也是一个vocab_size行ndim列的矩阵。  
 context用$`u_{context}`$表示，中心词用$`v_{center}`$表示,词表用$`\mathcal{V}`$表示。利用softmax分母和为1的性质，将模型输出通过softmax，来生成概率，因此对于某个context词生成的概率模型表示：  
 ```math
 P\left( w_{context} \mid w_{centor} \right) = \frac{\mathrm{exp}(u_{context}^T v_{center})}{\sum_{u_i\in\mathcal{V}}\mathrm{exp}(u_i^Tv_{centor})}
