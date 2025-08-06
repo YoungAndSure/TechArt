@@ -344,8 +344,7 @@ P\left( w_{context} \mid w_{centor} \right) = \frac{\mathrm{exp}(u_{context}^T v
 > TODO:此处可画图解释
 
 ##### 为什么要分成center和context两个embedding矩阵
-从两方面说明。
-首先，从公式推导。  
+推导下梯度公式。 
 反向传播其实就是计算梯度、更新梯度，通过公式推导，看一下分成两个矩阵，具体的梯度分别是什么。  
 对于：
 ```math
