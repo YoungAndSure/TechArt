@@ -286,11 +286,12 @@ U = V = \begin{pmatrix}
 
 因此，用$`U_k`$作为降维后的词向量。
 
-### skip-gram
+### word2vector
 矩阵分解更像是一个填字游戏，把要解决的问题转化成一个矩阵，矩阵中有已知有未知。矩阵分解试图将已知分解，通过重组分解后的已知来推测未知，也就是填那些矩阵中未知的空。  
 其实严格来讲，机器学习做的就是挖掘数据中的已知，预估未知这样的事。只是矩阵分解用的是数学工具挖掘，深度学习用网络结构+反向传播挖掘。  
-  
-#### 概率 
+
+#### skip-gram
+##### 概率 
 同样是分布假设，skip-gram通过条件概率建模。  
 skip-gram拿中心词为条件，context作为中心词条件下的条件概率。比如上文的"you say goodbye and i say hello",window是1时，中心词是say,context是i和hello的概率为：
 ```math
@@ -317,27 +318,83 @@ skip-gram的目标是提升真实出现的句子的概率。通过取log简化�
 &=\sum_{t=1}^{T}\sum_{\substack{-m \leq j \leq m \\ j \neq 0}} -\mathrm{log}P\left( w_{(t+j)} \mid w_{(t)} \right)
 \end{align}
 ```
+> 查看模型代码，起初没有找到外层加和对应的代码。后来才发现，训练时候是按batch输入样本的，计算损失时候输入是batch个logit，输出是一个标量的损失——读pytorch文档CrossEntropyLoss的定义，其中是对batch的损失做了平均或加权的（可以设置）。所以，真正训练时候是把语料拆分成center-contexts对，一次训练一个batch，外层加和的处理转化为对batch损失的加和平均。
 
-#### 建模
-word2vector继承了矩阵分解的结论，直接将word编码为稠密向量。context用$`u_{context}`$表示，中心词用$`v_{center}`$表示,词表用$`\mathcal{V}`$表示。利用softmax分母和为1的性质，将模型输出通过softmax，来生成概率，因此对于某个context词生成的概率模型表示：  
+##### 建模
+word2vector用向量来表示一个词。且center词的向量和context词的向量来自不同的embedding层，或者说矩阵。  
+> 有了条件概率的公式，明确了要提升的目标，如何把词变成可以计算的数字？  
+这问题，不同水平的人，有不同的回答，就我目前的水平，自答一下。  
+直接点说，用数字表示词的备选比较少，无非：标量、向量、矩阵。标量的维度只有一个，可表达的含义太少。矩阵过于复杂，不方便计算。只有向量，可表示多维含义，又便于存储计算。所以必须是向量。  
+
+> 另一个问题，为什么center和contexts必须分属不同的embeddding矩阵？为什么不能共用一个矩阵？  
+这个我开始都没发现。实现了一个cbow之后，发现损失有负的，后来才发现文档里写了必须用不同的embedding矩阵。这个后面结合公式分析一下。
+
+假设词表$`\mathcal{V}`$长度为vocab_size，embedding的深度为ndim，context词的embedding矩阵用$`u`$表示，$`u`$是一个vocab_size行ndim列的矩阵，每行对应一个词的embedding向量。center词的embedding矩阵用$`v`$表示，$`v`$也是一个ocab_size行ndim列的矩阵。  
+context用$`u_{context}`$表示，中心词用$`v_{center}`$表示,词表用$`\mathcal{V}`$表示。利用softmax分母和为1的性质，将模型输出通过softmax，来生成概率，因此对于某个context词生成的概率模型表示：  
 ```math
 P\left( w_{context} \mid w_{centor} \right) = \frac{\mathrm{exp}(u_{context}^T v_{center})}{\sum_{u_i\in\mathcal{V}}\mathrm{exp}(u_i^Tv_{centor})}
 ```
 对于整句话的生成概率模型表示：
 ```math
--\sum_{t=1}^{T}\sum_{\substack{-m \leq j \leq m \\ j \neq 0}} \mathrm{log}\frac{\mathrm{exp}(u_{(t+j)}^T v_{t})}{\sum_{u_i\in\mathcal{V}}\mathrm{exp}(u_i^Tv_{t})} = -\sum_{t=1}^{T}\sum_{\substack{-m \leq j \leq m \\ j \neq 0}} [u_{(t+j)}^T v_{t}-\mathrm{log}\sum_{u_i\in\mathcal{V}}\mathrm{exp}(u_i^Tv_{t})]
+-\sum_{t=1}^{T}\sum_{\substack{-m \leq j \leq m \\ j \neq 0}} \mathrm{log}\frac{\mathrm{exp}(u_{(t+j)}^T v_{t})}{\sum_{u_i\in\mathcal{V}}\mathrm{exp}(u_i^Tv_{t})}
 ```
-假设window设为2，展开内层累加直观感受下：
+怎么把上面的公式转化成模型？拆解一下。  
+首先，外层的加法可以独立于内层单个center-context计算来看。内层计算完之后一个batch加和（求平均）即可。  
+再看内层。可以看到，分子的计算$`u_{(t+j)}^T v_{t}`$是分母$`u_i^Tv_{t}`$的一部分。所以不需要按照公式的顺序先计算分子再计算分母。只需要从center的embedding矩阵$`v`$中取出center的embedding，和整个context的embedding矩阵$`u`$乘，此时得到的结果：matmul((1, ndim),(ndim,vocab_size))=(1,vocab_size)是一个向量，长度为词表长度，每个值代表center和对应context词的相似度。之后对向量计算softmax和-log即可。这是未经优化的最原始的模型。  
+> TODO:此处可画图解释
+
+##### 为什么要分成center和context两个embedding矩阵
+从两方面说明。
+首先，从公式推导。  
+反向传播其实就是计算梯度、更新梯度，通过公式推导，看一下分成两个矩阵，具体的梯度分别是什么。  
+对于：
 ```math
--\sum_{t=1}^{T} [(u_{(t-2)}^T v_{t} + u_{(t-1)}^T v_{t} + u_{(t+1)}^T v_{t} + u_{(t+2)}^T v_{t}) - 4\mathrm{log}\sum_{u_i\in\mathcal{V}}\mathrm{exp}(u_i^Tv_{t})]
+-\sum_{t=1}^{T}\sum_{\substack{-m \leq j \leq m \\ j \neq 0}} \mathrm{log}\frac{\mathrm{exp}(u_{(t+j)}^T v_{t})}{\sum_{u_i\in\mathcal{V}}\mathrm{exp}(u_i^Tv_{t})}
 ```
->《动手学深度学习》讨厌的一点：先讲了skip-gram和cbow的公式，但并没有立即开始基于公式建模，而是开始继续讲优化。我没有基于最基本的公式建模，没有对基本公式有深入的把握，怎么能深刻理解到哪里需要优化、为什么优化？这时候继续看优化，懵逼。转去看后面的代码实现，代码是优化后的，我还是懵逼。直接卡这了。不得不先看CBOW的公式，结合鱼书中的源码理解基本公式，再转去看skip-gram的公式，尝试建立起基本的模型。鱼书好的一点就在这，每讲一点，立即尝试编码，然后再引出一点，这样每一步走的都瓷实。
+求梯度，由于外层是两层加法，加法的梯度还是加法，可以直接求加和符号内部的梯度，之后加和。
+```math
+\mathrm{log}P(u_{t+j}|v_t) =  \mathrm{log}\frac{\mathrm{exp}(u_{(t+j)}^T v_{t})}{\sum_{u_i\in\mathcal{V}}\mathrm{exp}(u_i^Tv_{t})} = u_{(t+j)}^T v_{t} - \mathrm{log}\sum_{u_i\in\mathcal{V}}\mathrm{exp}(u_i^Tv_{t})
+```
+```math
+\begin{align}
+\frac{\partial \mathrm{log}P(u_{t+j}|v_t)}{\partial v_t} &= u_{(t+j)}^T - \frac{\partial}{\partial v_t} \mathrm{log}\sum_{u_i\in\mathcal{V}}\mathrm{exp}(u_i^Tv_{t})\\
+&= u_{(t+j)}^T-\frac{\frac{\partial}{\partial v_t} \sum_{u_i\in\mathcal{V}}\mathrm{exp}(u_i^Tv_{t})}{\sum_{u_i\in\mathcal{V}}\mathrm{exp}(u_i^Tv_{t})}\\
+&= u_{(t+j)}^T - \frac{\sum_{u_i\in\mathcal{V}}u_i^T\mathrm{exp}(u_i^Tv_{t})}{\sum_{u_i\in\mathcal{V}}\mathrm{exp}(u_i^Tv_{t})}\\
+&= u_{(t+j)}^T - \sum_{u_i\in\mathcal{V}}u_i^T \frac{\mathrm{exp}(u_i^Tv_{t})}{\sum_{u_i\in\mathcal{V}}\mathrm{exp}(u_i^Tv_{t})}\\
+&= u_{(t+j)}^T - \sum_{u_i\in\mathcal{V}}u_i^T P(u_{i}|v_t)
+\end{align}
+```
+梯度由两部分组成，$`u_{(t+j)}^T`$代表某个context词的向量，$`\sum_{u_i\in\mathcal{V}}u_i^T P(u_{i}|v_t)`$代表，在center词是$`v_t`$条件下，词表里所有词出现概率的期望。最终收敛的时候，梯度是0.也就是，$`v_t`$要朝着让输入是$`v_t`$时输出是$`u_{t+j}`$的方向更新。  
+再看对$`u`$的梯度：
+```math
+\begin{align}
+\frac{\partial \mathrm{log}P(u_{t+j}|v_t)}{\partial u_{t+j}} &= v_t - \frac{\partial}{\partial u_{t+j}} \mathrm{log}\sum_{u_i\in\mathcal{V}}\mathrm{exp}(u_i^Tv_{t})\\
+&= v_t-\frac{\frac{\partial}{\partial u_{t+j}} \sum_{u_i\in\mathcal{V}}\mathrm{exp}(u_i^Tv_{t})}{\sum_{u_i\in\mathcal{V}}\mathrm{exp}(u_i^Tv_{t})}\\
+&= v_t-\frac{v_t \mathrm{exp}(u_{t+j}^T v_t)}{\sum_{u_i\in\mathcal{V}}\mathrm{exp}(u_i^Tv_{t})}\\
+&= v_t-v_tP(u_{t+j}|v_t)
+\end{align}
+```
+梯度公式分为两部分，当梯度是0时，
+```math
+v_t = v_t P(u_{t+j}|v_t)
+```
+```math
+1 = P(u_{t+j}|v_t)
+```
+也就是说$`u_{t+j}`$向量朝着让输入是$`v_t`$时，输出$`u_{t+j}`$概率是1的方向更新。  
+可以看到，两个矩阵中的向量，都朝着输入$`v_t`$时输出$`u_{t+j}`$的方向更新，很快就能收敛。  
+
+假如$`u`$和$`v`$是一个embedding矩阵，会怎么样呢？从以上公式可以看到，同一个词，作为center和作为context，梯度更新的公式是不一样的。因此，不同样本中的同一个词，在训练过程中，更新的方向就会来回变化，导致收敛慢、不稳定。因此，按角色分成两个embedding矩阵更好一些。
 
 
-### CBOW
+
+>《动手学深度学习》让人烦恼的一点：先讲了skip-gram和cbow的公式，但并没有立即开始基于公式建模，而是开始继续讲优化。我没有基于最基本的公式建模，没有对基本公式有深入的把握，怎么能深刻理解到哪里需要优化、为什么优化？这时候继续看优化，懵逼。转去看后面的代码实现，代码是优化后的，我还是懵逼。直接卡这了。不得不先看CBOW的公式，结合鱼书中的源码理解基本公式，再转去看skip-gram的公式，尝试建立起基本的模型。鱼书好的一点就在这，每讲一点，立即尝试编码，然后再引出一点，这样每一步走的都瓷实。
+
+
+#### CBOW
 >留个问题，为什么CBOW向量乘完要取$`\frac{1}{2m}`$，而skip-gram不用乘？
 
-#### 概率
+##### 概率
 CBOW是已知context的条件下，中间词出现的概率为：
 ```math
     P(w_{center}|w_{context})
