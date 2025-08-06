@@ -412,3 +412,5 @@ P\left( w_{(t)} \mid w_{(t-j)}...w_{(t-1)},w_{(t+1)}...w_{(t+j)} \right) = \frac
 和skip-gram不一样的是，skip-gram输入是一个词center，输出多个词，通过context词的期望来衡量损失。而cbow是输入多个词context，输出一个词center。为了衡量所有context词和center词的关系，这里认为所有context词同等重要，因此对context向量加和取了平均。  
 >这里意识到一个过去没有意识到的点，对向量做合并时，如果认为同等重要，则可以取平均，如果认为有的更重要，可以通过加权将对应向量融入到结果中。算法经常加来加去的，就是在调各种特征的重要度。  
 
+其他的推导，CBOW 和skip-gram差别不大，就不赘述了。
+
