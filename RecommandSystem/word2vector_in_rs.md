@@ -341,6 +341,8 @@ P\left( w_{context} \mid w_{centor} \right) = \frac{\mathrm{exp}(u_{context}^T v
 怎么把上面的公式转化成模型？拆解一下。  
 首先，外层的加法可以独立于内层单个center-context计算来看。内层计算完之后一个batch加和（求平均）即可。  
 再看内层。可以看到，分子的计算$`u_{(t+j)}^T v_{t}`$是分母$`u_i^Tv_{t}`$的一部分。所以不需要按照公式的顺序先计算分子再计算分母。只需要从center的embedding矩阵$`v`$中取出center的embedding，和整个context的embedding矩阵$`u`$乘，此时得到的结果：matmul((1, ndim),(ndim,vocab_size))=(1,vocab_size)是一个向量，长度为词表长度，每个值代表center和对应context词的相似度。之后对向量计算softmax和-log即可。这是未经优化的最原始的模型。  
+>这块还是有点疑问没有解决。在真正模型代码实现的时候，会用CrossEntropyLoss损失函数，我理解就是对上边说的(1,vocab_size)的向量执行softmax之后再-log。但这个损失函数还需要输入一个target，就是真正的context词。这怎么和公式里对应上呢？
+
 > TODO:此处可画图解释
 
 ##### 为什么要分成center和context两个embedding矩阵
