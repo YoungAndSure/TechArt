@@ -414,3 +414,75 @@ P\left( w_{(t)} \mid w_{(t-j)}...w_{(t-1)},w_{(t+1)}...w_{(t+j)} \right) = \frac
 
 其他的推导，CBOW 和skip-gram差别不大，就不赘述了。
 
+#### 负采样
+不管是skip-gram还是cbow，上文的原版模型都是按多分类问题建模。比如skip-gram，输入是center，模型根据输入预测所有词里哪几个词的输出概率最高。和我给你一个苹果，你给我预测在所有水果中它是哪个水果的概率最高一样。这种问题都用softmax建模，因为softmax可以将输出转为所有分类的概率。但这样有一个问题，就是需要计算所有分类的概率，对于语言模型，就是计算词库中所有词是输出的概率。而词表是很大的，一般在万级，这导致模型的计算量很大。  
+观察上文目标函数和梯度函数：
+```math
+-\sum_{t=1}^{T}\sum_{\substack{-m \leq j \leq m \\ j \neq 0}} \mathrm{log}\frac{\mathrm{exp}(u_{(t+j)}^T v_{t})}{\sum_{u_i\in\mathcal{V}}\mathrm{exp}(u_i^Tv_{t})}
+```
+```math
+\begin{align}
+\frac{\partial \mathrm{log}P(u_{t+j}|v_t)}{\partial v_t} 
+&= u_{(t+j)}^T - \sum_{u_i\in\mathcal{V}}u_i^T P(u_{i}|v_t)
+\end{align}
+```
+都有针对词表中所有词向量的加和操作，也就是前向传播和反向传播的计算量都是词表级的，随着词表规模增加而增加。  
+为了解决这个问题，将多分类问题转化为二分类问题，近似求解。这个属于是降低多分类问题计算量的基操了。  
+多分类问题是我给你一个苹果，你计算是所有水果中某一个的概率。二分类问题是，我给你一个苹果，你计算这个是苹果的概率。  
+多分类用softmax，二分类用sigmoid。  
+```math
+\sigma(x) = \frac{1}{1 + e^{-x}}
+```
+softmax的性质是，所有分类的和为1，含义是输入是各个分类的概率。sigmoid的性质是，输出在0-1之间，也就是输入是？的概率。  
+回顾一下skip-gram的概率建模公式：
+```math
+P(w_1,w_2...w_t)=\prod_{t=1}^{T}\prod_{\substack{-m \leq j \leq m \\ j \neq 0}} P\left( w_{(t+j)} \mid w_{(t)} \right)
+```
+二分类版中，对于context中的词$`w_{(t+j)}`$，概率为：
+```math
+ P\left(output=1 \mid w_{(t+j)},w_{(t)} \right)
+```
+也就是当输入是center词和context词时，概率为1。
+>这个时候要引入负采样的样本了。但是我其实没有特别从数学上明白，为什么引入负样本是必要的？从感性上是可以理解，如果全是正样本会过拟合。《动手学》说，全是正样本会“meaningless”，但是为什么呢？这个答案可能需要更进一步的线代知识才能解答。
+
+对于非context的词，进行随机采样，用$`w_k`$表示，概率为：
+```math
+ P\left(output=0 \mid w_{(k)},w_{(t)} \right)
+```
+随机采样也是有概率分布的，这个后面再说，当前先以$`P(w)`$代表随机采样的分布。因此，条件概率可以近似为：
+```math
+ P\left( w_{(t+j)} \mid w_{(t)} \right) = P\left(output=1 \mid w_{(t+j)},w_{(t)} \right) \prod_{k=1, w_k \sim P(w)}^{K}P\left(output=0 \mid w_{(k)},w_{(t)} \right)
+```
+>这里我肯定有概念混淆的点，暂时没搞清楚是哪一步。事件的概率、概率建模、到真正的向量的建模，这三个之间的关系有一点混淆。
+
+套用上一节的符号，$`u`$代表context词矩阵，$`v`$代表center词矩阵，$`\sigma`$代表sigmoid，建模：
+```math
+P\left( w_{(t+j)} \mid w_{(t)} \right) = \sigma(u_{t+j}^Tv_t)\prod_{k=1, w_k \sim P(w)}^{K}(1-\sigma(u_k^Tv_t))
+```
+取负对数：
+```math
+-\mathrm{log}P\left( w_{(t+j)} \mid w_{(t)} \right) = -\mathrm{log}\sigma(u_{t+j}^Tv_t)-\sum_{k=1, w_k \sim P(w)}^{K}\mathrm{log}(1-\sigma(u_k^Tv_t))
+```
+其中：
+```math
+\begin{align}
+1-\sigma(x) &=
+1 - \frac{1}{1 + e^{-x}} \\
+&= \frac{1+e^{-x}}{1+e^{-x}} - \frac{1}{1 + e^{-x}}\\
+&=\frac{e^{-x}}{1 + e^{-x}}\\
+&= \frac{e^{-x}e^x}{(1 + e^{-x})e^x}\\
+&= \frac{1}{e^{x}+1}\\
+&=\sigma(-x)
+\end{align}
+```
+因此：
+```math
+\begin{align}
+-\mathrm{log}P\left( w_{(t+j)} \mid w_{(t)} \right) &= -\mathrm{log}\sigma(u_{t+j}^Tv_t)-\sum_{k=1, w_k \sim P(w)}^{K}\mathrm{log}(1-\sigma(u_k^Tv_t))\\
+&= -\mathrm{log}\sigma(u_{t+j}^Tv_t)-\sum_{k=1, w_k \sim P(w)}^{K}\mathrm{log}\sigma(-u_k^Tv_t)
+\end{align}
+```
+再说负采样的概率分布$`P(w)`$:
+```math
+P(w)=\frac{\mathsf{freq}(w)^{3/4}}{\sum_{w^{\prime}\in V}\mathsf{freq}(w^{\prime})^{3/4}}
+```
