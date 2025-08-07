@@ -494,6 +494,6 @@ P(w)=\frac{\mathsf{freq}(w)^{3/4}}{\sum_{w^{\prime}\in V}\mathsf{freq}(w^{\prime
 如果词出现次数为0，则$`\mathsf{raw\_freq}`$会强制设置为1.  
 看下$`y=x^\frac{3}{4}`$的函数和导数图：
 ![图片描述](images/freq.png)
-可以看到，函数将低频词进行提升，高频词进行抑制。
+可以看到，$`\mathsf{freq}(w)^{3/4}`$将低频词进行提升，高频词进行抑制。
 >为什么呢？
 
