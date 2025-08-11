@@ -514,3 +514,7 @@ P(w)=\frac{\mathsf{freq}(w)^{3/4}}{\sum_{w^{\prime}\in V}\mathsf{freq}(w^{\prime
 可以看到，$`\mathsf{freq}(w)^{3/4}`$将低频词进行提升，高频词进行抑制。
 >为什么呢？
 
+
+### 补充
+#### 为什么skip-gram/cbow用点积计算相似度？
+
