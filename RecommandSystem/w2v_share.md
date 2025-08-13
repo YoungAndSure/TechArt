@@ -1,4 +1,5 @@
 # W2V分享  
+> 为组内技术分享写的逐字稿。简化自笔记：https://github.com/YoungAndSure/TechArt/blob/main/RecommandSystem/word2vector_in_rs.md 
 
 今天给大佬们分享下word2vector的模型结构、原理。  
 
