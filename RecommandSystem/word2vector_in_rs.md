@@ -450,7 +450,7 @@ P\left( w_{(t)} \mid w_{(t-j)}...w_{(t-1)},w_{(t+1)}...w_{(t+j)} \right) = \frac
 ```math
 \sigma(x) = \frac{1}{1 + e^{-x}}
 ```
-softmax的性质是，所有分类的和为1，含义是输入是各个分类的概率。sigmoid的性质是，输出在0-1之间，也就是输入是？的概率。  
+softmax的性质是，所有分类的和为1，含义是输入是各个分类的概率。sigmoid的性质是，输出在0-1之间，也就是输入是目标的概率。  
 回顾一下skip-gram的概率建模公式：
 ```math
 P(w_1,w_2...w_t)=\prod_{t=1}^{T}\prod_{\substack{-m \leq j \leq m \\ j \neq 0}} P\left( w_{(t+j)} \mid w_{(t)} \right)
@@ -514,6 +514,10 @@ P(w)=\frac{\mathsf{freq}(w)^{3/4}}{\sum_{w^{\prime}\in V}\mathsf{freq}(w^{\prime
 可以看到，$`\mathsf{freq}(w)^{3/4}`$将低频词进行提升，高频词进行抑制。
 >为什么呢？
 
+#### 负采样实现
+https://github.com/YoungAndSure/NlpZero/blob/main/pytorch/w2v/skip_gram_with_neg.py  
+- 注意公式中对于负样本，向量点积要取负数
+- 发现负采样的收敛速度降低了，必须把epoch调到1000才能达到原版100同等效果。也就是说，负采样通过正样本和采样负样本近似原版的所有上下文向量，单轮计算量降低了，但是单轮收敛的速度降低了，导致需要增加轮次才能达到同等效果。
 
 ### 补充
 太有意思了，一旦开始深入探究，就发现，里边的每一个公式里的每一项，都不是空穴来风，都有讲究。疑问就像核反应堆一样一个接着一个。   
