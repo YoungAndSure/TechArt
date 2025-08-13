@@ -32,9 +32,9 @@ He went to the store to  **purchase**  some groceries.
 A = \begin{pmatrix}
 & \texttt{you} & \texttt{say} & \texttt{goodbye} & \texttt{and} & \texttt{i} & \texttt{hello} \\
 \texttt{you}     & 0 & 1 & 0 & 0 & 0 & 0 \\
-\texttt{say}     & 1 & 0 & 1 & 1 & 1 & 1 \\
+\texttt{say}     & 1 & 0 & 1 & 0 & 1 & 1 \\
 \texttt{goodbye} & 0 & 1 & 0 & 1 & 0 & 0 \\
-\texttt{and}     & 0 & 1 & 1 & 0 & 1 & 0 \\
+\texttt{and}     & 0 & 0 & 1 & 0 & 1 & 0 \\
 \texttt{i}       & 0 & 1 & 0 & 1 & 0 & 0 \\
 \texttt{hello}   & 0 & 1 & 0 & 0 & 0 & 0
 \end{pmatrix}
@@ -52,7 +52,7 @@ A = \begin{pmatrix}
 % "say" 的词向量
 \mathbf{v}_{\text{say}} = 
 \begin{pmatrix}
-1 & 0 & 1 & 1 & 1 & 1 
+1 & 0 & 1 & 0 & 1 & 1 
 \end{pmatrix}
 ```
 ```math
@@ -66,7 +66,7 @@ A = \begin{pmatrix}
 % "and" 的词向量
 \mathbf{v}_{\text{and}} = 
 \begin{pmatrix}
-0 & 1 & 1 & 0 & 1 & 0 
+0 & 0 & 1 & 0 & 1 & 0 
 \end{pmatrix}
 ```
 ```math
