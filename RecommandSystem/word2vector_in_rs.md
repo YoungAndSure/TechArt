@@ -519,8 +519,54 @@ https://github.com/YoungAndSure/NlpZero/blob/main/pytorch/w2v/skip_gram_with_neg
 - 注意公式中对于负样本，向量点积要取负数
 - 发现负采样的收敛速度降低了，必须把epoch调到1000才能达到原版100同等效果。也就是说，负采样通过正样本和采样负样本近似原版的所有上下文向量，单轮计算量降低了，但是单轮收敛的速度降低了，导致需要增加轮次才能达到同等效果。
 
+### 本质是矩阵分解的证明
+>来自论文：https://proceedings.neurips.cc/paper_files/paper/2014/file/b78666971ceae55a8e87efb7cbfd9ad4-Paper.pdf 
+
+回顾上文的负采样版skip-gram公式：
+```math
+\begin{align}
+\sum_{t=1}^{T}\sum_{\substack{-m \leq j \leq m \\ j \neq 0}} -\mathrm{log}P\left( w_{(t+j)} \mid w_{(t)} \right) 
+&= \sum_{t=1}^{T}\sum_{\substack{-m \leq j \leq m \\ j \neq 0}} [-\mathrm{log}\sigma(u_{t+j}^Tv_t)-\sum_{k=1, w_k \sim P(w)}^{K}\mathrm{log}\sigma(-u_k^Tv_t)]
+\end{align}
+```
+这个公式是以语料库视角，逐字遍历整个语料库，来生成的。  
+换一个视角，从词库的视角重新组织公式。  
+中心词向量为$`w`$，上下文向量为$`c`$，一个中心词和一个上下文在语料库中出现的次数为$`\#(w,c)`$，所有语料库中出现的中心词-上下文对组合记为$`D`$。  
+对于上式中的$`\sum_{t=1}^{T}\sum_{\substack{-m \leq j \leq m \\ j \neq 0}}`$可以改写为$`\sum_{w\in V_w}\sum_{c\in V_c}\#(w,c)`$。前者是遍历所有词和这个词的上下文，后者是遍历语料库对所有出现的中心词和上下文对做计数。  
+改写后的完整目标公式为：  
+```math
+l=\sum_{w\in V_w}\sum_{c\in V_c}\#(w,c)[-\mathrm{log}\sigma(w^Tc)-k\sum_{c_N\in V_c}\frac{\#(c_N)}{|D|}\mathrm{log}\sigma(-w^Tc_N)]
+```
+解释一下公式里$`\sum_{c_N\in V_c}\frac{\#(c_N)}{|D|}\mathrm{log}\sigma(-w^Tc_N)`$这一块是什么意思。  
+首先，负采样是按照概率分布随机采样。公式这里的采样，和上文中的工程实现中的采样方式不一样。上文的概率分布，是直接处理整个语料库，对语料库统计词频、并做了$`\frac{\mathsf{freq}(w)^{3/4}}{\sum_{w^{\prime}\in V}\mathsf{freq}(w^{\prime})^{3/4}}`$的调整。而公式这里的采样，是通过对中心词-上下文对计数得出的概率分布。后者因为计算量大，在工程实现中被优化为前者（deepseek说的，听着有道理，是不是胡说八道待考证）  
+  
+举个例子。比如"i love you":  
+公式中的采样法：可以被分解成"i, love","love, i","love, you","you, love"，4个(中心词，上下文)对。也就是D = {"i, love","love, i","love, you","you, love"}, 如果$`w`$是"i",$`c`$是"love",则$`\#(w,c)`$=1,$`|D|`$=4,$`\#c_N`$是多少呢？  
+$`\#c_{"i"}`$=1     $`\#c_{"love"}`$=2     $`\#c_{"you"}`$=1  
+词频分别为0.25、0.5、0.25。  
+  
+上文工程实现中的采样法："i","love","you"三个词，每个出现1次，词频为1/3、1/3、1/3。
+  
+所以按照公式中的计算方法，一个上下文词出现的概率（频率）为：$`\frac{\#c_N}{|D|}`$，即这个词作为context出现的次数，除以中心词-上下文对总数。  
+因为负样本是采样来的，所以用期望来表示，也就是$`\sum_{c_N\in V_c}\frac{\#(c_N)}{|D|}\mathrm{log}\sigma(-w^Tc_N)`$，出现概率和值相乘加和。  
+  
+继续推导，将公式展开：  
+```math
+\begin{align}
+l&=\sum_{w\in V_w}\sum_{c\in V_c}\#(w,c)[-\mathrm{log}\sigma(w^Tc)-k\sum_{c_N\in V_c}\frac{\#(c_N)}{|D|}\mathrm{log}\sigma(-w^Tc_N)]\\
+&=-\sum_{w\in V_w}\sum_{c\in V_c}\#(w,c)\mathrm{log}\sigma(w^Tc)+k\sum_{w\in V_w}\sum_{c\in V_c}\#(w,c)\sum_{c_N\in V_c}\frac{\#(c_N)}{|D|}\mathrm{log}\sigma(-w^Tc_N)
+\end{align}
+```
+后半部分$`k\sum_{w\in V_w}\sum_{c\in V_c}\#(w,c)\sum_{c_N\in V_c}\frac{\#(c_N)}{|D|}\mathrm{log}\sigma(-w^Tc_N)`$中，对所有的$`w,c`$组合，做负采样，和$`w`$计算$`\sum_{c_N\in V_c}\frac{\#(c_N)}{|D|}\mathrm{log}\sigma(-w^Tc_N)`$，可以这么理解，对于不同的$`c`$，计算的内容是一样的。也就是前面遍历$`c`$和后面的计算内容无关，因此可以做聚合。  
+```math
+\begin{align}
+l&=-\sum_{w\in V_w}\sum_{c\in V_c}\#(w,c)\mathrm{log}\sigma(w^Tc)+k\sum_{w\in V_w}\sum_{c\in V_c}\#(w,c)\sum_{c_N\in V_c}\frac{\#(c_N)}{|D|}\mathrm{log}\sigma(-w^Tc_N)\\
+&=-\sum_{w\in V_w}\sum_{c\in V_c}\#(w,c)\mathrm{log}\sigma(w^Tc)+k\sum_{w\in V_w}\#(w)\sum_{c_N\in V_c}\frac{\#(c_N)}{|D|}\mathrm{log}\sigma(-w^Tc_N)
+\end{align}
+```
+
+
 ### 补充
 太有意思了，一旦开始深入探究，就发现，里边的每一个公式里的每一项，都不是空穴来风，都有讲究。疑问就像核反应堆一样一个接着一个。   
 
 #### 为什么skip-gram/cbow用点积计算相似度？
-
