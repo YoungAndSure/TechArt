@@ -537,6 +537,7 @@ https://github.com/YoungAndSure/NlpZero/blob/main/pytorch/w2v/skip_gram_with_neg
 ```math
 l=\sum_{w\in V_w}\sum_{c\in V_c}\#(w,c)[-\mathrm{log}\sigma(w^Tc)-k\sum_{c_N\in V_c}\frac{\#(c_N)}{|D|}\mathrm{log}\sigma(-w^Tc_N)]
 ```
+
 解释一下公式里$`\sum_{c_N\in V_c}\frac{\#(c_N)}{|D|}\mathrm{log}\sigma(-w^Tc_N)`$这一块是什么意思。  
 首先，负采样是按照概率分布随机采样。公式这里的采样，和上文中的工程实现中的采样方式不一样。上文的概率分布，是直接处理整个语料库，对语料库统计词频、并做了$`\frac{\mathsf{freq}(w)^{3/4}}{\sum_{w^{\prime}\in V}\mathsf{freq}(w^{\prime})^{3/4}}`$的调整。而公式这里的采样，是通过对中心词-上下文对计数得出的概率分布。后者因为计算量大，在工程实现中被优化为前者（deepseek说的，听着有道理，是不是胡说八道待考证）  
   
@@ -624,11 +625,12 @@ w^Tc = \mathrm{log}\frac{|D|\#(w,c)}{\#(w)\#(c)}-\mathrm{log}k
 \mathrm{PMI}(x,y)=\log_{2}\frac{P(x,y)}{P(x)P(y)}=\log_{2}\frac{\dfrac{C(x,y)}{N}}{\dfrac{C(x)}{N}\dfrac{C(y)}{N}}=\log_{2}\frac{C(x,y)\cdot N}{C(x)C(y)}
 ```
 >这里还是有点偏差，上文也说过，PMI这里N是语料库的词数，但公式里$`D`$是中心词-上下文对的数量，计算方式不同。  
+
 也就是：
 ```math
-w^Tc = PMI(w,c) - \mathrm{log}k
+w^Tc = \mathrm{PMI}(w,c) - \mathrm{log}k
 ```
-
+word2vector模型就是对PMI矩阵的分解。k=1时，训练完成后，上下文向量和中心词向量点积就是PMI矩阵中的对应项。
 
 
 ### 补充
