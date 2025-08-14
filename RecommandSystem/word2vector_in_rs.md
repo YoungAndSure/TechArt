@@ -554,16 +554,81 @@ $`\#c_{"i"}`$=1     $`\#c_{"love"}`$=2     $`\#c_{"you"}`$=1
 ```math
 \begin{align}
 l&=\sum_{w\in V_w}\sum_{c\in V_c}\#(w,c)[-\mathrm{log}\sigma(w^Tc)-k\sum_{c_N\in V_c}\frac{\#(c_N)}{|D|}\mathrm{log}\sigma(-w^Tc_N)]\\
-&=-\sum_{w\in V_w}\sum_{c\in V_c}\#(w,c)\mathrm{log}\sigma(w^Tc)+k\sum_{w\in V_w}\sum_{c\in V_c}\#(w,c)\sum_{c_N\in V_c}\frac{\#(c_N)}{|D|}\mathrm{log}\sigma(-w^Tc_N)
+&=-[\sum_{w\in V_w}\sum_{c\in V_c}\#(w,c)\mathrm{log}\sigma(w^Tc)+k\sum_{w\in V_w}\sum_{c\in V_c}\#(w,c)\sum_{c_N\in V_c}\frac{\#(c_N)}{|D|}\mathrm{log}\sigma(-w^Tc_N)]
 \end{align}
 ```
 后半部分$`k\sum_{w\in V_w}\sum_{c\in V_c}\#(w,c)\sum_{c_N\in V_c}\frac{\#(c_N)}{|D|}\mathrm{log}\sigma(-w^Tc_N)`$中，对所有的$`w,c`$组合，做负采样，和$`w`$计算$`\sum_{c_N\in V_c}\frac{\#(c_N)}{|D|}\mathrm{log}\sigma(-w^Tc_N)`$，可以这么理解，对于不同的$`c`$，计算的内容是一样的。也就是前面遍历$`c`$和后面的计算内容无关，因此可以做聚合。  
 ```math
 \begin{align}
-l&=-\sum_{w\in V_w}\sum_{c\in V_c}\#(w,c)\mathrm{log}\sigma(w^Tc)+k\sum_{w\in V_w}\sum_{c\in V_c}\#(w,c)\sum_{c_N\in V_c}\frac{\#(c_N)}{|D|}\mathrm{log}\sigma(-w^Tc_N)\\
-&=-\sum_{w\in V_w}\sum_{c\in V_c}\#(w,c)\mathrm{log}\sigma(w^Tc)+k\sum_{w\in V_w}\#(w)\sum_{c_N\in V_c}\frac{\#(c_N)}{|D|}\mathrm{log}\sigma(-w^Tc_N)
+-l&=\sum_{w\in V_w}\sum_{c\in V_c}\#(w,c)\mathrm{log}\sigma(w^Tc)+k\sum_{w\in V_w}\sum_{c\in V_c}\#(w,c)\sum_{c_N\in V_c}\frac{\#(c_N)}{|D|}\mathrm{log}\sigma(-w^Tc_N)\\
+&=\sum_{w\in V_w}\sum_{c\in V_c}\#(w,c)\mathrm{log}\sigma(w^Tc)+k\sum_{w\in V_w}\#(w)\sum_{c_N\in V_c}\frac{\#(c_N)}{|D|}\mathrm{log}\sigma(-w^Tc_N)
 \end{align}
 ```
+到这里，公式后半部分的意思就比较清晰了。遍历每个中心词，以词频为概率分布计算中心词和其他词点积的期望。这个其他词$`c_N`$，包含了词库中出现的所有词，也就包含了$`w`$和它真实的上下文$`c`$。这里又是一个公式和实现不一致的点，实现里是负采样会去掉中心词$`w`$。  
+因此$`c_N`$又可以分为两部分，当前正在计算的$`w,c`$中的$`c`$和其他：  
+```math
+\begin{align}
+-l&=\sum_{w\in V_w}\sum_{c\in V_c}\#(w,c)\mathrm{log}\sigma(w^Tc)+k\sum_{w\in V_w}\#(w)\sum_{c_N\in V_c}\frac{\#(c_N)}{|D|}\mathrm{log}\sigma(-w^Tc_N)\\
+&=\sum_{w\in V_w}\sum_{c\in V_c}\#(w,c)\mathrm{log}\sigma(w^Tc)+k\sum_{w\in V_w}\#(w)[\frac{\#(c)}{|D|}\mathrm{log}\sigma(-w^Tc) + \sum_{c_N\in V_c-c}\frac{\#(c_N)}{|D|}\mathrm{log}\sigma(-w^Tc_N)]
+\end{align}
+```
+这里是训练整个语料库的损失函数。  
+当约束为单个具体的$`(w,c)`$对时：
+```math
+l(w,c) = \#(w,c)\mathrm{log}\sigma(w^Tc)+k\#(w)\frac{\#(c)}{|D|}\mathrm{log}\sigma(-w^Tc)
+```
+>天呐，为什么这两个公式对不上，还有一坨“其他上下文噪声”去哪了？我看了好久也没搞明白。这里公式的项太多了，含义已经逐渐混淆，论文也没有清晰阐述。
+  
+设$`x=w^Tc`$,对$`x`$求导：  
+```math
+l(x) = \#(w,c)\mathrm{log}\sigma(x)+k\#(w)\frac{\#(c)}{|D|}\mathrm{log}\sigma(-x)
+```
+为什么要对$`w^Tc`$求导呢，反向传播时候都是对$`w`$和$`c`$求偏导。论文想要知道的是，模型收敛之后，中心词和上下文相乘的含义是什么，所以要对整个$`w^Tc`$求导。
+```math
+\begin{align}
+\frac{\partial l}{\partial x} &= \#(w,c)\frac{\sigma(x)(1-\sigma(x))}{\sigma(x)} - k\#(w)\frac{\#(c)}{|D|}\frac{\sigma(-x)(1-\sigma(-x))}{\sigma(-x)}\\
+&= \#(w,c)(1-\sigma(x)) - k\#(w)\frac{\#(c)}{|D|}(1-\sigma(-x))\\
+&= \#(w,c)\sigma(-x) - k\#(w)\frac{\#(c)}{|D|}\sigma(x)
+\end{align}
+```
+令偏导等于0  
+```math
+\#(w,c)\sigma(-x) - k\#(w)\frac{\#(c)}{|D|}\sigma(x) = 0 \\
+\#(w,c)\frac{1}{1+e^x} - k\#(w)\frac{\#(c)}{|D|} \frac{1}{1+e^{-x}} = 0\\
+\#(w,c)(1+e^{-x}) - k\#(w)\frac{\#(c)}{|D|}(1+e^x) = 0\\
+\#(w,c)(e^x + 1) - k\#(w)\frac{\#(c)}{|D|}(e^x+e^{2x}) = 0 \\
+- k\#(w)\frac{\#(c)}{|D|}e^{2x} + [\#(w,c) - k\#(w)\frac{\#(c)}{|D|}]e^x + \#(w,c) = 0
+```
+设$`y=e^x`$:
+```math
+- k\#(w)\frac{\#(c)}{|D|}y^2 + [\#(w,c) - k\#(w)\frac{\#(c)}{|D|}]y + \#(w,c) = 0
+```
+是一个一元二次方程。  
+再简化一下，设$`\#(w,c)=a`$,$`k\#(w)\frac{\#(c)}{|D|}=b`$，则方程为：  
+```math
+-by^2 + (a-b)y + a = 0
+```
+按照一元二次方程解公式展开后得出两个解：
+```math
+y_1 = -1\\
+y_2 = \frac{a}{b} = \frac{|D|\#(w,c)}{k\#(w)\#(c)}
+```
+但$`y=e^x`$必然大于0，$`y_1`$不合理，因此$`y_2`$是解。  
+```math
+e^x = \frac{|D|\#(w,c)}{k\#(w)\#(c)}\\
+x = \mathrm{log}\frac{|D|\#(w,c)}{\#(w)\#(c)}-\mathrm{log}k\\
+w^Tc = \mathrm{log}\frac{|D|\#(w,c)}{\#(w)\#(c)}-\mathrm{log}k
+```
+回看PMI的定义：
+```math
+\mathrm{PMI}(x,y)=\log_{2}\frac{P(x,y)}{P(x)P(y)}=\log_{2}\frac{\dfrac{C(x,y)}{N}}{\dfrac{C(x)}{N}\dfrac{C(y)}{N}}=\log_{2}\frac{C(x,y)\cdot N}{C(x)C(y)}
+```
+>这里还是有点偏差，上文也说过，PMI这里N是语料库的词数，但公式里$`D`$是中心词-上下文对的数量，计算方式不同。  
+也就是：
+```math
+w^Tc = PMI(w,c) - \mathrm{log}k
+```
+
 
 
 ### 补充
