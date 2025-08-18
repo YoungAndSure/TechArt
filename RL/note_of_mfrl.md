@@ -274,6 +274,55 @@ v_{\pi}(s)
     - 通过马尔科夫过程消掉多余的$`S_t`$
 - 通过将边缘概率转换为联合概率，整合公式公共项
 
+#### 矩阵化
+之前推导出的贝尔曼方程：
+```math
+\begin{align}
+v_{\pi}(s)
+&=\sum_{a\in\mathcal{A}}\pi(A_t=a|S_t=s)\sum_{s'\in\mathcal{S}}p(S_{t+1}=s'|S_t=s,A_t=a)[r(s')+\gamma v_\pi(s')]
+\end{align}
+```
+拆分成即时奖励和未来奖励：
+```math
+\begin{align}
+v_{\pi}(s)
+&=\sum_{a\in\mathcal{A}}\pi(A_t=a|S_t=s)\sum_{s'\in\mathcal{S}}p(S_{t+1}=s'|S_t=s,A_t=a)r(s')+\gamma \sum_{a\in\mathcal{A}}\pi(A_t=a|S_t=s)\sum_{s'\in\mathcal{S}}p(S_{t+1}=s'|S_t=s,A_t=a)v_\pi(s')
+\end{align}
+```
+书里对公式做了简化，以更清晰的表示矩阵。  
+```math
+\begin{align}
+r_\pi(s)
+&=\sum_{a\in\mathcal{A}}\pi(A_t=a|S_t=s)\sum_{s'\in\mathcal{S}}p(S_{t+1}=s'|S_t=s,A_t=a)r(s')
+\end{align}
+```
+```math
+\begin{align}
+p_{\pi}(s'|s)
+&=\sum_{a\in\mathcal{A}}\pi(A_t=a|S_t=s)p(S_{t+1}=s'|S_t=s,A_t=a)
+\end{align}
+```
+简化为：
+```math
+\begin{align}
+v_{\pi}(s)
+&=r_\pi(s)+\gamma \sum_{s'\in\mathcal{S}}p_{\pi}(s'|s)v_\pi(s')
+\end{align}
+```
+为啥要这么简化？公式的每一次简化/拆分，都是想突出重点。  
+公式中的即时奖励部分，想想，其实当前状态$`s`$确定了，即时奖励也就能计算出来了，所以它是一个向量，每个状态一个值。未来奖励部分，输入是当前状态$`s`$，输出是下一个可能的状态$`s'`$，所以针对每个$`s,s'`$对，都有一个系数，所以是个矩阵。而$`v_\pi(s)`$和$`v_\pi(s')`$，都是向量，长度是状态个数。  
+把不同的状态通过i,j表示出来，就是：
+```math
+\begin{align}
+v_{\pi}(s_i)
+&=r_\pi(s_i)+\gamma P_{\pi}(s_j|s_i)v_\pi(s_j)
+\end{align}
+```
+其中$`P_{\pi}(s_j|s_i)=\sum_{s_j\in\mathcal{S}}p_{\pi}(s_j|s_i)`$  
+这么一简化状态之间的关系就很清楚了。  
+
+$`P_\pi`$的性质挺有意思，满足概率的性质，即大于等于0，且合为1.
+
 #### 贝尔曼方程有解的证明
 搞不懂了，还用到了盖尔圆定理，查了下，超出了线性代数基础教材的范畴，属于高等工程数学。  
 先跳过。
