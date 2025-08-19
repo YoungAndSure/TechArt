@@ -384,3 +384,13 @@ q_\pi(a|s) = \sum_{r\in\mathcal{R}}p(R_t=r|A_t=a,S_t=s)r + \gamma \sum_{s'\in\ma
 如果是策略显示这个action的概率是0，可能只是策略不够好，有可能随着迭代，这个action变成了最优action。  
 策略本身是要迭代优化的对象，所以不能根据策略来做剪枝。  
 
+#### 2.8.2 矩阵形式的行动价值
+```math
+q_{\pi}(s,a)=\sum_{r\in\mathcal{R}}p(r|s,a)r+\gamma\sum_{s^{\prime}\in\mathcal{S}}p(s^{\prime}|s,a)\sum_{a^{\prime}\in\mathcal{A}(s^{\prime})}\pi(a^{\prime}|s^{\prime})q_{\pi}(s^{\prime},a^{\prime})
+```
+更深刻的意识到公式和矩阵的联系了。  
+你看$`p(s'|s,a)`$，s,a下s'的概率，用矩阵就是(状态，行动)组合数个行、状态数个列的矩阵。这个矩阵要通过((状态，行动)，状态)来定位到转移的概率。  
+再看$`\pi(a'|s')`$，就是行是状态数，列是行动数的矩阵。  
+这两个矩阵相乘，shape也对得上。结果是行是(状态，行动)列是行动的矩阵，表明从(s,a)转移到a'的概率。  
+所以解贝尔曼方程就是解这个线性变换有没有最优解。  
+
