@@ -426,3 +426,4 @@ v=\operatorname*{max}_{\pi\in\Pi}(r_{\pi}+\gamma P_{\pi}v),
 这时候$`\pi`$隐藏在了$`r_\pi`$和$`P\pi`$里，就不是那么能get到max算子的含义了。  
 但为了证明贝尔曼方程是个压缩映射，这种方式更清晰些。  
 
+
