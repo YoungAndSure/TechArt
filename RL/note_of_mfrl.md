@@ -369,8 +369,8 @@ v_\pi = r_\pi + \gamma P_\pi(s'|s)v_\pi
 状态价值和行动价值之间的关系：
 ```math
 \begin{align}
-v_\pi(s) &= \sum_{a\in\mathcal{A}}\mathbb{E}[S_{t+1}=s'|S_t=s,A_t=a]\pi(A_t=a, S_t=s)\\
-&= \sum_{a\in\mathcal{A}}q_\pi(A_t=a,S_t=s)\pi(A_t=a, S_t=s)
+v_\pi(s) &= \sum_{a\in\mathcal{A}}\mathbb{E}[S_{t+1}=s'|S_t=s,A_t=a]\pi(A_t=a|S_t=s)\\
+&= \sum_{a\in\mathcal{A}}q_\pi(A_t=a,S_t=s)\pi(A_t=a|S_t=s)
 \end{align}
 ```
 ```math
@@ -423,7 +423,7 @@ $`\pi`$可以认为是所有状态可执行的行动的概率分布的集合。�
 ```math
 v=\mathrm{max}_{\pi\in\Pi}(r_{\pi}+\gamma P_{\pi}v)
 ```
-这时候$`\pi`$隐藏在了$`r_\pi`$和$`P\pi`$里，就不是那么能get到max算子的含义了。$``\pi$明明是方程里一个变量，但是公式里你又看不到这个变量，所以捉急。  
+这时候$`\pi`$隐藏在了$`r_\pi`$和$`P\pi`$里，就不是那么能get到max算子的含义了。$`\pi`$明明是方程里一个变量，但是公式里你又看不到这个变量，所以捉急。  
 但为了证明贝尔曼方程是个压缩映射，这种方式更清晰些。  
 
 #### 范数
@@ -432,4 +432,84 @@ v=\mathrm{max}_{\pi\in\Pi}(r_{\pi}+\gamma P_{\pi}v)
 #### 第三章行文思路
 3.1 先给了具体例子，首先设定一个固定的策略，求不同状态的价值，然后根据求出的各状态状态价值，求出了一个状态不同行动的行动价值，并且能看出来，有一个行动的行动价值最高，从而选出了这个状态的最优策略。这其实就是后续寻找最优策略的方法：先给随机策略，然后计算状态价值，然后得出最佳行动策略，然后再计算状态价值，以此循环，最终得出最优策略。能得出最优策略的理论依据是压缩映射。  
 3.2 给出最优状态价值和最优策略的定义，引出后续的证明。  
-3.3 结合贝尔曼方程和3.2定义给出贝尔曼最优方程公式。
+3.3 结合贝尔曼方程和3.2定义给出贝尔曼最优方程公式。3.3.1给出示例，怎么解有两个变量的方程，导出如何解贝尔曼最优方程。3.3.2 
+
+#### 解贝尔曼最优方程
+两种形式的贝尔曼方程：
+```math
+\begin{align}
+v_(s)
+&=r_\pi(s)+\gamma \sum_{s'\in\mathcal{S}}p_{\pi}(s'|s)v_\pi(s')
+\end{align}
+```
+```math
+\begin{align}
+v_(s) 
+&= \sum_{a\in\mathcal{A}}\pi(a|s)q_\pi(a,s)\\
+&= \sum_{a\in\mathcal{A}}\pi(a|s)[\sum_{r\in\mathcal{R}}p(r|s,a)r + \gamma \sum_{s'\in\mathcal{S}}p(s'|s,a)v(s')]
+\end{align}
+```
+一种是状态价值形式的，一种是行动价值形式的，后者在有的场景下更有利于理解。这里就是用的行动价值形式的贝尔曼方程。  
+贝尔曼最优方程就是选择让状态价值最大的策略，也就是：
+```math
+\begin{align}
+v_(s) 
+&= \mathrm{max}_{\pi(s)\in \mathcal{\Pi(s)}}\sum_{a\in\mathcal{A}}\pi(a|s)[\sum_{r\in\mathcal{R}}p(r|s,a)r + \gamma \sum_{s'\in\mathcal{S}}p(s'|s,a)v(s')]
+\end{align}
+```
+s和s'是同一个向量的不同取值，是个要求解的变量。$`\Pi(s)`$是个集合，max算子要从集合中选出可以让状态价值最大的，也是个要求解的变量。  
+等于是要求两个变量的方程。理论上应该是解不出来的，不过由于其中一个是max，有方法能解开。  
+  
+比如这个方程：
+```math
+x = \mathrm{max}_{y\in \mathcal{R}}(2x-1-y^2)
+```
+先忽略x求右边的y什么时候最大，对y求导，导数等于0，可解y=0时2x-1-y^2最大。  
+此时：
+```math
+x = 2x -1\\
+x = 1
+```
+因此，方程的解为x=1,y=0.  
+
+对贝尔曼最优方程也是一样的方法。  
+```math
+\begin{align}
+v_(s) 
+&= \mathrm{max}_{\pi(s)\in \mathcal{\Pi(s)}}\sum_{a\in\mathcal{A}}\pi(a|s)q_\pi(a,s)
+\end{align}
+```
+先解max。$`\pi(s)`$等于多少的时候$`v(s)`$最大？这个问题等同于问：
+```math
+\sum_{i=1}^{3}c_iq_i = c_1q_1 + c_2q_2 + c_3q_3
+```
+且$`\sum_{i=1}^{3}c_i=1`$，在$`c_i`$取值为多少时值最大。  
+假设$`q_3=\mathrm{max}(q_1,q_2,q_3)`$，则$`c_3=1,c_1=0,c_2=0`$是解。  
+因为：
+```math
+\begin{align}
+q_3 - (c_1q_1 + c_2q_2 + c_3q_3) &= (c_1+c_2+c_3)q_3 - (c_1q_1 + c_2q_2 + c_3q_3)\\
+&= c_1q_3+c_2q_3+c_3q_3 - c_1q_1 - c_2q_2 - c_3q_3 \\
+&= c_1(q_3-q_1)+c2(q_3 - q_2)+c3(q_3-q_3)\\
+&\ge 0
+\end{align}
+```
+在c1,c2,c3取任何大于等于0的值时，等式都大于0，因此$`c_3=1,c_1=0,c_2=0`$是解。  
+再转回贝尔曼最优方程，解为让$`q_\pi(a,s)`$最大的行动的概率为1，其他行动概率为0。
+```math
+\begin{align}
+v_(s) 
+&= \max_{a\in\mathcal{A}} \sum_{a\in\mathcal{A}}\pi(a|s)q_\pi(a,s)\\
+&= \max_{a\in\mathcal{A}} q_\pi(a,s)\\
+&= \max_{a\in\mathcal{A}} [\sum_{r\in\mathcal{R}}p(r|s,a)r + \gamma \sum_{s'\in\mathcal{S}}p(s'|s,a)v(s')]
+\end{align}
+```
+$`\pi(a|s)`$为什么不见了？因为之前是概率分布，找到解之后是具体值了，代入具体值之后也就不见了。
+```math
+\pi(a|s) = 
+\begin{cases}
+1, a = \argmax_a q(s,a)\\
+0, a \ne \argmax_a q(s,a)
+\end{cases}
+```
+至此，我们解出了贝尔曼最优方程两个变量之一的$`\pi(s)`$。
