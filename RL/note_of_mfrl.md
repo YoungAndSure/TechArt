@@ -700,7 +700,82 @@ $`|| ... ||_\infty`$是对每个元素取绝对值之后取最大值，叫max范
 
 >现在确实更理解“最优方程”的含义了。看着只是加了个max算子，但方程解法完全不同。之前的贝尔曼方程只需简单变换就能解，但最优方程需要这么多定理、算法才能解。  
 
-# 折扣奖励
+#### 折扣对最优策略的影响
 这强化学习还挺富有人生哲理。3.5的这个例子，折扣奖励是0.9的时候，面对障碍的负奖励，策略也坚定不移的通过。折扣奖励0.5的时候，策略绕着障碍走。到折扣0的时候，永远也到不了目标。只有目标附近的点能到达目标，因为太近了，只需要即时奖励就能找到目标。  
 这跟人好像啊，有的人落地就在目标附近，有的人落地远离目标。短视的人，到不了终点，除非你天生就在终点附近。  
 
+#### 奖励对最优策略的影响
+单独调整某个状态的奖励，会对策略产生影响，比如例子中，降低障碍的奖励，策略会绕开障碍。  
+但如果是整体对奖励进行放缩或加减常量，最优策略不变，状态价值会同等放缩。  
+求解下。
+针对任意策略中某个状态$`s`$的奖励$`r_{\pi}(s)`$（奖励向量中的一项）有:
+```math
+r_{\pi}(s) = \sum_{a\in \mathcal{A}} p(a|s)\sum_{r\in \mathcal{R}}p(r|s,a)r
+```
+将单个奖励进行放缩：$`r'_{\pi}(s) = \alpha r_{\pi}(s) + \beta`$，同理将奖励向量进行放缩：$`r'_{\pi} = \alpha r_{\pi} + \beta1`$，其中1是个向量，行数=状态数。  
+贝尔曼最优方程（已经解出来的）：  
+```math
+v^* = \max_{\pi \in \Pi}(r_{\pi^*}+\gamma P v^*)
+```
+放缩后的奖励代入贝尔曼最优方程（还没解出来）：
+```math
+v' = \max_{\pi \in \Pi}(\alpha r_{\pi} + \beta1+\gamma P v')
+```
+后面的思路，我估计是这样的。对奖励不是做了个放射变换吗？然后认为最终对状态价值也是做了个放射变换，只是不知道放射变换的系数是多少。所以，先假定一个系数，建立等式，然后求解这个系数。  
+因此，假定新的不动点：$`v'=\alpha v^* +c1`$，则：  
+```math
+\begin{align}
+v' = \alpha v^* + c1 &= \max_{\pi \in \Pi}(\alpha r_{\pi} + \beta1+\gamma P (\alpha v^* + c1))\\
+&= \max_{\pi \in \Pi}(\alpha r_{\pi} + \beta1+\gamma P \alpha v^* +\gamma P c1)\\
+&= \max_{\pi \in \Pi}(\alpha r_{\pi} + \beta1+\gamma P \alpha v^* +\gamma c1)
+\end{align}
+```
+最优一项去掉了P,因为P是个概率矩阵，每行的和都等于1，所以跟1相乘等于1，比如：
+```math
+\begin{bmatrix}
+    0.3 & 0.7 \\
+    0.6 & 0.4
+\end{bmatrix}
+\begin{bmatrix}
+    1 \\
+    1
+\end{bmatrix}
+= \begin{bmatrix}
+    0.3 \times 1 + 0.7 \times 1 \\
+    0.6 \times 1 + 0.4 \times 1
+\end{bmatrix}
+= \begin{bmatrix}
+    1.0 \\
+    1.0
+\end{bmatrix}
+```
+继续：
+```math
+\begin{align}
+v' = \alpha v^* + c1 
+&= \max_{\pi \in \Pi}(\alpha r_{\pi} +\gamma P \alpha v^* + \beta1+\gamma c1)\\
+&=\max_{\pi \in \Pi}(\alpha r_{\pi} +\gamma P \alpha v^*) + \beta1+\gamma c1
+\end{align}
+```
+```math
+\begin{align}
+\alpha v^*
+&=\max_{\pi \in \Pi}(\alpha r_{\pi} +\gamma P \alpha v^*) + \beta1+\gamma c1 - c1\\
+v^* &= \max_{\pi \in \Pi}( r_{\pi} +\gamma P v^*) + \frac{\beta1+\gamma c1 - c1}{\alpha}
+\end{align}
+```
+max算子是满足：$`\alpha \max(x) = \max(\alpha x)`$的，因此上边除以$`\alpha`$能成立。  
+根据贝尔曼最优方程，可以知道：
+```math
+\frac{\beta1+\gamma c1 - c1}{\alpha} = 0
+```
+也就是
+```math
+\begin{align}
+\beta1+\gamma c1 - c1 = 0\\
+\beta1+c(\gamma 1 - 1)=0\\
+c=\frac{\beta1}{1-\gamma1}\\
+c=\frac{\beta}{1-\gamma}1
+\end{align}
+```
+也就证明了$`v'=\alpha v^*+c1=\alpha v^* + \frac{\beta}{1-\gamma}1`$  
