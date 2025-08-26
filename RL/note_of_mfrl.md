@@ -874,3 +874,9 @@ v_{\pi_{k+1}}- v_{k+1} &= (r_{\pi_{k+1}}+\gamma P_{\pi_{k+1}} v_{\pi_{k+1}})-\ma
 ```
 由于$`v_{\pi_{k}} \ge v_{k}`$,$`\gamma, P_{\pi_{k}'} \in (0,1)`$，因此$`v_{\pi_{k+1}}- v_{k+1} \ge 0`$也就是$`v_{\pi_{k+1}} \ge v_{k+1}`$  
 由于$`v_k`$最终会收敛到$`v^*`$，而对每个k有$`v_{\pi_{k}} \ge v_{k}`$，因此$`v_{\pi_{k}}`$也会收敛到$`v^*`$。  
+
+#### 价值迭代法对应鱼书实现
+https://github.com/YoungAndSure/RlZero/blob/main/utest.py#L44
+
+#### 策略迭代法对应鱼书实现
+https://github.com/YoungAndSure/RlZero/blob/main/utest.py#L27
