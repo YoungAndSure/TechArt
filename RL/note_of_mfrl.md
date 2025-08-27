@@ -906,7 +906,52 @@ Box2.1只证明了迭代法解贝尔曼方程时，随着迭代，会越来越�
 同样的，无模型后，实际是在用采样数据的均值来逼近期望，所以对采样数据的处理就很重要了，包括降噪降方差等等。  
 
 #### 大数定律
-是样本均值的期望等于真实期望。  
+是"样本均值的期望"等于根据已知概率分布计算出来的理论期望值。  
 对于独立同分布，期望是个固定值，可以根据概率分布计算出来的。比如掷筛子，每个面就是1/6，期望就是(1+2+3+4+5+6)/6。这个1/6是上来就知道的概率分布。  
 而样本均值，是并不知道概率分布，只是不断做实验采集数据。对多组实验，每组算均值，就得到了多个样本均值。大数定律是说，这个样本均值的期望，等于上面的期望。所以才导出，只需要做实验采集数据，不需要概率分布，就可以得到真实的期望了。  
-公式证明了为什么相等:
+公式证明了为什么相等:  
+$`\mathbb{E}[\bar{x}] = \mathbb{E}[\frac{1}{n}\sum_{i=1}^n x_i]=\frac{1}{n}\sum_{i=1}^n \mathbb{E}[x_i]=\mathbb{E}[X]`$  
+其中的$`\mathbb{E}[x_i]`$在同分布下是一个固定值。$`x_i`$是个随机变量，在真正采样之前并不知道它的值，所以是随机采样。在不知道概率分布的情况下，是我们想要获取的值。而$`\mathbb{E}[\bar{x}]`$是随着实验采样变化的值，是在不知道概率分布情况下，根据样本计算出来的值。  
+公式证明了，即使不知道概率分布，通过不断采样、计算均值的期望，也可以获取到根据概率分布计算出来的期望。  
+  
+证明：  
+$`\mathrm{val}[\bar{x}]=\frac{1}{n}\mathrm{val}[X]`$  
+首先:
+$`\mathrm{val}[X]=\mathbb{E}[(X-\mathbb{E}[X])^2]`$  
+对于$`aX`$:  
+```math
+\begin{align}
+\mathrm{val}[aX]&=\mathbb{E}[(aX-\mathbb{E}[aX])^2]\\
+&=\mathbb{E}[(aX-a\mathbb{E}[X])^2]\\
+&=\mathbb{E}[a^2(X-\mathbb{E}[X])^2]\\
+&=a^2\mathbb{E}[(X-\mathbb{E}[X])^2]\\
+&=a^2\mathrm{val}[X]
+\end{align}
+```
+对于$`X+Y`$:
+```math
+\begin{align}
+\mathrm{val}[X+Y]&=\mathbb{E}[((X+Y)-\mathbb{E}[X+Y])^2]\\
+&=\mathbb{E}[((X+Y)-\mathbb{E}[X]-\mathbb{E}[Y])^2]\\
+&=\mathbb{E}[(X-\mathbb{E}[X] + Y -\mathbb{E}[Y])^2]\\
+&=\mathbb{E}[(X-\mathbb{E}[X])^2+(Y -\mathbb{E}[Y])^2+2(X-\mathbb{E}[X])(Y -\mathbb{E}[Y])]\\
+&=\mathbb{E}[(X-\mathbb{E}[X])^2]+\mathbb{E}[(Y -\mathbb{E}[Y])^2]+\mathbb{E}[2XY-2X\mathbb{E}[Y]-2Y\mathbb{E}[X]+2\mathbb{E}[X]\mathbb{E}[Y]]\\
+&=\mathrm{val}[X]+\mathrm{val}[Y] + \mathbb{E}[2XY]-\mathbb{E}[2X\mathbb{E}[Y]]-\mathbb{E}[2Y\mathbb{E}[X]]+\mathbb{E}[2\mathbb{E}[X]\mathbb{E}[Y]]\\
+&\mathbb{E}[X],\mathbb{E}[Y]是常数，所以\mathbb{E}[2Y\mathbb{E}[X]]=2\mathbb{E}[Y]\mathbb{E}[X]\\
+&= \mathrm{val}[X]+\mathrm{val}[Y] + 2\mathbb{E}[XY]-2\mathbb{E}[X]\mathbb{E}[Y]-2\mathbb{E}[Y]\mathbb{E}[X]+2\mathbb{E}[X]\mathbb{E}[Y]\\
+&= \mathrm{val}[X]+\mathrm{val}[Y] + 2\mathbb{E}[XY]-2\mathbb{E}[X]\mathbb{E}[Y]-2\mathbb{E}[Y]\mathbb{E}[X]+2\mathbb{E}[X]\mathbb{E}[Y]\\
+&= \mathrm{val}[X]+\mathrm{val}[Y] + 2\mathbb{E}[XY]-2\mathbb{E}[X]\mathbb{E}[Y]\\
+& 如果X,Y是独立的,\mathbb{E}[XY]=\mathbb{E}[X]\mathbb{E}[Y]\\
+&= \mathrm{val}[X]+\mathrm{val}[Y]
+\end{align}
+```
+因此：  
+```math
+\begin{align}
+\mathrm{val}[\bar{x}]&=\mathrm{val}[\frac{1}{n}\sum_{i=1}^nx_i]\\
+&=\frac{1}{n^2}\mathrm{val}[\sum_{i=1}^nx_i]\\
+&=\frac{1}{n^2}\sum_{i=1}^n\mathrm{val}[x_i]\\
+&=\frac{1}{n^2}n\mathrm{val}[X]\\
+&=\frac{1}{n}\mathrm{val}[X]
+\end{align}
+```
