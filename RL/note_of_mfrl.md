@@ -970,6 +970,8 @@ $`q_{\pi}(s,a) = \sum_{r\in\mathcal{R}}p(r|s,a)r + \gamma \sum_{s'\in\mathcal{S}
 由两部分组成，(s,a)情况下的即时奖励和未来折扣奖励。  
 可是在真实运行时，即时奖励还好说，未来折扣奖励是怎么得到的呢？想起来了。鱼书里有代码，是在整个回合结束之后，从后往前算出来的。
 基于状态价值的：  
-https://github.com/YoungAndSure/RlZero/blob/main/utest.py#L53
+https://github.com/YoungAndSure/RlZero/blob/main/utest.py#L53  
 基于行动价值的：
-https://github.com/YoungAndSure/RlZero/blob/main/utest.py#L56
+https://github.com/YoungAndSure/RlZero/blob/main/utest.py#L56  
+发现代码里一个有意思的，基于状态价值的，是对同一状态的所有状态价值求平均。  
+基于行动价值的，没有求平均，而是乘一个衰减指数alpha。这个应该是鱼书里说的，平均会导致最新样本权重低，所以才用指数衰减，来降低过去的奖励，提升当前的奖励。  
