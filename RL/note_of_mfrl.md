@@ -985,4 +985,7 @@ https://github.com/YoungAndSure/RlZero/blob/main/utest.py#L56
 书里做了实验，将episode lengths从0到100，观察到一些现象。  
 一个是，如果episode lengths很短的话，收敛不到最优策略。因为太短了，很多状态都采集不了到target的回合数据，自己的状态价值里也体现不出这个信息，或者说这个状态到target的概率从采集数据上反应出来的就是0，当然也就不是最优策略。  
 一个是，随着episode lengths增加，target附近的状态先变成正的。其实在这些例子中，可以看到达到目标的奖励，是从目标开始，向周围状态逐渐扩散的。一旦一个episode达到目标，从目标开始的奖励，会从target到起点"反向传播"，传播过程中会有折扣。  
-这些现象加在一起，可以发现，episode lengths必须足够长，这个回合才可能到达target，到达target的奖励才能反向传播到路径上。这和“只有target奖励是正”的奖励机制有关。导致有的回合因为不够长，拿不到“正确”的奖励（虽然没到target，但是也接近了，奖励不该是0）。这个就是"稀疏奖励"。
+这些现象加在一起，可以发现，episode lengths必须足够长，这个回合才可能到达target，到达target的奖励才能反向传播到路径上。这和“只有target奖励是正”的奖励机制有关。导致有的回合因为不够长，拿不到“正确”的奖励（虽然没到target，但是也接近了，奖励不该是0）。这个就是"稀疏奖励"。  
+
+>从后面MC Exploring Starts的内容看，basic mc生成样本的方法是遍历每个state，按照episode lengths走一段，收集这个state不同行动的行动价值。假如有n个state，episode lengths是m，则一共会走n*action_size\*m步，得到n\*action_size个行动价值。这效率确实低。  
+
