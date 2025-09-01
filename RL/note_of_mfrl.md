@@ -989,3 +989,10 @@ https://github.com/YoungAndSure/RlZero/blob/main/utest.py#L56
 
 >从后面MC Exploring Starts的内容看，basic mc生成样本的方法是遍历每个state，按照episode lengths走一段，收集这个state不同行动的行动价值。假如有n个state，episode lengths是m，则一共会走n*action_size\*m步，得到n\*action_size个行动价值。这效率确实低。  
 
+#### MC Exploring Starts的两项改进
+行动价值采样方式：每条episode经过的所有(s,a)都可以用于(s,a)的行动价值计算。这样agent行动过程中的每一步的数据都能利用到。  
+策略提升方式：  
+basic mc策略提升方式：agent走完所有的episode，过程中收集数据。之后根据数据计算行动价值、提升策略。大的过程和策略梯度法一致，先策略评估，再提升策略。从工程上说这样需要大量数据保存，内存会爆炸。策略提升时的集中计算压力也比较大。  
+改进后，每个episode中每走一步，就提升这个state的策略。  
+仔细看了算法5.2，这不仅是调整了计算的顺序。在每个episode都会生成样本、计算行动价值、策略提升，意味着前面回合的策略提升会影响后面回合的样本采集。  
+这样能完成收敛吗？这么理解：数据是真实采集的，数据越多，就越能逼近真实的行动价值。如果数据不够多，就只能近似，有误差，但方向正确。  
