@@ -1090,5 +1090,5 @@ https://github.com/YoungAndSure/Graphs/blob/main/rm.py
 控制$`a_k`$收敛的速度。不能太快也不能太慢。  
 (c)$`\mathbb{E}(\eta_k|\mathcal{H}_k)=0`$且$`\mathbb{E}(\eta_k^2|\mathcal{H}_k)<\infty`$  
 这个条件是限制噪声对$`g(w)`$的扰动。使得扰动虽然有，但总体期望为0，扰动的方差不会过大导致难收敛。  
-提到了一种特例，如果噪声$`\eta_k`$是独立同分布的，则$`\mathbb{E}(\eta_k|\mathcal{H}_k)=\mathbb{E}(\eta_k),\mathbb{E}(\eta_k^2|\mathcal{H}_k)=\mathbb{E}(\eta_k^2)`$，此时，噪声满足$`\mathbb{E}(\eta_k)=0,\mathbb{E}(\eta_k^2)<\infty`$则满足条件。
+提到了一种特例，如果噪声$`\eta_k`$是独立同分布的，则$`\mathbb{E}(\eta_k|\mathcal{H}_k)=\mathbb{E}(\eta_k),\mathbb{E}(\eta_k^2|\mathcal{H}_k)=\mathbb{E}(\eta_k^2)`$，此时，噪声满足$`\mathbb{E}(\eta_k)=0,\mathbb{E}(\eta_k^2)<\infty`$则满足条件c。
 
