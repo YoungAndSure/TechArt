@@ -1082,13 +1082,60 @@ https://github.com/YoungAndSure/Graphs/blob/main/rm.py
 ![图片描述](images/robbins_monro.png)  
 
 #### Robbins-Monro theorem
-(a) $`0<c_1<\nabla_w g(w)<c_2`$
+##### (a) $`0<c_1<\nabla_w g(w)<c_2`$  
 梯度恒大于0说明$`g(w)`$是单调递增的，所以必有$`g(w)=0`$的点，root必存在。  
 梯度小于$`c_2`$意味着梯度不会持续增长，也就是$`g(w)`$的增速会趋于稳定。这意味着只要step足够大，就会收敛。比如上边的$`w^3-5`$的梯度就不满足这一条，增长速度很快。我首次step设置的不合理，导致后面函数$`g(w)`$增长很快，而$`a_k`$增长的慢，相乘之后的step总是小于$`g(w)`$增长的量，无法收敛。  
 这里提了下和后面相关的目标函数建模。一般会把要优化的函数建模为$`J(w)`$,优化$`J(w)`$相当于找极大值点，也就是找$`g(w)= \nabla_w J(w)`$的根，即$`g(w)=0`$的点。满足$`0<c_1<\nabla_w g(w)`$意味着$`g(w)=0`$的解存在，也就意味着$`g(w)`$是一个先负后正的函数，也就意味着$`J(w)`$是一个凸函数，存在极大值点。所以，目标函数$`J(w)`$能不能找到最优值，需要看它的二次梯度函数$`\nabla_wg(w)`$满不满足$`0<c_1<\nabla_w g(w)`$。  
-(b)$`\sum_{k=1}^\infty a_k > \infty`$且$`\sum_{k=1}^\infty a_k^2 < \infty`$   
+##### (b)$`\sum_{k=1}^\infty a_k > \infty`$且$`\sum_{k=1}^\infty a_k^2 < \infty`$   
 控制$`a_k`$收敛的速度。不能太快也不能太慢。  
-(c)$`\mathbb{E}(\eta_k|\mathcal{H}_k)=0`$且$`\mathbb{E}(\eta_k^2|\mathcal{H}_k)<\infty`$  
+这个有点意思，我重新梳理下，按照和书上不太一样的思路过一下。  
+书里首先给了前提条件：$`\tilde{g}(w_k, \eta_k)`$是有界的。  
+- 首先，$`a_k`$必须满足，当$`k\to\infty`$时，$`a_k\to0`$  
+
+书上有证明。  
+```math
+\begin{align}
+w_{k+1} &= w_{k} - a_k \tilde{g}(w_k, \eta_k)\\
+w_{k+1}-w_{k} &= - a_k \tilde{g}(w_k, \eta_k)\\
+|w_{k+1}-w_{k}| &= |a_k \tilde{g}(w_k, \eta_k)|
+\end{align}
+```
+由于$`\tilde{g}(w_k, \eta_k)`$是有界的，只有在$`k\to\infty`$时，$`a_k\to0`$，$`|a_k \tilde{g}(w_k, \eta_k)|`$才趋于0，$`w_{k+1}`$和$`w_k`$才会逐渐靠近、收敛。否则解不会收敛到$`w^*`$了。
+
+- 然后，是收敛速度的问题。  
+
+$`\sum_{k=1}^\infty a_k`$和$`\sum_{k=1}^\infty a_k^2`$有什么区别？其实就是新增项$`a_k`$和$`a_k^2`$的大小不一样。由于$`a_k`$会收敛到0，所以$`a_k^2<a_k`$。这个收敛的速度，会导致级数和最终是收敛到一个固定值，还是正无穷。  
+举个例子：$`a_k=\frac{1}{k}`$时,$`\sum_{k=1}^\infty a_k`$可以用$`\ln(k)+\gamma`$近似,也就是趋于无穷大。  
+而$`a_k^2=\frac{1}{k^2}`$,$`\sum_{k=1}^\infty a_k^2=\frac{\pi^2}{6}`$,是一个固定值。  
+RM算法的条件：$`\sum_{k=1}^\infty a_k = \infty`$且$`\sum_{k=1}^\infty a_k^2 < \infty`$  
+其实就控制了$`a_k`$衰减的速度，既不能太快，导致$`a_k`$级数和收敛到固定值，也不能太慢，导致$`a_k^2`$级数和不收敛。  
+为什么衰减不能太快呢？  
+```math
+\begin{align}
+w_{k+1} &= w_{k} - a_k \tilde{g}(w_k, \eta_k)\\
+&= w_{k-1} - a_{k-1} \tilde{g}(w_{k-1}, \eta_{k-1}) - a_k \tilde{g}(w_k, \eta_k)\\
+&...\\
+&= w_1 - \sum_{n=1}^k a_n \tilde{g}(w_{n}, \eta_{n})
+\end{align}
+```
+当$`k\to\infty`$时：
+```math
+\begin{align}
+w_{\infty} &= w_1 - \sum_{k=1}^\infty a_k \tilde{g}(w_{k}, \eta_{k})\\
+w_{\infty} - w_1 &= - \sum_{k=1}^\infty a_k \tilde{g}(w_{k}, \eta_{k})\\
+|w_{\infty} - w_1| &= |\sum_{k=1}^\infty a_k \tilde{g}(w_{k}, \eta_{k})|
+\end{align}
+```
+由于前提$`\tilde{g}(w_{k}, \eta_{k})`$是有界的，所以$`|w_{\infty} - w_1|`$有没有界就看$`\sum_{k=1}^\infty a_k`$了。$`\sum_{k=1}^\infty a_k`$收敛的快，$`|w_{\infty} - w_1|`$就收敛到固定值，是有界的。而我们需要$`|w_{\infty} - w_1|`$是有界的还是无界的呢？无界的。因为初始值$`w_1`$是随机挑选的，当然希望不管挑到什么值、距离多远都能收敛到$`w^*`$也就是$`w_\infty`$。如果$`|w_{\infty} - w_1|`$是有界的，也就意味着，只有在界内的初始值$`w_1`$才会收敛到$`w_\infty`$，这限制了初始值$`w_1`$可挑选的范围。  
+
+>摘抄一句deepseek很有启发的解释：如果步长 $`a_k`$衰减得太快（例如 a_k = 1/k^2），其总和是有限的。这意味着算法可能在离目标还很远的时候，“步长”就已经变得极小，从而过早地停止，永远无法达到真正的目标。$`a_k`$的无穷和大保证了算法在理论上拥有穿越任意远距离的潜力。
+  
+>目前为止证明了：$`a_k\to0`$和$`\sum_{k=1}^\infty a_k\to \infty`$。还剩一个$`\sum_{k=1}^\infty a_k^2 < \infty`$。这个先放一放。  
+
+##### (c)$`\mathbb{E}(\eta_k|\mathcal{H}_k)=0`$且$`\mathbb{E}(\eta_k^2|\mathcal{H}_k)<\infty`$  
 这个条件是限制噪声对$`g(w)`$的扰动。使得扰动虽然有，但总体期望为0，扰动的方差不会过大导致难收敛。  
 提到了一种特例，如果噪声$`\eta_k`$是独立同分布的，则$`\mathbb{E}(\eta_k|\mathcal{H}_k)=\mathbb{E}(\eta_k),\mathbb{E}(\eta_k^2|\mathcal{H}_k)=\mathbb{E}(\eta_k^2)`$，此时，噪声满足$`\mathbb{E}(\eta_k)=0,\mathbb{E}(\eta_k^2)<\infty`$则满足条件c。
+  
+>回过头来看之前$`w^3-5`$为什么我设置$`a_k=1,1/2,1/4..`$不能收敛。bc的条件是满足的，只有a不满足。也就是说限制了$`a_k`$的速度，但是函数本身增长太快，导致无法收敛。虽然调整$`a_k`$也能收敛，但这不是"almost surely converges"。  
+  
 
