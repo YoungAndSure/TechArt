@@ -1283,8 +1283,8 @@ $`\mathbb{E}[a|Y=y]=\sum_x x*p(a=x|Y=y)= a*p(a|Y=y)=a`$
 $`\mathbb{E}[X|Y=y]=\sum_x xp(x|Y=y)`$  
 这个证明，同贝尔曼最优方程里最优行动的证明。  
 
-##### 随机变量期望2
-(a)$`\mathbb{E}[\mathbb{E}[X|Y]]=\mathbb{E}[X]`$  
+##### 随机变量期望2 
+(a) $`\mathbb{E}[\mathbb{E}[X|Y]]=\mathbb{E}[X]`$  
 首先，$`\mathbb{E}[X|Y]=f(Y)`$,因为它是随机变量$`Y`$的函数。  
 ```math
 \begin{align}
