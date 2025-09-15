@@ -1307,5 +1307,40 @@ $`\mathbb{E}[X|Y=y]=\sum_x xp(x|Y=y)`$
 类似(a)可证。  
 
 ##### 随机收敛定义
-这里的收敛说的不是一个实数序列最终收敛到一个实数值。  
-这里的收敛说的是随机变量也就是从样本$`\omega`$到$`x`$的映射方法收敛。  
+这里的收敛说的不是下意识想的，一个实数序列最终会收敛到一个实数值。  
+这里的收敛说的是随机变量也就是从样本$`\omega`$到$`x`$的映射方法收敛。涉及两个维度：  
+1. 对哪些样本收敛？  
+2. 收敛到什么程度？  
+
+下边逐个总结下
+
+- Sure convergence  
+```math
+A=\Omega, where A=\{\omega \in \Omega:\lim_{k \to \infty} X_k(\omega) = X(\omega)\}
+```
+收敛的范围是全体$`\omega`$，收敛的程度，是：收敛到映射$`X`$。这是约束最强的收敛。  
+
+- Almost sure convergence  
+```math
+\mathbb{P}(A)=1, where A=\{\omega \in \Omega:\lim_{k \to \infty} X_k(\omega) = X(\omega)\}
+```
+注意，和Sure convergence的区别是收敛范围，不再是全体样本，而是收敛范围内样本概率为1.有些事件，发生的概率趋近于0.这些事件不收敛。  
+
+- Convergence in probability  
+```math
+\lim_{k\to\infty}\mathbb{P}(A)=0, where A=\{\omega \in \Omega:|X_k(\omega)-X(\omega)|>\epsilon\}
+```
+这个是说，那些不收敛的样本，发生概率随着k增加趋近于0。约束的不是哪些样本收敛，而是那些不收敛的样本发生的概率。  
+
+- Convergence in mean  
+```math
+\lim_{k\to\infty}\mathbb{E}[|X_k-X|^r]=0
+```
+约束了随机变量的期望和方差一致。  
+
+- Convergence in distribution
+```math
+\lim_{k\to\infty}\mathbb{P}(X_k\leq a) = \mathbb(X\leq a)
+```
+$`\mathbb{P}(X_k\leq a)`$是$`X_k`$在样本空间上的概率分布累积值。也就是映射的概率分布收敛。  
+
