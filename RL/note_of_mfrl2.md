@@ -239,7 +239,7 @@ $`\mathbb{E}[\mathbb{E}[X_{k+1}|\mathcal{H}_k]]=E[X_{k+1}]=E[X_k]`$
 另一个理解方式，上文附录B已讨论，$`\mathbb{E}[X|Y]`$是个$`Y`$相关的随机变量，因此$`\mathbb{E}[X_{k+1}|\mathcal{H}_k]`$是个随机变量。或者说，$`\mathcal{H}_k`$圈定了样本范围，计算下一个随机变量$`X_{k+1}`$的期望，所以$`\mathbb{E}[X_{k+1}|\mathcal{H}_k]`$是随着$`\mathcal{H}_k`$的变化而变化的随机变量——另一个维度说明随机变量之间不是独立的，而是相关的。  
 >这会儿也get不到这性质有什么用  
 
-##### 上鞅
+##### 下鞅
 对于随机变量组成的序列，两个条件：
 - 随机变量期望有上下界：$`\mathbb{E}[|X_k|]\lt\infty`$  
 - $`\mathbb{E}[X_{k+1}|\mathcal{H_k}]\geq X_k`$  
@@ -248,6 +248,37 @@ $`\mathbb{E}[\mathbb{E}[X_{k+1}|\mathcal{H}_k]]=E[X_{k+1}]=E[X_k]`$
 $`\mathbb{E}[X_{k+1}]\geq \mathbb{E}[X_{k}] \geq \mathbb{E}[X_{k-1}]...\geq \mathbb{E}[X_1]`$  
 也就是随机变量序列的期望是非递减的。  
 
-##### 下鞅
+##### 上鞅
 和上鞅相反，随机变量序列的期望是非递增的。  
+
+>这个定义的名词确实容易懵逼。上鞅super，是递减的，下鞅sub是递增的。  
+
+##### 鞅收敛
+上鞅和下鞅会almost surely收敛到一个随机变量$`X`$。  
+
+##### 拟鞅
+上面确定性序列通过约束相邻元素差的和，导出收敛。  
+鞅的约束得以让随机变量序列的期望有了类似确定性序列的性质。  
+因此，拟鞅这里结合了两者，通过对随机变量序列相邻元素的期望差的和进行约束，导出收敛。  
+类似上文的$`S_k^+,S_k^-`$，这里也要有对应的正向、负向表示：  
+```math
+\mathbb{1}_{A_{k}}=\left\{\begin{array}{ll}
+1, & \mathbb{E}\left[X_{k+1}-X_{k} \mid \mathcal{H}_{k}\right] \geq 0, \\
+0, & \mathbb{E}\left[X_{k+1}-X_{k} \mid \mathcal{H}_{k}\right] < 0.
+\end{array}\right.
+```
+这个就相当于确定性序列界的$`S_k^+`$。注意$`\mathbb{E}[X_{k+1}-X_{k} \mid \mathcal{H}_{k}]`$：  
+- 它是个有关$`\mathcal{H}_k`$的随机变量，可取范围内的实数值。  
+- 它是对$`X_{k+1}-X_{k}`$求期望。这是相邻随机变量的差值。  
+
+为什么$`\mathbb{1}`$后面要跟个$`A_k`$，且类似$`S_k^-`$的公式用$`\mathbb{1}_{A_k^c}`$表示？  
+因为$`\mathbb{E}[X_{k+1}-X_{k} \mid \mathcal{H}_{k}]`$是个随机变量，$`\mathbb{E}[X_{k+1}-X_{k} \mid \mathcal{H}_{k}] \geq 0`$的含义是取随机变量值大于0的部分，实际就是圈定了样本空间$`\Omega`$中的部分样本组成一个集合，也就是$`A_k`$：  
+$`A_k=\{\omega\in\Omega, \mathbb{E}[X_{k+1}-X_{k} \mid \mathcal{H}_{k}] \geq 0\}`$
+所以，它的另一面是补集。  
+  
+拟鞅收敛：  
+对于非负随机变量序列$`\{X_k\geq0\}`$,满足:  
+$`\sum_{k=1}^\infty\mathbb{E}[(X_{k+1}-X_k)\mathbb{1}_{A_k}]\lt\infty`$  
+则随机变量序列收敛。  
+类似确定性非单调非负序列的收敛，增加上界约束，则下界也受约束，从而导向收敛。  
 
