@@ -219,3 +219,35 @@ $`x_{k+1} \leq x_k+\eta_k`$
 所以  
 $`\sum_{k=1}^\infty(x_{k+1}-x_k) \leq \sum_{k=1}^\infty(x_{k+1}-x_k)^+ \leq \sum_{k=1}^\infty \eta_k \lt \infty`$  
 根据前面的推导，非递减且有上界，得出$`x_k`$收敛。  
+
+#### 附录C：随机序列的收敛
+依赖鞅定理  
+
+##### 鞅定义
+对于随机变量组成的序列，两个条件：
+- 序列中的随机变量期望有界: $`\mathbb{E}[|X_k|] \lt \infty`$  
+- 序列下一个随机变量的期望等于当前随机变量值：$`\mathbb{E}[X_{k+1}|X_k,X_{k-1},X_{k-2}...X_1]=\mathbb{E}[X_{k+1}|\mathcal{H}_k]=X_k`$  
+
+第二个条件也就意味着随机变量的期望都是相等的，因为之前的推导：
+$`\mathbb{E}[\mathbb{E}[X|Y]]=E[X]`$  
+所以：  
+$`\mathbb{E}[\mathbb{E}[X_{k+1}|\mathcal{H}_k]]=E[X_{k+1}]=E[X_k]`$  
+  
+错误理解：鞅的条件表明序列中的随机变量是相互独立的。  
+因为看到$`E[X_{k+1}]=E[X_k]`$，下意识的认为随机变量之间是相互独立的。其实不然。  
+如果$`X,Y`$相互独立，有$`\mathbb{E}[X|Y]=\mathbb{E}[X]`$，但定义中的条件是$`\mathbb{E}[X|Y]=X`$，两者不同。  
+另一个理解方式，上文附录B已讨论，$`\mathbb{E}[X|Y]`$是个$`Y`$相关的随机变量，因此$`\mathbb{E}[X_{k+1}|\mathcal{H}_k]`$是个随机变量。或者说，$`\mathcal{H}_k`$圈定了样本范围，计算下一个随机变量$`X_{k+1}`$的期望，所以$`\mathbb{E}[X_{k+1}|\mathcal{H}_k]`$是随着$`\mathcal{H}_k`$的变化而变化的随机变量——另一个维度说明随机变量之间不是独立的，而是相关的。  
+>这会儿也get不到这性质有什么用  
+
+##### 上鞅
+对于随机变量组成的序列，两个条件：
+- 随机变量期望有上下界：$`\mathbb{E}[|X_k|]\lt\infty`$  
+- $`\mathbb{E}[X_{k+1}|\mathcal{H_k}]\geq X_k`$  
+
+跟鞅不同的就是$`\mathbb{E}[X_{k+1}|\mathcal{H_k}]\geq X_k`$，通过$`\mathbb{E}[\mathbb{E}[X|Y]]=E[X]`$也可以导出：  
+$`\mathbb{E}[X_{k+1}]\geq \mathbb{E}[X_{k}] \geq \mathbb{E}[X_{k-1}]...\geq \mathbb{E}[X_1]`$  
+也就是随机变量序列的期望是非递减的。  
+
+##### 下鞅
+和上鞅相反，随机变量序列的期望是非递增的。  
+
