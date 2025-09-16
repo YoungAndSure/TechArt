@@ -282,3 +282,22 @@ $`\sum_{k=1}^\infty\mathbb{E}[(X_{k+1}-X_k)\mathbb{1}_{A_k}]\lt\infty`$
 则随机变量序列收敛。  
 类似确定性非单调非负序列的收敛，增加上界约束，则下界也受约束，从而导向收敛。  
 
+#### Dvoretzky’s convergence theorem
+RM算法：
+序列$`w_{k+1}=w_k-a_k(g(w_k)+\eta_k)`$收敛到$`g(w)`$的根$`w^*`$,如果$`g(w),a_k,\eta_k`$满足约束。  
+这里Dvoretzky收敛是RM算法更高一层的理论，通过Dvoretzky收敛可以导出RM的收敛。  
+
+>这段条件过多了，理解有限，几乎是照葫芦画瓢重写一遍  
+
+Dvoretzky迭代公式：  
+$`\triangle_{k+1}=(1-\alpha_k)\triangle_k+\beta_k\eta_k`$  
+约束：  
+- $`\alpha_k`$:$`\sum_{k=1}^\infty \alpha_k = \infty, \sum_{k=1}^\infty \alpha_k^2 \lt \infty`$,同RM算法里说的，不能太慢也不能太快  
+- $`\beta_k`$:$`\sum_{k=1}^\infty \beta_k^2 \lt \infty`$  
+- $`\eta_k`$:$`\mathbb{E}[\eta_k|\mathcal{H}_k]=0,\mathbb{E}[\eta_k^2|\mathcal{H}_k]\leq C`$，$`\mathcal{H}_k=\{\triangle_k...\alpha_{k-1}...\beta_{k-1}\...\eta_{k-1}\}`$,总之，就是前面所有的随机变量  
+- 都是almost surely  
+
+单看这些条件也搞不清楚为什么要设这些条件，以及和之前讨论的联系。  
+- $`\alpha_k`$在RM中是独立的确定序列，在Dvoretzky中放宽为随机变量。包括$`\beta_k`$也是随机变量。意味着$`\alpha_k,\beta_k`$可以是和$`\mathcal{H}_k`$相关的随机变量，根据过去的值调整当前的步长。我理解，比如可以用一个神经网络来预估步长，最终也能收敛？  
+- 没有要求$`\beta_k=\infty`$，意味着即使$`\beta_k=0`$，满足其他条件，也可以收敛  
+
