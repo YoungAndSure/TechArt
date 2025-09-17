@@ -288,6 +288,8 @@ RM算法：
 这里Dvoretzky收敛是RM算法更高一层的理论，通过Dvoretzky收敛可以导出RM的收敛。  
 
 >这段条件过多了，理解有限，几乎是照葫芦画瓢重写一遍  
+后来，我问了一个问题：为什么是$`\mathbb{E}[\eta_k|\mathcal{H}_k]=0`$而不是$`\mathbb{E}[\eta_k]=0`$?打开了理解的大门。  
+所以，问：为什么不是，比问，为什么是，能获取到的信息要更多。  
 
 Dvoretzky迭代公式：  
 $`\triangle_{k+1}=(1-\alpha_k)\triangle_k+\beta_k\eta_k`$  
@@ -297,7 +299,13 @@ $`\triangle_{k+1}=(1-\alpha_k)\triangle_k+\beta_k\eta_k`$
 - $`\eta_k`$:$`\mathbb{E}[\eta_k|\mathcal{H}_k]=0,\mathbb{E}[\eta_k^2|\mathcal{H}_k]\leq C`$，$`\mathcal{H}_k=\{\triangle_k...\alpha_{k-1}...\beta_{k-1}\...\eta_{k-1}\}`$,总之，就是前面所有的随机变量  
 - 都是almost surely  
 
-单看这些条件也搞不清楚为什么要设这些条件，以及和之前讨论的联系。  
-- $`\alpha_k`$在RM中是独立的确定序列，在Dvoretzky中放宽为随机变量。包括$`\beta_k`$也是随机变量。意味着$`\alpha_k,\beta_k`$可以是和$`\mathcal{H}_k`$相关的随机变量，根据过去的值调整当前的步长。我理解，比如可以用一个神经网络来预估步长，最终也能收敛？  
-- 没有要求$`\beta_k=\infty`$，意味着即使$`\beta_k=0`$，满足其他条件，也可以收敛  
+满足约束时，$`\triangle_{k+1}\to 0`$ almost surely
+
+这条件太多，初看平平无奇，细看处处玄机：  
+- 发现和RM的差异没。RM是收敛到根，也就是$`w_k`$收敛到$`g(w_k)=0`$时的$`w^*`$，而Dvoretzky这里是收敛到$`\triangle_{k+1}=0`$。所以$`\triangle_{k+1}`$就是$`g(w)`$的更宽泛表示吗？不是，$`\triangle_{k+1}`$表示的是当前点到根的距离,也就是$`\omega_{k+1} - \omega^*`$。当$`\triangle_{k+1}`$收敛到0时，$`\omega`$收敛到$`\omega^*`$。可是迭代公式里没有$`\omega`$啊？初始值$`w_1`$是随机选的，是个随机变量，收敛后的值$`w^*`$也可以认为是一个随机变量，需要构造$`\triangle_k=\omega_1-\omega_k`$并分析其中的随机变量是否满足约束，来证明是否能收敛到根。  
+
+- 为什么是$`\mathbb{E}[\eta_k|\mathcal{H}_k]=0`$而不是$`\mathbb{E}[\eta_k]=0`$?需要细究一下两者的含义区别。先说什么时候两者相等呢？相互独立的时候，$`\mathbb{E}[\eta_k|\mathcal{H}_k]=\mathbb{E}[\eta_k]`$，也就是当前的噪声$`\eta_k`$和过去的随机变量完全无关。所以$`\mathbb{E}[\eta_k|\mathcal{H}_k]=0`$比$`\mathbb{E}[\eta_k]=0`$的条件要宽松。前者没有要求完全独立，但独立也包含其中。独立是很严苛的条件，要$`\eta_k`$和过去的所有随机变量都无关是很难的。这里的条件是，可以相关，但期望是0，方差有界。含义就是：过去的随机变量对当前的噪声可以相关，可以有正的影响，也可以有负的影响，但总体归0，等于没有影响。否则，如果期望是正的或者是负的，就会导致过去对当前的噪声持续有影响，随着叠加，影响越来越大，最终难以收敛。  
+
+- 既然$`\eta_k`$代表噪声，那$`\beta_k`$是干嘛的？类似$`\alpha_k`$对$`\triangle_k`$的调控，$`\beta_k`$是对噪声$`\eta_k`$的调控。它可以是一个确定性序列，也可以是依赖$`\mathcal{H}_k`$的随机变量。它跟$`\alpha_k`$不一样的一点是，不要求它$`\sum_{k=1}^\infty \beta_k=\infty`$。为啥呢？$`\sum_{k=1}^\infty \alpha_k=\infty`$，意味着当$`k\to\infty`$时，$`\alpha_k`$没有衰减到0，还能对$`\triangle_k`$产生作用。如果$`\alpha_k`$在某个点衰减到0，就意味着必须在这个点之前$`\triangle_k`$收敛到0才行，因为再之后$`\alpha_k`$不起作用了（这个在RM算法中也有证明）。但对于噪声$`\eta_k`$来说，肯定希望它越早衰减到0越好，如果不行，那也要限制它的增长范围。所以没有限制$`\sum_{k=1}^\infty \beta_k = \infty`$，只是限制了$`\sum_{k=1}^\infty \beta_k^2 \lt \infty`$。
+
 
