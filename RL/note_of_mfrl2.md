@@ -308,4 +308,79 @@ $`\triangle_{k+1}=(1-\alpha_k)\triangle_k+\beta_k\eta_k`$
 
 - 既然$`\eta_k`$代表噪声，那$`\beta_k`$是干嘛的？类似$`\alpha_k`$对$`\triangle_k`$的调控，$`\beta_k`$是对噪声$`\eta_k`$的调控。它可以是一个确定性序列，也可以是依赖$`\mathcal{H}_k`$的随机变量。它跟$`\alpha_k`$不一样的一点是，不要求它$`\sum_{k=1}^\infty \beta_k=\infty`$。为啥呢？$`\sum_{k=1}^\infty \alpha_k=\infty`$，意味着当$`k\to\infty`$时，$`\alpha_k`$没有衰减到0，还能对$`\triangle_k`$产生作用。如果$`\alpha_k`$在某个点衰减到0，就意味着必须在这个点之前$`\triangle_k`$收敛到0才行，因为再之后$`\alpha_k`$不起作用了（这个在RM算法中也有证明）。但对于噪声$`\eta_k`$来说，肯定希望它越早衰减到0越好，如果不行，那也要限制它的增长范围。所以没有限制$`\sum_{k=1}^\infty \beta_k = \infty`$，只是限制了$`\sum_{k=1}^\infty \beta_k^2 \lt \infty`$。
 
+#### Dvoretzky’s convergence theorem 证明
+证明方法类似附录C里的收敛证明思路，通过构造相邻序列差，并约束差合的期望，来证明收敛。  
+假设$`h_k=\triangle_k^2`$,则  
+```math
+\begin{align}
+h_{k+1}-h_k&=\triangle_{k+1}^2-\triangle_k^2\\  
+&=(\triangle_{k+1}+\triangle_k)(\triangle_{k+1}-\triangle_k)\\
+&=[(1-\alpha_k)\triangle_k+\beta_k\eta_k+\triangle_k][(1-\alpha_k)\triangle_k+\beta_k\eta_k-\triangle_k]\\
+&=[(2-\alpha_k)\triangle_k+\beta_k\eta_k][-\alpha_k\triangle_k+\beta_k\eta_k]\\
+&=-\alpha_k(2-\alpha_k)\triangle_k^2-\alpha_k\beta_k\eta_k\triangle_k+(2-\alpha_k)\beta_k\eta_k\triangle_k+\beta_k^2\eta_k^2\\  
+&=-\alpha_k(2-\alpha_k)\triangle_k^2+2(1-\alpha_k)\beta_k\eta_k\triangle_k+\beta_k^2\eta_k^2
+\end{align}
+```
+加上期望：  
+```math
+\begin{align}
+\mathbb{E}[h_{k+1}-h_k|\mathcal{H}_k]&=\mathbb{E}[-\alpha_k(2-\alpha_k)\triangle_k^2|\mathcal{H}_k]+\mathbb{E}[2(1-\alpha_k)\beta_k\eta_k\triangle_k|\mathcal{H}_k]+\mathbb{E}[\beta_k^2\eta_k^2|\mathcal{H}_k]
+\end{align}
+```
+分析：
+- $`\triangle_k`$包含在$`\mathcal{H}_k`$里，所以可以移出来  
+- $`\alpha_k,\beta_k`$一般是$`\triangle_k`$函数，包含在$`\mathcal{H}_k`$里，或确定性序列，和$`\mathcal{H}_k`$无关，所以也可以移出来。  
+
+所以：  
+```math
+\begin{align}
+\mathbb{E}[h_{k+1}-h_k|\mathcal{H}_k]
+&=-\alpha_k(2-\alpha_k)\triangle_k^2
++2(1-\alpha_k)\beta_k\triangle_k\mathbb{E}[\eta_k|\mathcal{H}_k]
++\beta_k^2\mathbb{E}[\eta_k^2|\mathcal{H}_k]
+\end{align}
+```
+这么看，说白了只有$`\eta_k`$这个噪声是不确定因素，其他的其实都可以看作可控的变量，所以可以移出来。  
+
+其中，条件$`\mathbb{E}[\eta_k|\mathcal{H}_k]=0`$是已经假定的，所以可以减掉一项：  
+```math
+\begin{align}
+\mathbb{E}[h_{k+1}-h_k|\mathcal{H}_k]
+&=\beta_k^2\mathbb{E}[\eta_k^2|\mathcal{H}_k]-\alpha_k(2-\alpha_k)\triangle_k^2
+\end{align}
+```
+其中，条件$`\mathbb{E}[\eta_k^2|\mathcal{H}_k]\leq C`$是已经假定的，所以：  
+```math
+\beta_k^2\mathbb{E}[\eta_k^2|\mathcal{H}_k]\leq \beta_k^2C
+```
+又来一个假定：由于$`\sum_{k=1}^\infty \alpha_k^2 \lt \infty`$,所以$`\alpha_k \to 0`$，所以“不失一般性”，$`\alpha_k\leq 1`$。  
+所以：  
+```math
+\begin{align}
+-\alpha_k(2-\alpha_k)\triangle_k^2 &\lt 0\\
+\beta_k^2\mathbb{E}[\eta_k^2|\mathcal{H}_k]-\alpha_k(2-\alpha_k)\triangle_k^2 &\leq \beta_k^2C\\
+\mathbb{E}[h_{k+1}-h_k|\mathcal{H}_k]&\leq \beta_k^2C\\
+\sum_{k=1}^\infty\mathbb{E}[h_{k+1}-h_k|\mathcal{H}_k]&\leq \sum_{k=1}^\infty\beta_k^2C \lt \infty
+\end{align}
+```
+
+所以对于：
+```math
+\begin{align}
+\sum_{k=1}^\infty\alpha_k(2-\alpha_k)\triangle_k^2
+&=\sum_{k=1}^\infty\beta_k^2\mathbb{E}[\eta_k^2|\mathcal{H}_k]-\sum_{k=1}^\infty\mathbb{E}[h_{k+1}-h_k|\mathcal{H}_k]
+\end{align}
+```
+等式右边两项都有界，所以左边也有界：  
+```math
+\sum_{k=1}^\infty\alpha_k(2-\alpha_k)\triangle_k^2 \lt \infty
+```
+且：
+```math
+\sum_{k=1}^\infty\alpha_k(2-\alpha_k)\triangle_k^2 \geq \sum_{k=1}^\infty\alpha_k\triangle_k^2 \geq 0
+```
+所以$`\sum_{k=1}^\infty\alpha_k\triangle_k^2`$有界。  
+又因为$`\sum_{k=1}^\infty\alpha_k = \infty`$,所以必须有$`\triangle_k \to 0`$。
+>这证明证的，各种假设。不是专家压根搞不清楚哪些是合理的，只能大概领略一下了。  
+看这个证明过程，感觉是现有一个大概假设形式，然后去推导，推导最后必须满足的作为条件约束。  
 
