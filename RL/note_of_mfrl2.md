@@ -382,5 +382,46 @@ h_{k+1}-h_k&=\triangle_{k+1}^2-\triangle_k^2\\
 所以$`\sum_{k=1}^\infty\alpha_k\triangle_k^2`$有界。  
 又因为$`\sum_{k=1}^\infty\alpha_k = \infty`$,所以必须有$`\triangle_k \to 0`$。
 >这证明证的，各种假设。不是专家压根搞不清楚哪些是合理的，只能大概领略一下了。  
-看这个证明过程，感觉是现有一个大概假设形式，然后去推导，推导最后必须满足的作为条件约束。  
+看这个证明过程，感觉是先有一个大概假设形式，然后去推导，推导最后必须满足的作为条件约束。  
+
+#### Dvoretzky应用到均值估计  
+回顾一下，均值估计是说，有一个随机变量$`X`$，现在得到一个采样序列$`x_1,x_2...x_k`$,现在要求它的期望$`\mathbb{E}[X]`$。一种是全部加和求平均值，一种是迭代式求解，方法是：  
+```math
+w_{k+1}=w_k + \alpha_k(x_k-w_k)
+```
+其中$`\alpha_k=\frac{1}{k}`$,满足$`\sum_{k=1}^\infty \alpha_k=\infty, \sum_{k=1}^\infty \alpha_k^2\lt\infty`$。  
+现在要证明，以上迭代法可以收敛到$`\mathbb{E}[X]=w^*`$。  
+上边也说了，Dvoretzky算法证明的是某点到目标点的收敛性，所以证明要先构造当前点到目标点的差，作为$`\triangle_k`$,于是：  
+```math
+\begin{align}
+w_{k+1}-w^*&=w_k -w^* + \alpha_k(x_k-w^*+w^*-w_k)\\
+w_{k+1}-w^*&=(w_k -w^*) + \alpha_k(x_k-w^*-(w_k-w^*))\\
+\triangle_{k+1}&=\triangle_k+\alpha_k(x_k-w^*-\triangle_k)\\
+\triangle_{k+1}&=(1-\alpha_k)\triangle_k+\alpha_k(x_k-w^*)
+\end{align}
+```
+变形为Dvoretzky的形式，其中$`\alpha_k(x_k-w^*)`$部分的$`\alpha_k`$相当于标准公式中的$`\beta_k`$，$`x_k-w^*`$相当于标准公式中的$`\eta_k`$。  
+$`\alpha_k`$无需赘言，完全满足Dvoretzky中的条件。$`\beta_k=\alpha_k`$也满足$`\sum_{k=1}^\infty \beta_k^2 \lt \infty`$的条件。  
+然后看$`\eta_k`$是否满足条件：
+```math
+\begin{align}
+\mathbb{E}[\eta_k|\mathcal{H}_k]&=\mathbb{E}[x_k-w^*|\mathcal{H}_k]\\
+&=\mathbb{E}[x_k|\mathcal{H}_k]-\mathbb{E}[w^*|\mathcal{H}_k]\\
+&=w^* - w^*\\
+&=0
+\end{align}
+```
+其中$`x_k`$的期望当然是$`w^*`$，$`w^*`$是个实数所以期望还是$`w^*`$。  
+```math
+\begin{align}
+\mathbb{E}[\eta_k^2|\mathcal{H}_k]&=\mathbb{E}[(x_k-w^*)^2|\mathcal{H}_k]\\
+&=\mathbb{E}[(x_k^2+(w^*)^2-2(w^*)x_k)|\mathcal{H}_k]\\
+&=\mathbb{E}[x_k^2|\mathcal{H}_k]+\mathbb{E}[(w^*)^2|\mathcal{H}_k]-\mathbb{E}[2(w^*)x_k|\mathcal{H}_k]\\
+&=\mathbb{E}[x_k^2|\mathcal{H}_k]+(w^*)^2-2(w^*)\mathbb{E}[x_k|\mathcal{H}_k]\\
+&=\mathbb{E}[x_k^2|\mathcal{H}_k]+(w^*)^2-2(w^*)^2\\
+&=\mathbb{E}[x_k^2|\mathcal{H}_k]-(w^*)^2
+\end{align}
+```
+如果$`\mathbb{E}[x_k^2|\mathcal{H}_k]`$有界，则$`\mathbb{E}[\eta_k^2|\mathcal{H}_k]`$有界。  
+综上，根据Dvoretzky算法，如果$`\mathbb{E}[x_k^2|\mathcal{H}_k]`$有界，通过$`w_{k+1}=w_k + \alpha_k(x_k-w_k)`$可以收敛到$`\mathbb{E}[X]`$。  
 
