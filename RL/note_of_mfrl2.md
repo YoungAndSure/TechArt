@@ -423,5 +423,39 @@ $`\alpha_k`$无需赘言，完全满足Dvoretzky中的条件。$`\beta_k=\alpha_
 \end{align}
 ```
 如果$`\mathbb{E}[x_k^2|\mathcal{H}_k]`$有界，则$`\mathbb{E}[\eta_k^2|\mathcal{H}_k]`$有界。  
-综上，根据Dvoretzky算法，如果$`\mathbb{E}[x_k^2|\mathcal{H}_k]`$有界，通过$`w_{k+1}=w_k + \alpha_k(x_k-w_k)`$可以收敛到$`\mathbb{E}[X]`$。  
+综上，根据Dvoretzky定理，如果$`\mathbb{E}[x_k^2|\mathcal{H}_k]`$有界，通过$`w_{k+1}=w_k + \alpha_k(x_k-w_k)`$可以收敛到$`\mathbb{E}[X]`$。  
+
+#### Dvoretzky定理证明RM算法  
+回顾下RM算法。  
+RM算法是说，有个未知函数$`g(w)`$，现在只能观察到带噪声的结果序列$`\tilde{g}(w_k)=g(w_k)+\eta_k`$，怎么根据这个$`\tilde{g}(w_k)`$来找到$`g(w)=0`$的解$`w^*`$。RM算法说：  
+```math
+w_{k+1}=w_k+\alpha_k\tilde{g}(w_k)
+```
+通过不断迭代，就能找到$`w^*`$，其中$`\alpha_k`$满足$`\sum_{k=1}^\infty \alpha_k=\infty,\sum_{k=1}^\infty \alpha_k^2\lt\infty`$。  
+现在通过Dvoretzky定理证明RM算法会收敛。  
+同样的，构造从当前点到目标点的距离：  
+```math
+\begin{align}
+w_{k+1}-w^*&=w_k-w^*+\alpha_k\tilde{g}(w_k)\\
+w_{k+1}-w^*&=w_k-w^*+\alpha_k(g(w_k)+\eta_k)\\
+&由于g(w^*)=0\\
+w_{k+1}-w^*&=w_k-w^*+\alpha_k(g(w_k)-g(w^*)+\eta_k)\\
+\triangle_{k+1}&=\triangle_k+\alpha_k(g(w_k)-g(w^*)+\eta_k)\\
+&由于g(w_k)-g(w^*)=\nabla g(w')(w_k-w^*),w'\in[w_k, w^*]\\
+\triangle_{k+1}&=\triangle_k+\alpha_k(\nabla g(w')(w_k-w^*)+\eta_k)\\
+\triangle_{k+1}&=\triangle_k+\alpha_k(\nabla g(w')\triangle_k+\eta_k)\\
+\triangle_{k+1}&=(1+\alpha_k\nabla g(w'))\triangle_k+\alpha_k\eta_k
+\end{align}
+```
+RM的三个约束：  
+(a) $`0<c_1<\nabla_w g(w)<c_2`$  
+(b)$`\sum_{k=1}^\infty a_k > \infty`$且$`\sum_{k=1}^\infty a_k^2 < \infty`$(就是上式中的$`\alpha_k`$)  
+(c)$`\mathbb{E}(\eta_k|\mathcal{H}_k)=0`$且$`\mathbb{E}(\eta_k^2|\mathcal{H}_k)<\infty`$  
+根据约束可以得出：  
+- 因为$`0<c_1<\nabla_w g(w)<c_2`$有界，所以$`\alpha_k\nabla g(w')`$性质和$`\alpha_k`$一致，根据RM条件(b),$`\alpha_k\nabla g(w')`$满足Dvoretzky条件。  
+- RM中$`\alpha_k`$有界，满足Dvoretzky中$`\beta_k`$的条件  
+- RM条件(c)对噪声的约束和Dvoretzky一致  
+
+因此，根据Dvoretzky定理，RM算法收敛。  
+
 
