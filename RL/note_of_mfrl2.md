@@ -534,3 +534,29 @@ n=2的时候，$`\mathcal{D}`$是二维的，是个平面。
 因为梯度下降法是一种不断迭代找最小值的方法，如果定义域不连续，意味着在迭代过程中，可能落入定义域之外无意义的点，导致无法继续迭代，也就无法找最小值了。  
 所以，为了应用梯度下降法，一定要是凸函数，而凸函数的定义域一定要连续，也就是凸集。  
 
+##### 凸函数判定条件
+```math
+f(y)-f(x)\geq \nabla f(x)^T(y-x), for\ any\ x,y\in\mathcal{D}
+```
+梯度可以认为是另外一个函数，这个函数是f在x点的梯度。不等式右边就是梯度函数从x到y的变化量，左边是f从x到y的变化量。不等式说的是f的增长量要大于梯度函数的增长量。  
+这意味着，f的梯度是在不断增长的。也就意味着二阶梯度是正的：
+```math
+\nabla^2 f(x) \succeq 0, x\in\mathcal{D}
+```  
+其中$`\succeq`$表示半正定，和正定$`\succ`$的区别，就是包含等于0的情况。  
+说明两点：
+- 以上讨论的自变量都是向量，在多维空间表示多个方向。这个正定/半正定是针对所有梯度方向的，也就是在x点的每个维度方向的二阶梯度都是大于等于0的。  
+- 二阶梯度等于0的含义同等于凸函数定义中的等号。  
+
+对向量来说，二阶梯度用Hessian矩阵表示：
+```math
+H(f) = \begin{bmatrix}
+\dfrac{\partial^2 f}{\partial x_1^2} & \dfrac{\partial^2 f}{\partial x_1 \partial x_2} & \cdots & \dfrac{\partial^2 f}{\partial x_1 \partial x_n} \\
+\dfrac{\partial^2 f}{\partial x_2 \partial x_1} & \dfrac{\partial^2 f}{\partial x_2^2} & \cdots & \dfrac{\partial^2 f}{\partial x_2 \partial x_n} \\
+\vdots & \vdots & \ddots & \vdots \\
+\dfrac{\partial^2 f}{\partial x_n \partial x_1} & \dfrac{\partial^2 f}{\partial x_n \partial x_2} & \cdots & \dfrac{\partial^2 f}{\partial x_n^2}
+\end{bmatrix}
+```
+
+
+
