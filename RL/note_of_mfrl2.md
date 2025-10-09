@@ -631,7 +631,7 @@ g(x,y)=x^2+4xy+4y^2
 可以看到，是秩亏的。  
 
 
-#### 梯度下降算法
+##### 梯度下降算法
 假设有一个函数$`f(x)`$，要找它的最小值$`\min_x f(x)`$，其中$`x\in\mathcal{D}\in\mathbb{R}^n`$，算法：  
 ```math
 x_{k+1} = x_k-\alpha_k \nabla f(x)
