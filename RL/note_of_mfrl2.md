@@ -557,6 +557,83 @@ H(f) = \begin{bmatrix}
 \dfrac{\partial^2 f}{\partial x_n \partial x_1} & \dfrac{\partial^2 f}{\partial x_n \partial x_2} & \cdots & \dfrac{\partial^2 f}{\partial x_n^2}
 \end{bmatrix}
 ```
+举个具体例子，判定
+```math
+g(x,y)=x^2+4xy+4y^2
+```  
+是凸函数。  
+一阶梯度向量：  
+```math
+[2x+4y, 4y+8y]
+```
+Hessian矩阵：
+```math
+\nabla^{2} g = \begin{bmatrix}
+2 & 4 \\
+4 & 8
+\end{bmatrix}
+```
+计算特征值$`\mathrm{det}(\nabla^2g-\lambda I)=0`$:  
+```math
+\nabla^2g-\lambda I = \begin{bmatrix}
+2-\lambda & 4 \\
+4 & 8-\lambda
+\end{bmatrix}
+```
+```math
+\mathrm{det}(\nabla^2g-\lambda I)=(2-\lambda)(8-\lambda)-4*4=0
+```
+解一元二次方程，得两个解$`\lambda_1=0, \lambda_2=10`$,均大于0。  
+因此$`g(x,y)=x^2+4xy+4y^2`$是凸函数。  
+![图片](./images/convex_example.png)
+如图，很凸。  
+
+##### 凸的程度
+凸意味着能找到一个最小值点，也就是有解。但有多凸指导了$`\alpha_k`$的取值，也就是如何快速找到解。  
+通过分析Hessian矩阵，可以获取函数凸的程度。  
+书里给了几个case：
+- 如果Hessian矩阵在某点秩亏，说明在这点上有方向是平的，也就不是强凸。上例的$`g(x,y)=x^2+4xy+4y^2`$的Hessian矩阵就是秩亏的，图形中可以看到，函数像山谷一样，在谷底某方向的斜率是0，而不是像碗一样各个方向都是凸的。这种就是弱凸。  
+- 如果Hessian矩阵最小奇异值是正的，而且比较大，则函数在点周围是卷曲的，是强凸（也就是各个方向上斜率都大于0）
+  
+通过Hessian矩阵的下界，可以判定函数是否是强凸的；通过上界，可以判定函数是不是无限凸的。  
+  
+**下界：存在$`\ell\gt 0`$使得$`\nabla^{2} f(x) \succeq \ell I_{n}`$。则$`f(x)是强凸的`$**  
+
+还以$`g(x,y)=x^2+4xy+4y^2`$为例，  
+Hessian矩阵：
+```math
+\nabla^{2} g = \begin{bmatrix}
+2 & 4 \\
+4 & 8
+\end{bmatrix}
+```
+证明$`\nabla^{2} f(x) \succeq \ell I_{n}`$等价于证明$`\nabla^{2} f(x) - \ell I_{n} \succeq 0`$  
+之前已经求得$`\nabla^{2} f(x)`$的特征值$`\lambda_1=0,\lambda_2=10`$，  
+$`\nabla^{2} f(x) - \ell I_{n}`$的特征值$`\mu`$可以直接得出，为$`\mu_1=0-\ell,\mu_2=10-\ell`$  
+不存在$`\ell\gt0`$使得$`\mu_1,\mu_2 \geq 0`$。  
+因此$`g(x,y)=x^2+4xy+4y^2`$不是强凸的。  
+从图形上也可以看出来，在谷底并不是每个方向都是凸的。  
 
 
+
+
+###### 如果Hessian矩阵在某点接近秩亏，那么点周围是平坦的，表现出弱凸。  
+比如函数：  
+```math
+g(x,y)=x^2+4xy+4y^2
+```  
+
+可以看到，是秩亏的。  
+
+
+#### 梯度下降算法
+假设有一个函数$`f(x)`$，要找它的最小值$`\min_x f(x)`$，其中$`x\in\mathcal{D}\in\mathbb{R}^n`$，算法：  
+```math
+x_{k+1} = x_k-\alpha_k \nabla f(x)
+```
+这个我感觉是不是无需赘言了[狗头]。
+- 迭代方向。梯度指向当前点增加最快的方向。因此取负之后变为减小最快的方向。因此$`x_k`$向着降低$`f(x_k)`$最快的方向迭代。  
+- 变化幅度。由$`\alpha_k`$和$`\nabla f(x_k)`$共同决定。
+  - $`\nabla f(x_k)`$。希望越靠近最优点$`x^*`$越小，以防止越过最优点。
+  - $`\alpha_k`$。需要根据f凸的程度选择。
 
