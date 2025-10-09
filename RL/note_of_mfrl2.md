@@ -646,4 +646,43 @@ x_{k+1} = x_k-\alpha_k \nabla f(x)
 暂略
 
 #### 随机梯度下降
-
+假设有这么一个函数:$`f(w,X)`$，受两个变量影响，一个是可调参数$`w`$，一个是随机变量$`X`$。想要找一个$`w`$，使函数取值最小。
+由于$`X`$是个随机变量，因此需要转化为期望，函数变为$`\mathrm{E}[f(w,X)]`$。  
+问题变为寻找一个$`w`$使$`\mathrm{E}[f(w,X)]`$最小：  
+```math
+\min J_w(w)=\mathrm{E}[f(w,X)]
+```
+这里其实有两个问题要解决，一个是怎么获取随机变量期望的问题，一个是怎么找最小值的问题。  
+先说怎么找最小值的问题，可以通过上面的梯度下降法解决：
+```math
+w_{k+1} = w_k-\alpha_k \nabla_w \mathrm{E}[f(w_k,X)]
+```
+由于期望的线性性质，$`\nabla_w \mathrm{E}[f(w,X)]=\mathrm{E}[\nabla_w f(w,X)]`$，因此：  
+```math
+w_{k+1} = w_k-\alpha_k \mathrm{E}[\nabla_k f(w_k,X)]
+```
+然后是怎么获取随机变量期望的问题。  
+一种是用蒙特卡洛法，独立采样，用采样值代替理论期望：  
+$`\mathrm{E}[\nabla_k f(w_k,X)]\approx \frac{1}{n}\sum_{i=1}^n \nabla_k f(w_k,x_i)`$  
+在每次迭代时(注意公式里有$`k`$)进行n次采样，获取样本，求均值，代替当前迭代随机变量的期望：  
+```math
+w_{k+1} = w_k-\alpha_k \frac{1}{n}\sum_{i=1}^n \nabla_k f(w_k,x_i)
+```
+显然，这种方法效率很低。  
+另一种方法是，每次迭代采样一个样本，当做随机变量的期望：
+```math
+w_{k+1} = w_k-\alpha_k \nabla_k f(w_k,x_k)
+```
+这就是随机梯度下降。和梯度下降的区别是，它的随机变量期望是随机采样获取的。  
+但这么用$`\nabla_k f(w_k,x_k)`$替换$`\mathrm{E}[\nabla_k f(w_k,X)]`$，函数还会收敛吗？毕竟他们的值不同。  
+实际上，虽然单词迭代时他们的值不同，但多次迭代过程中，其期望是0，因此还是会收敛的。  
+假设他们的差是$`\nabla_k f(w_k,x_k) - \mathrm{E}[\nabla_k f(w_k,X)]=\eta_k`$,则：
+```math
+\begin{align}
+w_{k+1} &= w_k-\alpha_k (\mathrm{E}[\nabla_k f(w_k,X)] + \eta_k)\\
+&=w_k-\alpha_k \mathrm{E}[\nabla_k f(w_k,X)] - \alpha_k\eta_k
+\end{align}
+```
+和标准的梯度下降法只差一个$`\alpha_k\eta_k`$,而:  
+$`\mathrm{E}[\eta_k]=\mathrm{E}[\nabla_k f(w_k,x_k) - \mathrm{E}[\nabla_k f(w_k,X)]]=\mathrm{E}[\nabla_k f(w_k,x_k)]-\mathrm{E}[\nabla_k f(w_k,X)]=0`$  
+因此，在多次迭代中，不会影响函数的收敛。  
