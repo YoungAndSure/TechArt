@@ -779,4 +779,44 @@ w_{k+1} = w_k - \alpha_k \nabla_w f(w,x_i)
 由于样本是随机采样获取到的，因此，同一条样本可能进入迭代多次。  
 这不就是现代模型训练的场景吗？  
 
+##### SGD,BGD,MBGD
+- SGD,每次迭代使用随机抽取一条样本
+```math
+w_{k+1}=w_k-\alpha_k \nabla_w f(w_k, x_k)
+```
+- BGD,每次迭代使用所有样本
+```math
+w_{k+1}=w_k-\alpha_k \frac{1}{n}\sum_{i=1}^n \nabla_w f(w_k, x_i)
+```
+- MBGD,每次迭代随机抽取m条样本，其中$`\mathcal{I}_k`$是第k次迭代通过独立同分布方式抽取的m条样本。
+```math
+w_{k+1}=w_k-\alpha_k \frac{1}{m}\sum_{j=\mathcal{I}_k} \nabla_w f(w_k, x_j)
+```
+一些说明：  
+- MBGD收敛比SDG快，因为SDG每次迭代只用一条样本，随机性强，而MGDB使用多条样本平均，减弱了随机性。  
+- MBGD中如果m=n，MGDB也不等价于BGD。因为BGD每次迭代用全体样本，每条样本只出现一次。而MGDB的n条样本是随机抽取出来的，同一条样本可能出现多次。所以两者并不等价。  
+
+**用于均值估计**  
+将以上几种方法用于均值估计。假设有一个数据集$`\{{x_i}\}_{i=1}^n`$,要通过迭代获取均值$`\frac{1}{n}\sum_{i=1}^n x_i`$,
+构造优化函数：  
+```math
+\min J(w) = \frac{1}{2n}\sum_{i=1}^n ||w-x_i||^2
+```
+一阶导数：  
+```math
+ \nabla_w J(w) = \frac{1}{n}\sum_{i=1}^n (w-x_i)=w - \frac{1}{n}\sum_{i=1}^n x_i
+```
+当一阶导数是0时得到解$`w^*=\frac{1}{n}\sum_{i=1}^n x_i`$。  
+- SGD:  
+```math
+w_{k+1}=w_k-\alpha_k (w_k-x_k)
+```
+- BGD:  
+```math
+w_{k+1}=w_k-\alpha_k \frac{1}{n} \sum_{i=1}^n (w_k-x_i) = w_k - \alpha_k(w_k - \bar{x})
+```
+- MBGD:  
+```math
+w_{k+1}=w_k-\alpha_k \frac{1}{m} \sum_{j=\mathcal{I_k}} (w_k-x_j)=w_k - \alpha_k(w_k - \bar{x}_k)
+```
 
