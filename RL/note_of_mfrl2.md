@@ -652,7 +652,7 @@ x_{k+1} = x_k-\alpha_k \nabla f(x)
 ```math
 \min J_w(w)=\mathrm{E}[f(w,X)]
 ```
-> 这个公式的构造有讲究，有一个疑问，为什么是$`\mathrm{E}[f(w,X)]`$而不是$`f(w,\mathrm{E}[X])`$?可以用一个一次方程简单理解。比如$`f(w,X)=wX`$,我们想通过对随机变量X做拟合，来获取一个w，从而来新的X的时候，可以通过w预估$`f(w,X)`$的值。如果构造的函数是$`\mathrm{E}[f(w,X)]`$，意味着用w来拟合X，让$`f(w,X)`$的期望最低，这时w可以"感受"到X的变化从而做出调整。如果构造的函数是$`f(w,\mathrm{E}[X])`$,意味着w"感受"到的是$`\mathrm{E}[X]`$的变化。$`\mathrm{E}[X]`$是所有$`X`$取值的均值，
+> 这个公式的构造有讲究。有一个疑问，为什么是$`\mathrm{E}[f(w,X)]`$而不是$`f(w,\mathrm{E}[X])`$?可以用一个一次方程简单理解。比如$`f(w,X)=wX`$,我们想通过对随机变量X做拟合，来获取一个w，从而来新的X的时候，可以通过w预估$`f(w,X)`$的值。如果构造的函数是$`\mathrm{E}[f(w,X)]`$，意味着用w来拟合X，让$`f(w,X)`$的期望最低，这时w可以"感受"到X的变化从而做出调整。如果构造的函数是$`f(w,\mathrm{E}[X])`$,意味着w"感受"到的是$`\mathrm{E}[X]`$的变化。$`\mathrm{E}[X]`$是所有$`X`$取值的均值，不能反应X的分布，也就没法预测新的X的值。
 
 这里其实有两个问题要解决，一个是怎么获取随机变量期望的问题，一个是怎么找最小值的问题。  
 先说怎么找最小值的问题，可以通过上面的梯度下降法解决：
@@ -693,5 +693,37 @@ $`\mathrm{E}[\eta_k]=\mathrm{E}[\nabla_k f(w_k,x_k) - \mathrm{E}[\nabla_k f(w_k,
 均值估计是说有一个随机变量$`X`$，怎么通过迭代法找到它的期望$`\mathrm{E}[X]`$。代入到随机梯度下降算法，需要找个函数$`f(w,X)`$，它的最小值就是$`\mathrm{E}[X]`$，然后用随机梯度下降法找到最小值。  
 这个函数的构造挺有意思。我们要找到一个函数，满足：1. 凸函数，2. 最小值点$`w=\mathrm{E}[X]`$。
 ```math
+\mathrm{E}[f(w,X)]=\mathrm{E}[\frac{1}{2}||w-X||^2]
+```
+一阶导数：
+```math
+\mathrm{E}[\nabla_w f(w,X)]=\mathrm{E}[w-X]=w-\mathrm{E}[X]
+```
+二阶导数：
+```math
+\mathrm{E}[\nabla_w^2 f(w,X)]=1
+```
+因此，是凸函数，且最小值点在$`w=\mathrm{E}[X]`$  
+也就是解：
+```math
 \mathrm{min}J(w)=\mathrm{E}[\frac{1}{2}||w-X||^2]
 ```
+根据梯度下降算法：  
+```math
+\begin{align}
+w_{k+1} &= w_k - \alpha_k \mathrm{E}[\nabla_w J(w)]\\
+&= w_k - \alpha_k (w_k-\mathrm{E}[X])\\
+&= (1-\alpha_k)w_k-w_k\mathrm{E}[X]
+\end{align}
+```
+也就是每次迭代要求$`\mathrm{E}[X]`$。  
+根据随机梯度下降算法：  
+```math
+\begin{align}
+w_{k+1} &= w_k - \alpha_k \nabla_{w_k} J(w_k)\\
+&= w_k - \alpha_k (w_k - x_k)
+\end{align}
+```
+公式和前面多次证明的相同。  
+
+
