@@ -726,4 +726,38 @@ w_{k+1} &= w_k - \alpha_k \nabla_{w_k} J(w_k)\\
 ```
 公式和前面多次证明的相同。  
 
+##### 收敛模式
+随机梯度下降用随机抽样的样本值代替样本期望，是否还能收敛到最小值？结论是随机的扰动随着和最小值的距离减小而增加。  
+梯度下降中的梯度为：$`\mathrm{E}[\nabla_w f(w,X)]`$，随机梯度下降中的随机样本值为：$`f(w_k,x_k)`$  
+相对误差为：  
+```math
+\delta_k = \frac{|f(w_k,x_k)-\mathrm{E}[\nabla_w f(w,X)]|}{|\mathrm{E}[\nabla_w f(w,X)]|}
+```
+在最小值点$`w^*`$，$`\mathrm{E}[\nabla_w f(w^*,X)]=0`$，因此：  
+```math
+\begin{align}
+\delta_k &= \frac{|f(w_k,x_k)-\mathrm{E}[\nabla_w f(w,X)]|}{|\mathrm{E}[\nabla_w f(w,X)]|} \\
+&= \frac{|f(w_k,x_k)-\mathrm{E}[\nabla_w f(w,X)]|}{|\mathrm{E}[\nabla_w f(w,X)]-\mathrm{E}[\nabla_w f(w^*,X)]|}\\
+&= \frac{|f(w_k,x_k)-\mathrm{E}[\nabla_w f(w,X)]|}{|\mathrm{E}[\nabla_w f(w,X)-\nabla_w f(w^*,X)]|}
+\end{align}
+```
+根据中值定理，$`\nabla_w f(w,X)-\nabla_w f(w^*,X) = \nabla_{w}^2 f(\tilde{w_k},X)(w_k-w^*)`$,其中$`\tilde{w_k} \in (w_k, w^*)`$。  
+因此：  
+```math
+\begin{align}
+\delta_k &= \frac{|f(w_k,x_k)-\mathrm{E}[\nabla_w f(w,X)]|}{|\mathrm{E}[\nabla_w f(w,X)]|} \\
+&= \frac{|f(w_k,x_k)-\mathrm{E}[\nabla_w f(w,X)]|}{|\mathrm{E}[\nabla_{w}^2 f(\tilde{w_k},X)(w_k-w^*)]|}
+\end{align}
+```
+由于$`f`$是强凸的，所以$`\nabla_{w}^2 f(w,X) \geq c \gt 0`$。  
+因此分母$`|\mathrm{E}[\nabla_{w}^2 f(\tilde{w_k},X)(w_k-w^*)]| \geq c|w_k-w^*|`$,因此  
+```math
+\begin{align}
+\delta_k 
+&= \frac{|f(w_k,x_k)-\mathrm{E}[\nabla_w f(w,X)]|}{|\mathrm{E}[\nabla_{w}^2 f(\tilde{w_k},X)(w_k-w^*)]|}\\
+&\leq \frac{|f(w_k,x_k)-\mathrm{E}[\nabla_w f(w,X)]|}{c|w_k-w^*|}
+\end{align}
+```
+相对误差和$`w_k`$到最小值点$`w^*`$的距离成反比。
+
 
