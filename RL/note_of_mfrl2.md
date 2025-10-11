@@ -820,3 +820,4 @@ w_{k+1}=w_k-\alpha_k \frac{1}{n} \sum_{i=1}^n (w_k-x_i) = w_k - \alpha_k(w_k - \
 w_{k+1}=w_k-\alpha_k \frac{1}{m} \sum_{j=\mathcal{I_k}} (w_k-x_j)=w_k - \alpha_k(w_k - \bar{x}_k)
 ```
 
+##### SDG的收敛  
