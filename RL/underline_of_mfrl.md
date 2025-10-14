@@ -6,5 +6,5 @@ about the environment in advance. Then, the agent must interact with the environ
 
 A reward can be interpreted as a human-machine interface, with which we can guide the agent to behave as we expect. 
 
-Designing appropriate rewards is an important step in reinforcement learning. This step is, however, nontrivial for complex tasks since it may require the user to understand the given problem well. 
+Designing appropriate rewards is an important step in reinforcement learning. This step is, however, nontrivial for complex tasks since it may require the user to understand the given problem well.  
 懂业务又懂算法的就是王。
