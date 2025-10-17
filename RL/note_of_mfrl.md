@@ -895,7 +895,7 @@ v_{\pi_{k+1}}- v_{k+1} &= (r_{\pi_{k+1}}+\gamma P_{\pi_{k+1}} v_{\pi_{k+1}})-\ma
 https://github.com/YoungAndSure/RlZero/blob/main/utest.py#L44
 
 #### 策略迭代法对应鱼书实现
-https://github.com/YoungAndSure/RlZero/blob/main/utest.py#L27
+https://github.com/YoungAndSure/RlZero/blob/bacc79fe66db7ef7baddad67ea01f8868bced41e/policy_iter.py#L28
 
 #### 策略迭代法复杂示例
 - 为什么某个状态的策略不是附近状态价值最大的那个点？因为一个点B的状态价值是从它开始向其他点行动的价值期望。而A到B的行动价值，需要即时奖励加这个状态价值折扣，然后比较才能确定是否是B。也许B的状态价值确实高，但是个禁区，即使奖励很低，也不能选B。
