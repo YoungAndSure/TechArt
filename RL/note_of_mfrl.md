@@ -1005,6 +1005,8 @@ https://github.com/YoungAndSure/RlZero/blob/main/utest.py#L56
 
 >从后面MC Exploring Starts的内容看，basic mc生成样本的方法是遍历每个state，按照episode lengths走一段，收集这个state不同行动的行动价值。假如有n个state，episode lengths是m，则一共会走n*action_size\*m步，得到n\*action_size个行动价值。这效率确实低。  
 
+> 读第二遍插一句。其实蒙特卡洛法解决问题的思路，挺简单的。就是收集数据，根据数据分析做决策。在学这个之前也能想到、用到。比如很多不知道如何估算的时候都会想到，收集点数据用均值代替呗。不同的是，强化学习除了用数据均值代替模型之外，还有马尔科夫决策过程、贝尔曼方程等框架，这套框架逻辑互相支撑，能用来对一个大的问题建模，而不只是一个单点的均值估计问题。  
+
 #### MC Exploring Starts的两项改进
 行动价值采样方式：每条episode经过的所有(s,a)都可以用于(s,a)的行动价值计算。这样agent行动过程中的每一步的数据都能利用到。  
 策略提升方式：  
