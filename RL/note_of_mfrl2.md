@@ -1067,3 +1067,8 @@ q_{\pi}(s,a) &=\sum_{r\in\mathcal{R}}p(r|s,a)r + \gamma\sum_{s'\in\mathcal{S}}p(
 &=\mathbb{E}[R+\gamma q_{\pi}(S',A')|s,a]
 \end{align}
 ```
+和状态价值版TD不同的是，TD只需要采取一个行动，就可以根据下一个状态的状态价值估计值计算奖励。但sarsa当前(状态，行动)的奖励计算，依赖下一个状态行动后的奖励。这就需要等下一个状态行动完之后，才能计算当前(状态，行动)的奖励。  
+这就是为什么鱼书的实现里：  
+https://github.com/YoungAndSure/RlZero/blob/main/agents.py#L150  
+需要缓存两个行动，用后一个计算前一个行动价值。  
+
