@@ -1027,7 +1027,7 @@ $`\triangle_t(s_t)=v_t(s_t)-v_{\pi}(s_t)`$
   
 条件三暂略。  
 
-### SARSA
+### Sarsa
 迭代公式:
 ```math
 q_{t+1}(s_t,a_t)=q_{t}(s_t,a_t)-\alpha_t(s_t,a_t)[q_{t}(s_t,a_t)-(r_{t+1} + \gamma q_{t+1}(s_{t+1},a_{t+1}))]
@@ -1071,4 +1071,9 @@ q_{\pi}(s,a) &=\sum_{r\in\mathcal{R}}p(r|s,a)r + \gamma\sum_{s'\in\mathcal{S}}p(
 这就是为什么鱼书的实现里：  
 https://github.com/YoungAndSure/RlZero/blob/main/agents.py#L150  
 需要缓存两个行动，用后一个计算前一个行动价值。  
+
+#### Expected Sarsa
+有点意思。上面我推导sarsa时，为了将行动价值定义转为行动价值之间的关系，将行动价值定义中的状态价值展开成了行动价值。这里Expected Sarsa其实是不展开，就用下一个状态价值来估计当前的行动价值。  
+这样的好处是，下一个状态价值是一个多样本融合后的期望值，方差更低。  
+坏处是多了些计算。因为sarsa里只需要计算行动价值，Expected sarsa等于还需要计算一个状态价值并保存。  
 
