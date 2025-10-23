@@ -938,3 +938,90 @@ $`r_{t+1}`$更好些。
 状态价值中的未来折扣奖励，蒙特卡洛法是严格用生成样本中的值计算出来的，其中包含了从本状态起之后所有状态、行动、奖励的信息。是准确的，没有偏差的。但，由于涉及的随机变量很多（包括本状态及之后所有的状态、动作、奖励，都是随机变量），随机性更大，所以采样得到的估计方差也大。  
 而TD法中的未来折扣奖励，没有用真实值，而是用下一个状态的状态价值代替。这就导致数据是有偏的。但是由于它只依赖当前状态的三个随机变量，随机性小，更稳定，估计方差更小。  
 看起来，TD法就是通过牺牲偏差，换来了方差的降低和计算效率的提升（每产生一条样本就可以参与计算）。  
+
+#### TD收敛证明  
+TD是RM算法一种，RM是Dvoretzky算法的特例，所以收敛性证明主要是证明TD法满足Dvoretzky的三个条件。  
+而且是多变量的Dvoretzky算法。这个多变量，每个变量对应TD里的一个状态。  
+回顾一下多变量的Dvoretzky。是说，有个数据集$`\mathcal{S}`$，对其中的每个$`s\in\mathcal{S}`$进行迭代：  
+```math
+\triangle_{k+1}(s)=(1-\alpha_k(s))\triangle_k(s)+\beta_k(s)\eta_k(s)
+```
+$`\triangle(s)`$会收敛到0，如果满足三个条件。  
+先把TD迭代的公式变换为Dvoretzky的形式。Dvoretzky中的$`\triangle(s)`$衡量的是估计值和目标值的差。$`\triangle(s)`$收敛到0，意味着估计值收敛到目标值。  
+对于TD法，目标值就是$`v_{\pi}(s_t)`$，估计值是$`v_t(s_t)`$。因此：  
+```math
+\triangle(s_t)=v_t(s_t)-v_{\pi}(s_t)
+```
+书里的证明十分严谨。在时间步t，生成的奖励是$`r_{t+1}`$，更新的状态价值是状态$`s_t`$的状态价值$`v_t(s_t)`$。对于其他状态，由于没有样本，是没有更新的。所以完整的TD公式里还带了个：$`v_{t+1}(s_t)=v_{t}(s_t), s \neq s_t`$。书里也讨论了这种情况的收敛。实际上一个状态的状态价值的更新，如果在t时刻经过了这个状态，就更新状态价值，后续的时间步没有经过这个状态，就一直保持原状。从一个状态的角度看，保持原状实际也是样本序列的一部分。举例，可能一个状态采样出来的值就是:1,0,0,0,0,2,0,0,0....。0的时候就是没有经过这个状态。这种情况我就跳过不讨论了。  
+TD法公式变形：  
+```math
+\begin{align}
+v_{t+1}(s_t) = v_{t}(s_t)-\alpha_t(s_t)[v_t(s_t) - (r_{t+1} + \gamma v_t(s_{t+1}))]
+\end{align}
+```
+为了构造$`\triangle(s_t)`$，两边减去 $`v_{\pi}(s_t)`$
+```math
+\begin{align}
+v_{t+1}(s_t) - v_{\pi}(s_t) = v_{t}(s_t)-\alpha_t(s_t)[v_t(s_t) - (r_{t+1} + \gamma v_t(s_{t+1}))] - v_{\pi}(s_t)\\
+[v_{t+1}(s_t) - v_{\pi}(s_t)] = [v_{t}(s_t) - v_{\pi}(s_t)] - \alpha_t(s_t)[v_t(s_t) - v_{\pi}(s_t) + v_{\pi}(s_t) - (r_{t+1} + \gamma v_t(s_{t+1}))]\\
+\triangle_{t+1}(s_t) = \triangle_{t}(s_t) - \alpha_t(s_t)[\triangle_{t}(s_t) + v_{\pi}(s_t) - (r_{t+1} + \gamma v_t(s_{t+1}))]\\
+\triangle_{t+1}(s_t) = \triangle_{t}(s_t) - \alpha_t(s_t)\triangle_{t}(s_t) - \alpha_t(s_t)[v_{\pi}(s_t) - (r_{t+1} + \gamma v_t(s_{t+1}))]\\
+\triangle_{t+1}(s_t) = [1-\alpha_t(s_t)]\triangle_{t}(s_t) + \alpha_t(s_t)[(r_{t+1} + \gamma v_t(s_{t+1})) - v_{\pi}(s_t)]
+\end{align}
+```
+用TD变化来的公式和Dvoretzky的公式做比较，得出：  
+```math
+\begin{align}
+\triangle(s_t)&=v_t(s_t)-v_{\pi}(s_t)\\
+\beta_k(s)&=\alpha_t(s_t)\\
+\eta_k(s)&=r_{t+1} + \gamma v_t(s_{t+1}) - v_{\pi}(s_t)
+\end{align}
+```
+Dvoretzky中的k就是TD中的t。Dvoretzky的三条条件，也是针对这三个参数做的约束  
+第一个条件是对$`\alpha_t(s)`$的约束，$`\alpha_t(s)`$是个超参，在TD法定义里已经约束了，所以无需证明。回顾下，这个参数的要求大概就是，既要足够持久，又不能无限发散，否则可能无法迭代到收敛的时候。  
+主要证明第二个条件。  
+```math
+||\mathbb{E}[\eta_t(s)|\mathcal{H}_t]|| \lt \gamma ||\triangle_t(s)||
+```
+$`\mathcal{H}_t=\triangle_{t-1},\triangle_{t-2}...\alpha_{t-1}...\beta_{t-1}...\eta_{t-1}...`$指历史信息。  
+这个公式是说，在历史随机变量发生的条件下，新的误差/噪声$`\eta_t(s)`$的期望，小于估计值和目标的差的$`\gamma`$倍。其实是在约束噪声的大小，如果噪声太大，比估计值和目标值的差还大，就会变成主要因素，影响迭代的方向。  
+由于马尔科夫决策过程中，各状态之间是独立的，也就是历史信息对当前决策没有影响，所以：  
+```math
+\mathbb{E}[\eta_t(s)|\mathcal{H}_t]=\mathbb{E}[\eta_t(s)]
+```
+当$`s=s_t`$时展开（不等的情况上面说了省略）：  
+```math
+\begin{align}
+\mathbb{E}[\eta_t(s)]&=\mathbb{E}[r_{t+1} + \gamma v_t(s_{t+1}) - v_{\pi}(s_t)|s=s_t]\\
+&= \mathbb{E}[r_{t+1} + \gamma v_t(s_{t+1})|s=s_t] - \mathbb{E}[v_{\pi}(s_t)|s=s_t]\\
+&= \mathbb{E}[r_{t+1} + \gamma v_t(s_{t+1})|s=s_t] - v_{\pi}(s_t)\\
+&= \mathbb{E}[r_{t+1} + \gamma v_t(s_{t+1})|s=s_t] - \mathbb{E}[r_{t+1} + \gamma v_{\pi}(s_{t+1})|s=s_t]\\
+&= \mathbb{E}[\gamma v_t(s_{t+1})-\gamma v_{\pi}(s_{t+1})|s=s_t]\\
+&= \gamma \mathbb{E}[v_t(s_{t+1})-v_{\pi}(s_{t+1})|s=s_t]\\
+&用具体的状态s'\in\mathcal{S}代替s_{t+1}, 从s_t跳转到s'的概率为p(s'|s_t)\\
+&= \gamma [\sum_{s'\in \mathcal{S}}p(s'|s_t)v_t(s')-\sum_{s'\in \mathcal{S}}p(s'|s_t)v_{\pi}(s')]\\
+&= \gamma\sum_{s'\in \mathcal{S}}p(s'|s_t)[v_t(s')-v_{\pi}(s')]
+\end{align}
+```
+取绝对值：  
+```math
+\begin{align}
+|\mathbb{E}[\eta_t(s)]|&= \gamma|\sum_{s'\in \mathcal{S}}p(s'|s_t)[v_t(s')-v_{\pi}(s')]|
+\end{align}
+```
+此时类似之前的求贝尔曼最优方程的问题，$`y=w_1x_1+w_2x_2+w_3x_3, \sum_{i=1}^3 w_i=1`$。也就是分配权重给x，怎么分能让y是最大值？答案是权重全部分给最大的x。因此：  
+```math
+\begin{align}
+|\mathbb{E}[\eta_t(s)]|&= \gamma|\sum_{s'\in \mathcal{S}}p(s'|s_t)[v_t(s')-v_{\pi}(s')]|\\
+&\leq \gamma\max_{s'\in\mathcal{S}}|v_t(s')-v_{\pi}(s')|\\
+&= \gamma||v_t(s')-v_{\pi}(s')||_\infty\\
+&= \gamma ||\triangle_t(s')||_\infty
+\end{align}
+```
+$`s'`$就是状态中任意一个$`s`$，因此满足Dvoretzky第二个条件。  
+  
+仔细观察证明过程。  
+$`\eta_t(s)=r_{t+1} + \gamma v_t(s_{t+1}) - v_{\pi}(s_t)=v_t(s_t)-v_{\pi}(s_t)`$  
+$`\triangle_t(s_t)=v_t(s_t)-v_{\pi}(s_t)`$  
+其实他俩是相等的。定义二证明的是$`v_t(s_t)-v_{\pi}(s_t)`$的期望的最大值小于$`v_t(s_t)-v_{\pi}(s_t)`$的最大值的折扣。也就是说最差的情况有变好的倾向。依照这个规律，随着迭代，误差会逐渐减小。  
+
