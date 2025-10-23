@@ -1027,4 +1027,43 @@ $`\triangle_t(s_t)=v_t(s_t)-v_{\pi}(s_t)`$
   
 条件三暂略。  
 
-
+### SARSA
+迭代公式:
+```math
+q_{t+1}(s_t,a_t)=q_{t}(s_t,a_t)-\alpha_t(s_t,a_t)[q_{t}(s_t,a_t)-(r_{t+1} + \gamma q_{t+1}(s_{t+1},a_{t+1}))]
+```
+单看迭代公式挺好理解，直接把TD法里的状态价值改为行动价值即可。  
+但状态价值里，是从状态价值定义推导得出的，这里也需要从行动价值的定义推导出来才踏实。  
+行动价值定义：  
+```math
+\begin{align}
+q_{\pi}(s,a) &= \mathbb{E}[G_t|S_t=s,A_t=a]\\
+&= \sum_{r\in\mathcal{R}}p(r|s,a)r + \gamma \sum_{s'\in\mathcal{S}}p(s'|s,a)v_{\pi}(s')
+\end{align}
+```
+可以看到，行动价值其实和未来的状态价值是相关的。但迭代法需要建立起行动价值之间的关系。  
+把状态价值展开成行动价值：  
+```math
+\begin{align}
+q_{\pi}(s,a) &= \mathbb{E}[G_t|S_t=s,A_t=a]\\
+&= \sum_{r\in\mathcal{R}}p(r|s,a)r + \gamma \sum_{s'\in\mathcal{S}}p(s'|s,a)v_{\pi}(s')\\
+&= \sum_{r\in\mathcal{R}}p(r|s,a)r + \gamma\sum_{s'\in\mathcal{S}}p(s'|s,a)\sum_{a'\in\mathcal{A}}\pi(a'|s')q_{\pi}(s',a')
+\end{align}
+```
+其中：
+```math
+\begin{align}
+p(s',a'|s,a)&=p(a'|s',s,a)p(s'|s,a)\\
+&由于马尔可夫过程的性质，在s'状态下选择a'和前一状态的s,a无关，所以\\
+&=p(a'|s')p(s'|s,a)\\
+&=\pi(a'|s')p(s'|s,a)
+\end{align}
+```
+代入行动价值定义：  
+```math
+\begin{align}
+q_{\pi}(s,a) &=\sum_{r\in\mathcal{R}}p(r|s,a)r + \gamma\sum_{s'\in\mathcal{S}}p(s'|s,a)\sum_{a'\in\mathcal{A}}\pi(a'|s')q_{\pi}(s',a')\\
+&= \sum_{r\in\mathcal{R}}p(r|s,a)r + \gamma \sum_{s'\in\mathcal{S}}\sum_{a'\in\mathcal{A}}p(s',a'|s,a)q_{\pi}(s',a')\\
+&=\mathbb{E}[R+\gamma q_{\pi}(S',A')|s,a]
+\end{align}
+```
