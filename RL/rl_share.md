@@ -6,7 +6,7 @@
 
 ### 马尔科夫决策过程
 
-<img src="./images/test.png" width="30%" alt="">
+<img src="./images/test.png" width="30%" alt="">  
 
 如图，九宫格，很经典，讲强化学习都从这个示例讲起。  
 要解决的问题是：智能体从左上角start开始行动，如何找一条到右下角的target的最优路径。  
@@ -14,10 +14,10 @@
 #### 状态
 首先是设置状态，智能体完成一系列行动，在状态间跳转。  
 在这个问题中，共有九个状态：  
-<img src="./images/test1.png" width="30%" alt="">
+<img src="./images/test1.png" width="30%" alt="">  
 #### 动作
 在每一个状态里，都有5个行动可以选择。
-<img src="./images/test3.png" width="30%" alt="">
+<img src="./images/test3.png" width="30%" alt="">  
 $`a_5`$表示留在原地。
 
 #### 策略
@@ -62,7 +62,7 @@ r(R|S=s_1,A=a_2,S'=s_2) = 0.0
 ### 马尔可夫决策过程
 至此，完成了这个九宫格问题的马尔可夫决策过程建模。  
 参数设置好后，让智能体从start开始按照参数行动，就得到一个马尔可夫序列。比如，按照策略行动之后，可能产生这么一条路径：  
-<img src="./images/test4.png" width="30%" alt="">
+<img src="./images/test4.png" width="30%" alt="">  
 
 也就产生一条马尔可夫链：
 ```math
@@ -80,7 +80,7 @@ s_1,a_2,s_2,r_0=0.0,a_3,s_5,r_1=0.0,a_3,s_8,r_2=0.0,a_2,s_9,r_3=10.0
 如何综合各种可能来评估从状态出发获得的奖励？  
   
 首先，用期望来综合衡量各种情况下状态能获得的奖励。  
-<img src="./images/test5.png" width="30%" alt="">
+<img src="./images/test5.png" width="60%" alt="">  
 如图，条条大路通$`s_9`$，假设前者路线产生的概率为p1, 累积收益为2，后者路线产生的概率为p2，累积收益为1.则状态s1的状态价值可以表示为：  
 ```math
 v(s_1) = p_1 * 2 + p_2 * 1
