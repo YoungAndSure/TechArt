@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram name="第 1 页" id="x_sHfSsqCgIbrhNbJAqp">
-        <mxGraphModel dx="1671" dy="1041" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="1" shadow="0">
+        <mxGraphModel dx="1441" dy="757" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="1" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -135,11 +135,11 @@
                 <mxCell id="-_xMZnbbGC9S2offaLYl-27" value="压缩映射&lt;br&gt;假设有一个函数$$f(x),x\in\mathbb{R}^d, 且 f:\mathbb{R}^d \to \mathbb{R}^d$$，存在一个$$\gamma \in (0,1)$$使得对任意$$x_1,x_2 \in \mathbb{R}^n$$$$||f(x_1)-f(x_2)|| \leq \gamma ||x_1-x_2||$$则f为压缩映射，且一定存在一个不动点$$x^*$$使得$$f(x^*)=x^*$$" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="-411.5" y="660" width="320" height="360" as="geometry"/>
                 </mxCell>
-                <mxCell id="-_xMZnbbGC9S2offaLYl-28" value="价值迭代法" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-                    <mxGeometry x="20" y="1650" width="120" height="60" as="geometry"/>
+                <mxCell id="-_xMZnbbGC9S2offaLYl-28" value="价值迭代法&lt;br&gt;简单说，每个状态的状态价值更新之后立即进行策略提升" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="-40" y="1770" width="220" height="90" as="geometry"/>
                 </mxCell>
-                <mxCell id="-_xMZnbbGC9S2offaLYl-29" value="策略迭代法" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-                    <mxGeometry x="325" y="1660" width="120" height="60" as="geometry"/>
+                <mxCell id="-_xMZnbbGC9S2offaLYl-29" value="策略迭代法&lt;br&gt;简单说，先保持策略不动，不断迭代状态价值，直到状态价值收敛后，再逐个状态策略提升" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="270" y="1770" width="230" height="90" as="geometry"/>
                 </mxCell>
                 <mxCell id="5" value="$$q_{\pi}(s,a) = \sum_{r\in\mathcal{R}}p(r|s,a)r + \gamma \sum_{s'\in\mathcal{S}}p(s'|s,a)v(s')$$" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
                     <mxGeometry x="400" y="710" width="160" height="30" as="geometry"/>
@@ -155,7 +155,7 @@
                         <mxPoint x="154.99999999999977" y="1275" as="targetPoint"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="10" value="&lt;div style=&quot;text-align: center;&quot;&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;压缩映射性质&lt;/span&gt;&lt;/div&gt;一旦证明一个f是压缩映射，则：&lt;br&gt;1. 存在性：必存在一个不动点$$x^*$$使得$$f(x^*)=x^*$$&lt;br&gt;2. 唯一性：不动点唯一&lt;br&gt;3. 求不动点算法：通过迭代$$x_{k+1}=f(x_k),k=0,1,2...$$当$$k\to\infty$$时，$$x_k\to x^*$$" style="rounded=0;whiteSpace=wrap;html=1;align=left;" vertex="1" parent="1">
+                <mxCell id="10" value="&lt;div style=&quot;&quot;&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;压缩映射性质&lt;/span&gt;&lt;/div&gt;一旦证明一个f是压缩映射，则：&lt;br&gt;1. 存在性：必存在一个不动点$$x^*$$使得$$f(x^*)=x^*$$&lt;br&gt;2. 唯一性：不动点唯一&lt;br&gt;3. 求不动点算法：通过迭代$$x_{k+1}=f(x_k),k=0,1,2...$$当$$k\to\infty$$时，$$x_k\to x^*$$" style="rounded=0;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
                     <mxGeometry x="-413" y="1100" width="323" height="350" as="geometry"/>
                 </mxCell>
                 <mxCell id="18" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" parent="1" source="15" target="16">
@@ -167,11 +167,20 @@
                 <mxCell id="15" value="解贝尔曼最优方程" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
                     <mxGeometry x="175" y="1235" width="80" height="80" as="geometry"/>
                 </mxCell>
-                <mxCell id="16" value="解最优状态价值&lt;br&gt;$$v^*=\max_{\pi\in\mathbb{\Pi}}(r_{\pi} + \gamma P_{\pi} v^*)$$&lt;br&gt;可通过压缩映射性质中的迭代法解出" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                <mxCell id="21" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" parent="1" source="16" target="20">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="16" value="解最优状态价值&lt;br&gt;$$v^*=\max_{\pi\in\mathbb{\Pi}}(r_{\pi} + \gamma P_{\pi} v^*)$$&lt;br&gt;可通过压缩映射性质中的迭代法解出，满足压缩映射性质：存在性、唯一性" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
                     <mxGeometry x="-40" y="1410" width="220" height="150" as="geometry"/>
+                </mxCell>
+                <mxCell id="22" style="edgeStyle=orthogonalEdgeStyle;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="17" target="20">
+                    <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="17" value="解最优策略&lt;br&gt;$$\pi^*=\mathrm{arg}\max_{\pi\in\mathcal{\Pi}}(r_{\pi} + \gamma P_{\pi}v^*)$$&lt;br&gt;解出最优状态价值后，选行动价值最大的行动作为最优策略" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
                     <mxGeometry x="255" y="1410" width="235" height="150" as="geometry"/>
+                </mxCell>
+                <mxCell id="20" value="两种算法" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+                    <mxGeometry x="175" y="1640" width="80" height="80" as="geometry"/>
                 </mxCell>
             </root>
         </mxGraphModel>
