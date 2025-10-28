@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram name="第 1 页" id="x_sHfSsqCgIbrhNbJAqp">
-        <mxGraphModel dx="1940" dy="1191" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="1" shadow="0">
+        <mxGraphModel dx="3587" dy="1853" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="1" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -126,8 +126,8 @@
                         <mxPoint x="214.99999999999977" y="1245" as="targetPoint"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="-_xMZnbbGC9S2offaLYl-26" value="贝尔曼最优方程&lt;br&gt;$$\begin{align}v(s)&amp;amp;=\max_{\pi(s)\in\mathcal{\Pi}(s)}\pi(a|s)q(s,a)\\&amp;amp;=\sum_{r\in\mathcal{R}}p(r|s,a)r + \gamma \sum_{s'\in\mathcal{S}}p(s'|s,a)v(s')&lt;br&gt;\end{align}$$" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-                    <mxGeometry x="80" y="900" width="270" height="120" as="geometry"/>
+                <mxCell id="-_xMZnbbGC9S2offaLYl-26" value="贝尔曼最优方程&lt;br&gt;$$\begin{align}v(s)&amp;amp;=\max_{\pi(s)\in\mathcal{\Pi}(s)}\pi(a|s)q(s,a)\\&amp;amp;=\max_{\pi(s)\in\mathcal{\Pi}(s)}\pi(a|s)(\sum_{r\in\mathcal{R}}p(r|s,a)r + \gamma \sum_{s'\in\mathcal{S}}p(s'|s,a)v(s'))&lt;br&gt;\end{align}$$" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="27.5" y="900" width="375" height="130" as="geometry"/>
                 </mxCell>
                 <mxCell id="11" style="edgeStyle=orthogonalEdgeStyle;html=1;" parent="1" source="-_xMZnbbGC9S2offaLYl-27" target="10" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
