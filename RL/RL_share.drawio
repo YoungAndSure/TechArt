@@ -1,6 +1,6 @@
 <mxfile host="Electron" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/28.2.8 Chrome/140.0.7339.240 Electron/38.4.0 Safari/537.36" version="28.2.8">
   <diagram name="第 1 页" id="x_sHfSsqCgIbrhNbJAqp">
-    <mxGraphModel dx="1220" dy="944" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="1" shadow="0">
+    <mxGraphModel dx="1627" dy="1258" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="1" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -68,6 +68,9 @@
         <mxCell id="-_xMZnbbGC9S2offaLYl-19" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="-_xMZnbbGC9S2offaLYl-15" target="-_xMZnbbGC9S2offaLYl-18">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
+        <mxCell id="-_xMZnbbGC9S2offaLYl-30" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="-_xMZnbbGC9S2offaLYl-15" target="-_xMZnbbGC9S2offaLYl-25">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
         <mxCell id="-_xMZnbbGC9S2offaLYl-15" value="状态价值(State Value)&lt;div&gt;$$\begin{align}v(s)&amp;amp;=\mathbb{E}[G_t]\\&amp;amp;=\mathbb{E}[R_t + \gamma G_{t+1}]\end{align}$$&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="630" y="720" width="230" height="90" as="geometry" />
         </mxCell>
@@ -90,6 +93,33 @@
         </mxCell>
         <mxCell id="-_xMZnbbGC9S2offaLYl-21" value="迭代法&lt;div&gt;$$v_{k+1} = r_{\pi} + \gamma P_{\pi} v_k, k=0,1,2,...$$&lt;/div&gt;&lt;div&gt;$$v_{k} \rightarrow v_{\pi} = (I - \gamma P_{\pi})^{-1} r_{\pi}, \quad \text{as } k \rightarrow \infty.$$&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="1070" y="950" width="280" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="-_xMZnbbGC9S2offaLYl-31" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="-_xMZnbbGC9S2offaLYl-25" target="-_xMZnbbGC9S2offaLYl-26">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-_xMZnbbGC9S2offaLYl-25" value="行动价值" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="240" y="735" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-_xMZnbbGC9S2offaLYl-32" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="-_xMZnbbGC9S2offaLYl-26" target="-_xMZnbbGC9S2offaLYl-27">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-_xMZnbbGC9S2offaLYl-26" value="贝尔曼最优方程" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="240" y="930" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-_xMZnbbGC9S2offaLYl-33" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="-_xMZnbbGC9S2offaLYl-27" target="-_xMZnbbGC9S2offaLYl-28">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-_xMZnbbGC9S2offaLYl-34" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="-_xMZnbbGC9S2offaLYl-27" target="-_xMZnbbGC9S2offaLYl-29">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-_xMZnbbGC9S2offaLYl-27" value="压缩映射" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="240" y="1080" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-_xMZnbbGC9S2offaLYl-28" value="价值迭代法" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="100" y="1240" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-_xMZnbbGC9S2offaLYl-29" value="策略迭代法" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="360" y="1240" width="120" height="60" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
