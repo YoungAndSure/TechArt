@@ -1,0 +1,97 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/28.2.8 Chrome/140.0.7339.240 Electron/38.4.0 Safari/537.36" version="28.2.8">
+  <diagram name="第 1 页" id="x_sHfSsqCgIbrhNbJAqp">
+    <mxGraphModel dx="1220" dy="944" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="1" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="-_xMZnbbGC9S2offaLYl-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="-_xMZnbbGC9S2offaLYl-1" target="-_xMZnbbGC9S2offaLYl-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-_xMZnbbGC9S2offaLYl-1" value="状态(State)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="180" y="280" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-_xMZnbbGC9S2offaLYl-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="-_xMZnbbGC9S2offaLYl-2" target="-_xMZnbbGC9S2offaLYl-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-_xMZnbbGC9S2offaLYl-2" value="行动(Action)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="400" y="280" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-_xMZnbbGC9S2offaLYl-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="-_xMZnbbGC9S2offaLYl-3" target="-_xMZnbbGC9S2offaLYl-6">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="354" y="520" />
+              <mxPoint x="560" y="520" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-_xMZnbbGC9S2offaLYl-3" value="策略&lt;div&gt;$$\pi(a|s)$$&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="294" y="400" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-_xMZnbbGC9S2offaLYl-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="-_xMZnbbGC9S2offaLYl-4" target="-_xMZnbbGC9S2offaLYl-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-_xMZnbbGC9S2offaLYl-4" value="状态转移概率&lt;div&gt;$$p(s&#39;|s)$$&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="500" y="400" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-_xMZnbbGC9S2offaLYl-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="-_xMZnbbGC9S2offaLYl-5" target="-_xMZnbbGC9S2offaLYl-6">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="767" y="520" />
+              <mxPoint x="560" y="520" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-_xMZnbbGC9S2offaLYl-5" value="奖励&lt;div&gt;$$p(r,s&#39;|s,a)$$&lt;/div&gt;&lt;div&gt;$$r(s,a,s&#39;)$$&lt;/div&gt;&lt;div&gt;$$p(r|s,a)$$&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="707" y="360" width="120" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="-_xMZnbbGC9S2offaLYl-16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="-_xMZnbbGC9S2offaLYl-6" target="-_xMZnbbGC9S2offaLYl-15">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-_xMZnbbGC9S2offaLYl-6" value="马尔科夫决策过程&lt;div&gt;$$S_0,A_0,R_0,S_1,A_1,R_1.....$$&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="445" y="570" width="230" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-_xMZnbbGC9S2offaLYl-12" value="马尔科夫过程" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="180" y="570" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-_xMZnbbGC9S2offaLYl-13" value="" style="endArrow=classic;startArrow=classic;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;dashed=1;" edge="1" parent="1" source="-_xMZnbbGC9S2offaLYl-12" target="-_xMZnbbGC9S2offaLYl-6">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="350" y="630" as="sourcePoint" />
+            <mxPoint x="400" y="580" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-_xMZnbbGC9S2offaLYl-17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="-_xMZnbbGC9S2offaLYl-14" target="-_xMZnbbGC9S2offaLYl-15">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-_xMZnbbGC9S2offaLYl-14" value="回报（Returns）&lt;div&gt;$$\begin{align} G_t&amp;amp;=R_t + \gamma R_{t+1} + \gamma^2 R_{t+2}....\\&amp;amp;=R_t + \gamma G_{t+1}\end{align}$$&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="800" y="540" width="280" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="-_xMZnbbGC9S2offaLYl-19" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="-_xMZnbbGC9S2offaLYl-15" target="-_xMZnbbGC9S2offaLYl-18">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-_xMZnbbGC9S2offaLYl-15" value="状态价值(State Value)&lt;div&gt;$$\begin{align}v(s)&amp;amp;=\mathbb{E}[G_t]\\&amp;amp;=\mathbb{E}[R_t + \gamma G_{t+1}]\end{align}$$&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="630" y="720" width="230" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="-_xMZnbbGC9S2offaLYl-22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="-_xMZnbbGC9S2offaLYl-18" target="-_xMZnbbGC9S2offaLYl-20">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-_xMZnbbGC9S2offaLYl-23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="-_xMZnbbGC9S2offaLYl-18" target="-_xMZnbbGC9S2offaLYl-21">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-_xMZnbbGC9S2offaLYl-24" value="解方程" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="-_xMZnbbGC9S2offaLYl-23">
+          <mxGeometry x="-0.6327" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-_xMZnbbGC9S2offaLYl-18" value="贝尔曼方程&lt;div&gt;&lt;font face=&quot;Helvetica&quot;&gt;$$v(s)=\sum_{a\in \mathcal{A}}\sum_{s&#39;\in\mathcal{S}}\pi(a|s)p(s&#39;|a,s)[r(s,a,s&#39;)+\gamma v(s&#39;)]$$&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font face=&quot;Helvetica&quot;&gt;$$v_{\pi} = r_{\pi} + \gamma P_{\pi} v_{\pi}$$&lt;/font&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="580.5" y="900" width="329" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="-_xMZnbbGC9S2offaLYl-20" value="线性方程解&lt;div&gt;$$v_{\pi} = (I-\gamma P_{\pi})^{-1}r_{\pi}$$&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1070" y="840" width="140" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="-_xMZnbbGC9S2offaLYl-21" value="迭代法&lt;div&gt;$$v_{k+1} = r_{\pi} + \gamma P_{\pi} v_k, k=0,1,2,...$$&lt;/div&gt;&lt;div&gt;$$v_{k} \rightarrow v_{\pi} = (I - \gamma P_{\pi})^{-1} r_{\pi}, \quad \text{as } k \rightarrow \infty.$$&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1070" y="950" width="280" height="110" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
