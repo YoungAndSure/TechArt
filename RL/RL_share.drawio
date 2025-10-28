@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram name="第 1 页" id="x_sHfSsqCgIbrhNbJAqp">
-        <mxGraphModel dx="1242" dy="834" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="1" shadow="0">
+        <mxGraphModel dx="1671" dy="1041" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="1" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -62,23 +62,33 @@
                 <mxCell id="-_xMZnbbGC9S2offaLYl-17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="-_xMZnbbGC9S2offaLYl-14" target="-_xMZnbbGC9S2offaLYl-15" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="-_xMZnbbGC9S2offaLYl-14" value="回报（Returns）&lt;div&gt;$$\begin{align} G_t&amp;amp;=R_t + \gamma R_{t+1} + \gamma^2 R_{t+2}....\\&amp;amp;=R_t + \gamma G_{t+1}\end{align}$$&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-                    <mxGeometry x="800" y="540" width="280" height="90" as="geometry"/>
+                <mxCell id="-_xMZnbbGC9S2offaLYl-14" value="回报（Returns）&lt;div&gt;$$\begin{align} G_t&amp;amp;=R_t + \gamma R_{t+1} + \gamma^2 R_{t+2}....\\&amp;amp;=R_t + \gamma G_{t+1}\end{align}$$&lt;/div&gt;&lt;div&gt;$$\gamma \in(0,1)$$&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="800" y="510" width="280" height="120" as="geometry"/>
                 </mxCell>
                 <mxCell id="-_xMZnbbGC9S2offaLYl-19" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="-_xMZnbbGC9S2offaLYl-15" target="-_xMZnbbGC9S2offaLYl-18" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="-_xMZnbbGC9S2offaLYl-30" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="-_xMZnbbGC9S2offaLYl-15" target="-_xMZnbbGC9S2offaLYl-25" edge="1">
+                <mxCell id="-_xMZnbbGC9S2offaLYl-30" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.25;entryDx=0;entryDy=0;exitX=0;exitY=0.25;exitDx=0;exitDy=0;" parent="1" source="-_xMZnbbGC9S2offaLYl-15" target="-_xMZnbbGC9S2offaLYl-25" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="-_xMZnbbGC9S2offaLYl-15" value="状态价值(State Value)&lt;div&gt;$$\begin{align}v(s)&amp;amp;=\mathbb{E}[G_t]\\&amp;amp;=\mathbb{E}[R_t + \gamma G_{t+1}]\end{align}$$&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                <mxCell id="-_xMZnbbGC9S2offaLYl-15" value="状态价值(State Value)&lt;div&gt;$$\begin{align}v_{\pi}(s)&amp;amp;=\mathbb{E}[G_t|S_t=s]\\&amp;amp;=\mathbb{E}[R_t + \gamma G_{t+1}|S_t=s]\end{align}$$&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="630" y="720" width="230" height="90" as="geometry"/>
                 </mxCell>
                 <mxCell id="-_xMZnbbGC9S2offaLYl-22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="-_xMZnbbGC9S2offaLYl-18" target="-_xMZnbbGC9S2offaLYl-20" edge="1">
-                    <mxGeometry relative="1" as="geometry"/>
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="1030" y="960"/>
+                            <mxPoint x="1030" y="875"/>
+                        </Array>
+                    </mxGeometry>
                 </mxCell>
                 <mxCell id="-_xMZnbbGC9S2offaLYl-23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="-_xMZnbbGC9S2offaLYl-18" target="-_xMZnbbGC9S2offaLYl-21" edge="1">
-                    <mxGeometry relative="1" as="geometry"/>
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="1030" y="960"/>
+                            <mxPoint x="1030" y="1035"/>
+                        </Array>
+                    </mxGeometry>
                 </mxCell>
                 <mxCell id="-_xMZnbbGC9S2offaLYl-24" value="解方程" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="-_xMZnbbGC9S2offaLYl-23" vertex="1" connectable="0">
                     <mxGeometry x="-0.6327" relative="1" as="geometry">
@@ -92,34 +102,76 @@
                     <mxGeometry x="1070" y="840" width="140" height="70" as="geometry"/>
                 </mxCell>
                 <mxCell id="-_xMZnbbGC9S2offaLYl-21" value="迭代法&lt;div&gt;$$v_{k+1} = r_{\pi} + \gamma P_{\pi} v_k, k=0,1,2,...$$&lt;/div&gt;&lt;div&gt;$$v_{k} \rightarrow v_{\pi} = (I - \gamma P_{\pi})^{-1} r_{\pi}, \quad \text{as } k \rightarrow \infty.$$&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-                    <mxGeometry x="1070" y="950" width="280" height="110" as="geometry"/>
+                    <mxGeometry x="1070" y="980" width="280" height="110" as="geometry"/>
                 </mxCell>
                 <mxCell id="-_xMZnbbGC9S2offaLYl-31" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="-_xMZnbbGC9S2offaLYl-25" target="-_xMZnbbGC9S2offaLYl-26" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="-_xMZnbbGC9S2offaLYl-25" value="行动价值" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-                    <mxGeometry x="240" y="735" width="120" height="60" as="geometry"/>
-                </mxCell>
-                <mxCell id="-_xMZnbbGC9S2offaLYl-32" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="-_xMZnbbGC9S2offaLYl-26" target="-_xMZnbbGC9S2offaLYl-27" edge="1">
+                <mxCell id="4" style="edgeStyle=none;html=1;entryX=0;entryY=0.75;entryDx=0;entryDy=0;exitX=1;exitY=0.75;exitDx=0;exitDy=0;" edge="1" parent="1" source="-_xMZnbbGC9S2offaLYl-25" target="-_xMZnbbGC9S2offaLYl-15">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="-_xMZnbbGC9S2offaLYl-26" value="贝尔曼最优方程" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-                    <mxGeometry x="240" y="930" width="120" height="60" as="geometry"/>
+                <mxCell id="-_xMZnbbGC9S2offaLYl-25" value="行动价值&lt;br&gt;$$q_{\pi}(s,a) = \mathbb{E}[G_t|S_t=s,A_t=a]$$" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="110" y="720" width="210" height="90" as="geometry"/>
                 </mxCell>
-                <mxCell id="-_xMZnbbGC9S2offaLYl-33" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="1" source="-_xMZnbbGC9S2offaLYl-27" target="-_xMZnbbGC9S2offaLYl-28" edge="1">
+                <mxCell id="8" style="edgeStyle=orthogonalEdgeStyle;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="-_xMZnbbGC9S2offaLYl-26" target="-_xMZnbbGC9S2offaLYl-27">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="-_xMZnbbGC9S2offaLYl-34" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="-_xMZnbbGC9S2offaLYl-27" target="-_xMZnbbGC9S2offaLYl-29" edge="1">
+                <mxCell id="9" value="is" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="8">
+                    <mxGeometry x="-0.0683" y="1" relative="1" as="geometry">
+                        <mxPoint x="1" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="13" style="edgeStyle=orthogonalEdgeStyle;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="-_xMZnbbGC9S2offaLYl-26" target="15">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="214.99999999999977" y="1245" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="-_xMZnbbGC9S2offaLYl-26" value="贝尔曼最优方程&lt;br&gt;$$\begin{align}v(s)&amp;amp;=\max_{\pi(s)\in\mathcal{\Pi}(s)}\pi(a|s)q(s,a)\\&amp;amp;=\sum_{r\in\mathcal{R}}p(r|s,a)r + \gamma \sum_{s'\in\mathcal{S}}p(s'|s,a)v(s')&lt;br&gt;\end{align}$$" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="80" y="900" width="270" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="11" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" parent="1" source="-_xMZnbbGC9S2offaLYl-27" target="10">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="-_xMZnbbGC9S2offaLYl-27" value="压缩映射" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-                    <mxGeometry x="240" y="1080" width="120" height="60" as="geometry"/>
+                <mxCell id="-_xMZnbbGC9S2offaLYl-27" value="压缩映射&lt;br&gt;假设有一个函数$$f(x),x\in\mathbb{R}^d, 且 f:\mathbb{R}^d \to \mathbb{R}^d$$，存在一个$$\gamma \in (0,1)$$使得对任意$$x_1,x_2 \in \mathbb{R}^n$$$$||f(x_1)-f(x_2)|| \leq \gamma ||x_1-x_2||$$则f为压缩映射，且一定存在一个不动点$$x^*$$使得$$f(x^*)=x^*$$" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="-411.5" y="660" width="320" height="360" as="geometry"/>
                 </mxCell>
                 <mxCell id="-_xMZnbbGC9S2offaLYl-28" value="价值迭代法" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-                    <mxGeometry x="100" y="1240" width="120" height="60" as="geometry"/>
+                    <mxGeometry x="20" y="1650" width="120" height="60" as="geometry"/>
                 </mxCell>
                 <mxCell id="-_xMZnbbGC9S2offaLYl-29" value="策略迭代法" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-                    <mxGeometry x="360" y="1240" width="120" height="60" as="geometry"/>
+                    <mxGeometry x="325" y="1660" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="5" value="$$q_{\pi}(s,a) = \sum_{r\in\mathcal{R}}p(r|s,a)r + \gamma \sum_{s'\in\mathcal{S}}p(s'|s,a)v(s')$$" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="400" y="710" width="160" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="6" value="$$v_{\pi}(s)=\sum_{a\in\mathcal{A}}\pi(a|s)q_{\pi}(s,a)$$" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="340" y="790" width="260" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="7" value="在策略和状态转移概率确定的情况下，只有一个未知变量$$v_{\pi}(s)$$&amp;nbsp;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="920" y="1000" width="100" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="14" style="edgeStyle=orthogonalEdgeStyle;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="10" target="15">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="154.99999999999977" y="1275" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="10" value="&lt;div style=&quot;text-align: center;&quot;&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;压缩映射性质&lt;/span&gt;&lt;/div&gt;一旦证明一个f是压缩映射，则：&lt;br&gt;1. 存在性：必存在一个不动点$$x^*$$使得$$f(x^*)=x^*$$&lt;br&gt;2. 唯一性：不动点唯一&lt;br&gt;3. 求不动点算法：通过迭代$$x_{k+1}=f(x_k),k=0,1,2...$$当$$k\to\infty$$时，$$x_k\to x^*$$" style="rounded=0;whiteSpace=wrap;html=1;align=left;" vertex="1" parent="1">
+                    <mxGeometry x="-413" y="1100" width="323" height="350" as="geometry"/>
+                </mxCell>
+                <mxCell id="18" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" parent="1" source="15" target="16">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="19" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" parent="1" source="15" target="17">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="15" value="解贝尔曼最优方程" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+                    <mxGeometry x="175" y="1235" width="80" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="16" value="解最优状态价值&lt;br&gt;$$v^*=\max_{\pi\in\mathbb{\Pi}}(r_{\pi} + \gamma P_{\pi} v^*)$$&lt;br&gt;可通过压缩映射性质中的迭代法解出" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="-40" y="1410" width="220" height="150" as="geometry"/>
+                </mxCell>
+                <mxCell id="17" value="解最优策略&lt;br&gt;$$\pi^*=\mathrm{arg}\max_{\pi\in\mathcal{\Pi}}(r_{\pi} + \gamma P_{\pi}v^*)$$&lt;br&gt;解出最优状态价值后，选行动价值最大的行动作为最优策略" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="255" y="1410" width="235" height="150" as="geometry"/>
                 </mxCell>
             </root>
         </mxGraphModel>
