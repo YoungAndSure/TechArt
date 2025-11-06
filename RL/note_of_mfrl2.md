@@ -1309,3 +1309,110 @@ TD法的迭代公式是从RM算法导出的，解决的是状态价值收敛的�
 而这里用函数逼近代替表，是从随机梯度下降法导出的，解的是状态价值估计收敛的问题。  
 这明明是两个事，虽然公式看着挺像，但怎么稀里糊涂的就合到一个公式里了？  
 原来中间确实省略了过程，只能说看着像，缺乏数学上的推导。  
+$`w_{t+1} = w_t + \alpha_t  (r_{t+1}+\gamma \hat{v}(s_{t+1},w_t) - \hat{v}(s_t,w_t))\nabla_w\hat{v}(s_t,w_t)`$实际上是新的算法，需要另外的收敛性证明。  
+
+#### $`w_{t+1} = w_t + \alpha_t  (r_{t+1}+\gamma \hat{v}(s_{t+1},w_t) - \hat{v}(s_t,w_t))\nabla_w\hat{v}(s_t,w_t)`$收敛性证明
+将$`\hat{v}(s_{t+1},w_t)`$展开后为：  
+```math
+w_{t+1} = w_t + \alpha_t  (r_{t+1}+\gamma \phi^T(s_{t+1})w_t - \phi^T(s_t)w_t)\phi(s_t)
+```
+这个公式看着很熟悉，实际上叠加了很多个算法结论。  
+首先，迭代式框架来自RM算法。  
+用下一状态的估计状态价值代替真实未来折扣奖励，来自TD算法。  
+$`(r_{t+1}+\gamma \hat{v}(s_{t+1},w_t) - \hat{v}(s_t,w_t))\nabla_w\hat{v}(s_t,w_t)`$这一大长串的推导，来自针对损失的随机梯度下降法推导。  
+最终$`\phi^T(s_t)w_t)`$的代入是对函数逼近的建模。  
+这些叠加之后，比较难分析收敛性，所以先退一步，探究确定性算法：  
+```math
+w_{t+1} = w_t + \alpha_t  \mathbb{E}[(R_{t+1}+\gamma \phi^T(S_{t+1})w_t - \phi^T(S_t)w_t)\phi(S_t)]
+```
+的收敛性。这个算法实际上去掉了随机性，替换为期望，变成了确定性算法。相当于从随机梯度下降退回到梯度下降。因此，证明了确定性算法的收敛性，再辅以SDG，就可以证明随机算法的收敛性。  
+  
+定义两个矩阵：  
+```math
+\Phi = \left[
+\begin{array}{c}
+\vdots \\
+\phi^{T}(s) \\
+\vdots \\
+\end{array}
+\right] \in \mathbb{R}^{n \times m}
+```
+每个状态对应的向量是$`\phi(s)`$，维度为m,在矩阵中是一行，所以是$`\phi^{T}(s)`$.  
+一共n个状态，每个状态一行，所以矩阵是$`n \times m`$。  
+所以这个矩阵是集合了所有状态向量。  
+```math
+D = \left[
+\begin{array}{ccc}
+\ddots & & \\
+& d_{\pi}(s) & \\
+& & \ddots \\
+\end{array}
+\right] \in \mathbb{R}^{n \times n}
+```
+这个矩阵把状态分布向量转成矩阵。状态分布向量如上所说，有策略和环境决定。  
+为什么把向量换成矩阵呢？方便计算。比如$`\Phi^TD`$，$`\Phi`$每行代表一个状态，转置后每列代表一个状态。和$`D`$乘之后，每列代表一个状态乘自己的分布。其实相当于把之前的向量乘拓展成矩阵乘了。  
+  
+$`\mathbb{E}[(R_{t+1}+\gamma \phi^T(S_{t+1})w_t - \phi^T(S_t)w_t)\phi(S_t)]`$推导。  
+这个其实是在迭代过程中，某一步状态的期望计算。其中的$`S_t`$和$`S_{t+1}`$是随机变量，可能是任何一个状态。而状态的概率分布，遵循稳定分布$`d_{\pi}(s)`$  
+```math
+\begin{align}
+&\mathbb{E}[(R_{t+1}+\gamma \phi^T(S_{t+1})w_t - \phi^T(S_t)w_t)\phi(S_t)]\\
+&=\sum_{s\in \mathcal{S}}d_{\pi}(s)\mathbb{E}[(R_{t+1}+\gamma \phi^T(S_{t+1})w_t - \phi^T(S_t)w_t)\phi(S_t)|S_t=s]  \\
+&=\sum_{s\in \mathcal{S}}d_{\pi}(s)\mathbb{E}[R_{t+1}\phi(S_t)+(\gamma \phi^T(S_{t+1})w_t - \phi^T(S_t)w_t)\phi(S_t)|S_t=s]\\
+&=\sum_{s\in \mathcal{S}}d_{\pi}(s)\mathbb{E}[R_{t+1}\phi(S_t)|S_t=s] + \sum_{s\in \mathcal{S}}d_{\pi}(s)\mathbb{E}[(\gamma \phi^T(S_{t+1})w_t - \phi^T(S_t)w_t)\phi(S_t)|S_t=s]
+\end{align}
+```
+拆成两部分继续推导。第一部分可以理解为即时奖励梯度，第二部分可以理解为未来折扣奖励梯度。  
+```math
+\begin{align}
+&\sum_{s\in \mathcal{S}}d_{\pi}(s)\mathbb{E}[R_{t+1}\phi(S_t)|S_t=s]\\
+&= \sum_{s\in \mathcal{S}}d_{\pi}(s)\mathbb{E}[R_{t+1}\phi(s)|S_t=s]\\
+&= \sum_{s\in \mathcal{S}}d_{\pi}(s)[\phi(s)\sum_{a \in \mathcal{A}}\pi(a|s)\sum_{r \in \mathcal{R}}rp(r|s,a)]\\
+&= \sum_{s\in \mathcal{S}}d_{\pi}(s) \phi(s) r_{\pi}(s)\\
+&= \Phi^TDr_{\pi}(s)
+\end{align}
+```
+也就是状态乘分布乘奖励。  
+```math
+\begin{align}
+&\mathbb{E}[(\gamma \phi^T(S_{t+1})w_t - \phi^T(S_t)w_t)\phi(S_t)|S_t=s]\\
+&=\mathbb{E}[(\gamma \phi^T(S_{t+1})w_t - \phi^T(s)w_t)\phi(s)|S_t=s]\\
+&=\mathbb{E}[(\gamma \phi^T(S_{t+1})w_t\phi(s) - \phi^T(s)w_t\phi(s))|S_t=s]\\
+&=\mathbb{E}[(\gamma \phi^T(S_{t+1})w_t\phi(s)|S_t=s]-\Phi^Tw_t\Phi\\
+&=\sum_{s'\in\mathcal{S}}p(s'|s)\gamma \phi^T(s')w_t\Phi(s) - \Phi^Tw_t\Phi\\
+&=P_{\pi}\gamma\Phi^T w_t\Phi- \Phi^Tw_t\Phi\\
+&=(\gamma P_{\pi}-1)\Phi^T w_t\Phi
+\end{align}
+```
+再加上稳定分布：  
+```math
+\begin{align}
+&\sum_{s\in \mathcal{S}}d_{\pi}(s)[(\gamma P_{\pi}-1)\Phi^T w_t\Phi]\\
+&=D[(\gamma P_{\pi}-1)\Phi^T w_t\Phi]\\
+&=(\gamma P_{\pi}-1)w_t\Phi^TD\Phi\\
+&=-(1-\gamma P_{\pi})w_t\Phi^TD\Phi\\
+&=-\Phi^TD(1-\gamma P_{\pi})\Phi w
+\end{align}
+```
+先对下shape。  
+假如状态n个，m维，$`\Phi`$是$`n\times m`$，则
+第一部分的shape是:  
+```math
+\Phi^TDr_{\pi}(s)\\
+(m \times n)(n \times n)(n\times 1)=(m\times 1)
+```
+第二部分的shape是:  
+```math
+-\Phi^TD(1-\gamma P_{\pi})\Phi w\\
+-(m \times n)(n \times n)(n\times n)(n\times m)(m\times1)=-(m\times 1)
+```
+
+合并一起：  
+```math
+\begin{align}
+\Phi^TDr_{\pi}(s) -(1-\gamma P_{\pi}(s))\Phi^TD\Phi w\\
+= b-Aw
+\end{align}
+```
+证毕。我居然也可以自己推导完整证明了。  
+
