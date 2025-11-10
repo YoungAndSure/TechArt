@@ -1457,3 +1457,84 @@ w^*=A^{-1}b=(1-\gamma P_{\pi}(s))^{-1}D^{-1}Dr_{\pi}(s)=(1-\gamma P_{\pi}(s))r_{
 w_{k+1} = w_k - \alpha_k (b-Aw_k)
 ```
 可以认为，是求$`g(w)=b-Aw`$的根，这样，以上迭代公式就是RM算法的迭代公式。最终会收敛到根$`g(w)=b-Aw=0`$，也就是$`w^*=A^{-1}b`$。  
+
+#### weighted norm
+```math
+||x||_D^2=x^TDx=||D^{1/2}x||_2^2
+```
+范数一般就是衡量矩阵向量长度/大小的方法。  
+L2范数其实就是对应标量里的绝对值平方。$`||A||_2^2=A^TA`$  
+weighted norm，就是在距离上乘个权重。$`||A||_D^2=A^TDA`$。这个权重作用在平方之后。  
+所以式子最后，相当于$`D^{1/2}`$作用在范数之前的$`x`$。  
+
+#### 公式8.13证明思路梳理  
+8.13:  
+```math
+w_{t+1}=w_t + \alpha_t [r_{t+1}+\gamma \hat{v}(s_{t+1},w_t) - \hat{v}(s_t,w_t)]\nabla_w\hat{v}_t(s_t,w_t)
+```
+是随机梯度下降形式。转为期望形式，这样可以用矩阵表示公式，方便分析。  
+$`\hat{v}(s_t,w_t)=\phi(s) w_t`$因此：
+```math
+w_{t+1}=w_t+\alpha_t\mathbb{E}[(r_{t+1} + \gamma\phi^T(s_{t+1})w_t - \phi^T(s_t)w_t)\phi(s_t)]
+```
+主要分析这个迭代公式，8.13可以通过上式加随机梯度下降得到。  
+上式看作RM算法，就等于求期望部分的根。因此对期望部分用矩阵表示，并化简，得出：  
+```math
+w_{t+1}=w_t+\alpha_t [b-Aw_t]
+```
+并得出收敛后根为：  
+```math
+w^*=A^{-1}b
+```
+然后证明，公式会收敛。  
+依次引出$`J_E(w),J_{BE}(w),J_{PBE}(w)`$的概念，最终证明，$`w^*=A^{-1}b`$就是在解$`\min J_{PBE}(w)`$  
+
+#### $`J_E(w),J_{BE}(w),J_{PBE}(w)`$概念理解
+```math
+J_E(w)=\mathbb{E}[(\hat{v}(S,w)-v_{\pi}(S))^2]=||\hat{v}(w)-v_{\pi}||_D^2
+```
+其中$`\hat{v}`$是函数逼近，$`v_{\pi}`$是“理想中”真实的状态价值。损失函数就是最小化两者的方差。其中期望意味着一个状态分布，也就是$`d_{\pi}(s)`$，用矩阵$`D`$表示。  
+由于$`v_{\pi}`$是个理想值，真实实现中拿不到，所以用一个估计值代替。估计值就是用贝尔曼方程根据现有值计算出来的值。
+贝尔曼方程：  
+```math
+v_{\pi} = r+\gamma P_{\pi}v_{\pi}
+```
+也就是：  
+```math
+J_{BE}(w)=||\hat{v}(w)-(r+\gamma P_{\pi}\hat{v}(w))||_D^2=||\hat{v}(w)-T_{\pi}(\hat{v}(w))||_D^2
+```
+把贝尔曼方程的转换写为$`T_{\pi}`$算子。  
+这个叫贝尔曼error。有啥区别呢？因为用估计值$`(r+\gamma P_{\pi}\hat{v}(w))`$代替了理想的$`v_{\pi}`$，因此，收敛的方向就发生了变化。函数是有偏的了，因为$`(r+\gamma P_{\pi}\hat{v}(w))`$仅是估计值。这个损失很难降到0，因为函数逼近$`\hat{v}`$的能力有限，无法完美拟合。  
+因此，拟合的目标需要改变一下。不再拟合理想的$`v_{\pi}`$，而是拟合理想值在函数逼近能触及范围的投影。因此，要加一个投影矩阵$`M`$,就是$`J_{PBE}(w)`$：  
+```math
+J_{PBE}(w)=||\hat{v}(w)-MT_{\pi}(\hat{v}(w))||_D^2
+```  
+$`M`$的值，一种思路是根据推导得出。  
+书中是直接给出，然后再证明。逻辑略微有点跳跃。  
+$`M=\Phi(\Phi^TD\Phi)^{-1}\Phi^TD \in R^{n \times n}`$  
+求$`J_{PBE}(w)`$最小时$`w`$的取值，也就是$`J_{PBE}(w)=||\hat{v}(w)-MT_{\pi}(\hat{v}(w))||_D^2=0`$，  
+即$`\hat{v}(w)-MT_{\pi}(\hat{v}(w))=0,\hat{v}(w)=MT_{\pi}(\hat{v}(w))`$。  
+假设$`\hat{v}(w)=\Phi w`$代入：  
+```math
+\begin{align}
+\Phi w&=MT_{\pi}(\Phi w)\\
+\Phi w&=M(r_{\pi}+\gamma P_{\pi}\Phi w)\\
+\Phi w&=\Phi(\Phi^TD\Phi)^{-1}\Phi^TD(r_{\pi}+\gamma P_{\pi}\Phi w)\\
+w&=(\Phi)^{-1}\Phi(\Phi^TD\Phi)^{-1}\Phi^TD(r_{\pi}+\gamma P_{\pi}\Phi w)\\
+w&= (\Phi^TD\Phi)^{-1}\Phi^TD(r_{\pi}+\gamma P_{\pi}\Phi w)\\
+&后面的思路是把w系数合一起，好求w\\
+(\Phi^TD\Phi)w&=\Phi^TD(r_{\pi}+\gamma P_{\pi}\Phi w)\\
+(\Phi^TD\Phi)w&=\Phi^TDr_{\pi}+ \Phi^TD\gamma P_{\pi}\Phi w\\
+(\Phi^TD\Phi)w-\Phi^TD\gamma P_{\pi}\Phi w &= \Phi^TDr_{\pi}\\
+(\Phi^TD\Phi-\Phi^TD\gamma P_{\pi}\Phi)w&=\Phi^TDr_{\pi}\\
+(1-\gamma P_{\pi})\Phi^TD\Phi w&=\Phi^TDr_{\pi}\\
+w&= [(1-\gamma P_{\pi})\Phi^TD\Phi]^{-1}\Phi^TDr_{\pi}\\
+w&= A^{-1}b
+\end{align}
+```
+因此，$`J_{PBE}(w)`$的解为$`w=A^{-1}b`$。和开始假设的结论一致。  
+其实好像也没证明啥。只是通过两条路到达了同一个终点。  
+最开始，用线代和贝尔曼方程来推导迭代公式，得出解是$`w^*=A^{-1}b`$的结论。  
+这里，是从调整损失函数的角度，来解$`J_{PBE}(w)`$，得出$`w^*=A^{-1}b`$的结论。  
+从这个角度，它解释了8.13的本质，它的迭代目标，是真实状态价值在函数逼近空间的投影。通过这种方式，得到了函数逼近能力内的最优解。  
+
