@@ -1604,19 +1604,138 @@ Linear-TD里没有$`\max`$算子，目标是稳定的。Deep-Q里求的是最优
 两种平均权重，一种是所有状态同权平均，一种是按照稳定分布$`d_{\pi}`$加权平均。  
 也就是：  
 $`\mathbb{E}[v_{\pi}]=\sum_{s\in\mathcal{S}}d_{\pi}(s)v_{\pi}(s)`$  
-$`v_{\pi}(s)`$等于啥？  
+这个$`\mathbb{E}`$的对象是状态$`s`$，所以要按照$`s`$展开。  
+书里是先给了个结论，然后反推到上式，有点迷惑。特别是那个公式猛的一看就容易懵逼。这里正着推导一下  
+$`v_{\pi}(s)`$等于啥？按照本书一开始的定义，等于从状态$`s`$起即时奖励和未来折扣奖励和的期望  
 ```math
-v_{\pi}(s) = \mathbb{E}[\sum_{t=0}^\infty[R_t(s)+\gamma G_{t+1}]] = \mathbb{E}[\sum_{t=0}^\infty[R_t(s)+\gamma R_{t+1}(s')+ \gamma^2 R_{t+2}(s'') + \gamma^3 R_{t+3}(s''')....]]
+v_{\pi}(s) = \mathbb{E}[R_t(s)+\gamma G_{t+1}] = \mathbb{E}[R_t(s)+\gamma R_{t+1}(s')+ \gamma^2 R_{t+2}(s'') + \gamma^3 R_{t+3}(s''')....]
 ```
-后面的R都是其他状态产生的状态价值，（也可能回到当前状态），经过折扣后，累加到当前状态$`s`$上。  
+注意，这个公式是一种“回合”的视角，后面的R都是回合中后面经过的状态产生的奖励，经过折扣后，累加到当前状态$`s`$上。  
 代入后：  
 ```math
 \begin{align}
 \mathbb{E}[v_{\pi}]&=\sum_{s\in\mathcal{S}}d_{\pi}(s)v_{\pi}(s)\\
-&= \sum_{s\in\mathcal{S}}d_{\pi}(s)\mathbb{E}[\sum_{t=0}^\infty[R_t(s)+\gamma R_{t+1}(s')+ \gamma^2 R_{t+2}(s'') +...]]\\
-&= \sum_{s\in\mathcal{S}}d_{\pi}(s)\mathbb{E}[\sum_{t=0}^\infty[\gamma^tR_{t+1}]]
+&= \sum_{s\in\mathcal{S}}d_{\pi}(s)\mathbb{E}[R_t(s)+\gamma R_{t+1}(s')+ \gamma^2 R_{t+2}(s'') +...|S_0=s]\\
+& 注意，这个\mathbb{E}是选中某个状态后，对应状态的期望\\
+& 把所有从状态s开始的时间步的奖励通过\sum统一起来\\
+&= \sum_{s\in\mathcal{S}}d_{\pi}(s)\mathbb{E}[\sum_{t=0}^\infty[\gamma^tR_{t+1}]|S_0=s]
 \end{align}
 ```
-这里有一个视角的转换。之前理解状态价值的视角都是回合的视角，在某一个状态下，从这个状态开始，到回合结束得到的折扣奖励。这里由于要计算所有状态的加权状态价值和，所以是从某个状态的视角来展开公式的。比如对于一个确定的状态$`s_0`$，得到奖励$`r_0`$，经过100步后又回到了$`s_0`$，得到$`r_{100}`$，那在$`s_0`$上得到的状态价值就是$`r_0+\gamma^{100}r_{100}`$，对应公式$`\gamma^t R_{t+1}`$。  
+这个公式理解起来，着实有点费劲哦。特别是$`\mathbb{E}[\sum_{t=0}^\infty[\gamma^tR_{t+1}]|S_0=s]`$。这个$`\mathbb{E}`$是奖励$`R`$的期望。公式说的是，从状态$`s`$起后续所有折扣奖励和。这其实就是状态价值的定义，不知道为啥换了个$`\sum`$的形式一下就懵逼了。  
 
+#### 平均reward $`\bar{r}_{\pi}`$
+```math
+\bar{r}_{\pi}=\sum_{s\in\mathcal{S}}d_{\pi}(s)r_{\pi}(s)=\mathbb{E}_{S - d_{\pi}}[r_{\pi}(S)]
+```
+是个针对状态的期望。所以展开是状态的分布乘该状态在策略$`\pi`$得到的奖励。  
+而奖励：
+```math
+r_{\pi}(s)=\sum_{a\in\mathcal{A}}\pi(a|s,\theta)r(s,a)=\mathbb{E}_{A-\pi(a|s,\theta)}[r(s,A)|S=s]
+```
+在状态$`s`$下，逼近函数是$`\pi(s,\theta)`$，其中$`\theta`$就是逼近函数的可调参数。输入状态$`s`$进去就会输出行动的概率分布，根据概率随机选择一个行动。当然，也可能直接输出行动$`a`$，但总之是有个概率分布的。这里公式的意思就是，奖励也是个期望，需要承上概率分布。
+
+目标函数：  
+```math
+J(\theta) = \lim_{n\to\infty}\frac{1}{n}\mathbb{E}[\sum_{t=0}^{n-1}R_{t+1}]
+```
+$`\sum_{t=0}^{n-1}R_{t+1}`$就是智能体从时刻$`t=0`$开始行动，每步在不同状态获取的即时奖励，加和。外层的$`\mathbb{E}`$，可以有不同展开。一方面这个过程经过了不同的状态，所以可以按照状态的概率分布展开，值就是每个状态获得的奖励。一方面可以按照(s,a)展开。总之它是个期望。外层$`\lim_{n\to\infty}\frac{1}{n}`$代表总步数的奖励平均。  
+按书上说法，$`J(\theta) = \lim_{n\to\infty}\frac{1}{n}\mathbb{E}[\sum_{t=0}^{n-1}R_{t+1}]=\sum_{s\in\mathcal{S}}d_{\pi}(s)r_{\pi}(s)=\bar{r}_{\pi}`$。  
+
+#### 定义策略梯度法损失函数，为什么整出两个奇葩公式，还要证明？  
+状态价值平均的公式：  
+```math
+J(\theta)=\lim_{n\to\infty}\mathbb{E}[\sum_{t=0}^{n}\gamma^tR_{t+1}]=\sum_{s\in\mathcal{S}}d_{\pi}(s)v_{\pi}(s)
+```
+奖励平均的公式：  
+```math
+J(\theta)=\lim_{n\to\infty}\frac{1}{n}\mathbb{E}[\sum_{t=0}^{n-1}R_{t+1}]=\sum_{s\in\mathcal{S}}d_{\pi}(s)r_{\pi}(s)
+```
+就中间这个东西，给我搞"抑郁"了。有点突然，脱离了之前的连续推导。  
+书里两个公式的推导也不一样。对于前者，是从后往前推，对于后者，是从前往后推。确实，对于状态价值，由于前面已经讲过稳定分布，所以$`\sum_{s\in\mathcal{S}}d_{\pi}(s)v_{\pi}(s)`$比较熟悉，所以从它开始往前推。对于奖励平均的公式，"求所有奖励和的平均"这个概念更好理解一些，所以$`\lim_{n\to\infty}\frac{1}{n}\mathbb{E}[\sum_{t=0}^{n-1}R_{t+1}]`$比较容易理解。但这种极限形式，无法求导。所以要转成$`\sum_{s\in\mathcal{S}}d_{\pi}(s)r_{\pi}(s)`$的形式。这个转换不太直观，所以多了一层推导。  
+  
+这个公式还是让我迷惑，再展开下看看。  
+```math
+\begin{align}
+J(\theta)&=\lim_{n\to\infty}\mathbb{E}[\sum_{t=0}^{n}\gamma^tR_{t+1}]\\
+&=\mathbb{E}[\sum_{t=0}^{\infty}\gamma^tR_{t+1}]\\
+&=\mathbb{E}[R_{1}+\gamma R_{2}+\gamma^2 R_{3} + \gamma^3 R_{4}...\gamma^t R_{t+1}]
+\end{align}
+```
+这猛一看很像是第一个状态$`s_0`$的状态价值。但仔细一看，确实就是第一个状态的状态价值。  
+不过，据说，这个期望有两层随机，一个是遵循策略$`\pi`$随机选择动作。一个是初始状态$`s_0`$的选择也是随机的。所以它的含义是随机选择一个状态起始，按照策略$`\pi`$行动，得到的状态价值期望。优化这个目标，就是让在任意状态起步得到的状态价值最高。这不就是最优贝尔曼方程吗？！  
+
+再看平均奖励的公式：  
+```math
+J(\theta)=\lim_{n\to\infty}\frac{1}{n}\mathbb{E}[\sum_{t=0}^{n-1}R_{t+1}]=\sum_{s\in\mathcal{S}}d_{\pi}(s)r_{\pi}(s)
+```
+发现一点，不管是上面平均状态价值，还是这里平均奖励，中间都是个极限，但最后转成了固定值。这就是为什么都需要证明。证明其实就是说，最终会趋于一个稳定分布，这种情况下目标也会收敛到一个固定值。所以公式里的极限符号最后被稳定分布$`d_{\pi}`$给取代了。  
+所谓证明，就是在证明为什么一个无限长的序列最终可以转为一个固定的矩阵。  
+
+#### 平均奖励证明  
+证明：  
+```math
+\lim_{n\to\infty}\frac{1}{n}\mathbb{E}[\sum_{t=0}^{n-1}R_{t+1}]=\sum_{s\in\mathcal{S}}d_{\pi}(s)r_{\pi}(s)
+```
+核心点就在于前边公式的极限是怎么转换成后边稳定分布的？  
+首先，这个期望包含两层随机，所以先去掉一层起始点的随机，也就是选定一个固定起始点$`s_0`$，先证明：  
+```math
+\lim_{n\to\infty}\frac{1}{n}\mathbb{E}[\sum_{t=0}^{n-1}R_{t+1}|S_0=s_0]=\sum_{s\in\mathcal{S}}d_{\pi}(s)r_{\pi}(s)
+```
+推导：  
+```math
+\begin{align}
+&\lim_{n\to\infty}\frac{1}{n}\mathbb{E}[\sum_{t=0}^{n-1}R_{t+1}|S_0=s_0]\\
+&=\lim_{n\to\infty}\frac{1}{n}\sum_{t=0}^{n-1}\mathbb{E}[R_{t+1}|S_0=s_0]\\
+&=\lim_{n\to\infty}\frac{1}{n}\{\mathbb{E}[R_{1}|S_0=s_0]+\mathbb{E}[R_{2}|S_0=s_0]+\mathbb{E}[R_{3}|S_0=s_0]+....\mathbb{E}[R_{n}|S_0=s_0]\}\\
+\end{align}
+```
+可以看出来，其实这是个序列。  
+这用到了一个什么切萨洛平均：
+如果序列$`\{a_k\}_1^\infty`$是收敛的，且$`\lim_{k\to\infty}a_k`$存在。  
+则$`\{\frac{1}{n}\sum_{k=1}^{n}a_k\}_{n=1}^{\infty}`$也是收敛的，  
+且$`\lim_{n\to\infty}\frac{1}{n}\sum_{k=1}^{n}a_k=\lim_{k\to\infty}a_k`$。  
+用大直白话讲一遍。就是说一个序列如果是收敛的，最后会收敛到一个值。这时候，这个序列的均值序列也是收敛的，收敛值和原序列一致。  
+套用到上面的公式里，当然还少了个序列收敛性证明：  
+```math
+\begin{align}
+&\lim_{n\to\infty}\frac{1}{n}\mathbb{E}[\sum_{t=0}^{n-1}R_{t+1}|S_0=s_0]\\
+&=\lim_{n\to\infty}\frac{1}{n}\{\mathbb{E}[R_{1}|S_0=s_0]+\mathbb{E}[R_{2}|S_0=s_0]+\mathbb{E}[R_{3}|S_0=s_0]+....\mathbb{E}[R_{n}|S_0=s_0]\}\\
+&= \lim_{n\to\infty}\mathbb{E}[R_{n}|S_0=s_0]\\
+&=\lim_{t\to\infty}\mathbb{E}[R_{t+1}|S_0=s_0]
+\end{align}
+```
+也就是说收益期望最后会收敛到一个稳定值。  
+继续看$`\mathbb{E}[R_{t+1}|S_0=s_0]`$，只说是个期望，期望的概率有很多种分解方式。这个公式里，$`R_{t+1}`$是第$`t+1`$步得到的，条件$`S_0=s_0`$却是第1步，需要构建起他们之间的联系。  
+```math
+\begin{align}
+&\mathbb{E}[R_{t+1}|S_0=s_0] \\
+& 全概率公式展开\\
+&= \sum_{s\in\mathcal{S}}\mathbb{E}[R_{t+1}|S_0=s_0,S_t=s_t]p^{(t)}(s_t|s_0)\\
+& 马尔科夫性，状态转移无关,也就是跳到s_t和s_0没什么关系\\
+&= \sum_{s\in\mathcal{S}}\mathbb{E}[R_{t+1}|S_t=s_t]p^{(t)}(s_t|s_0)\\
+& 前面的期望，不就是在状态s_t时获取奖励的期望吗，就是r_{\pi}(s_t)\\
+&= \sum_{s\in\mathcal{S}}r_{\pi}(s_t)p^{(t)}(s_t|s_0)\\
+& 后边的概率，就是状态转移概率，会趋于稳定分布d_{\pi}\\
+&\lim_{t\to\infty}p^{(t)}(s_t|s_0)=d_{\pi}(s_t)\\
+&因此\\
+&\mathbb{E}[R_{t+1}|S_0=s_0]=\sum_{s\in\mathcal{S}}r_{\pi}(s_t)d_{\pi}(s_t)=\bar{r}_{\pi}
+\end{align}
+```
+综上：  
+```math
+\lim_{n\to\infty}\frac{1}{n}\mathbb{E}[\sum_{t=0}^{n-1}R_{t+1}|S_0=s_0]=\sum_{s\in\mathcal{S}}d_{\pi}(s)r_{\pi}(s)=\bar{r}_{\pi}
+```
+然后是处理初始状态。按照全概率公式，用初始状态做条件：  
+```math
+\begin{align}
+&\lim_{n\to\infty}\frac{1}{n}\mathbb{E}[\sum_{t=0}^{n-1}R_{t+1}]\\
+&=\lim_{n\to\infty}\frac{1}{n}\sum_{s\in\mathcal{S}}\mathbb{E}[\sum_{t=0}^{n-1}R_{t+1}|S_0=s]\\
+&= \sum_{s\in\mathcal{S}}\lim_{n\to\infty}\frac{1}{n}\mathbb{E}[\sum_{t=0}^{n-1}R_{t+1}|S_0=s]\\
+&= \sum_{s\in\mathcal{S}}\sum_{s\in\mathcal{S}}d_{\pi}(s)r_{\pi}(s)\\
+&= \sum_{s\in\mathcal{S}}d_{\pi}(s)r_{\pi}(s)\\
+&= \bar{r}_{\pi}
+\end{align}
+```
+得证。  
+说了这么多，其实就一个，长期会趋于稳定分布。  
 
