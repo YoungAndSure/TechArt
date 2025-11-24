@@ -1746,3 +1746,51 @@ J(\theta)=\lim_{n\to\infty}\frac{1}{n}\mathbb{E}[\sum_{t=0}^{n-1}R_{t+1}]=\sum_{
 当起始状态的选择没有按照稳定分布来选的时候，就是和稳定分布独立了。这个起始的状态分布用$`d_0`$表示，此时$`d_0 \ne d_{\pi}`$。在这种起始分布下长期迭代，计算出来的平均状态价值就是$`\bar{v}_{\pi}^0`$。  
 如果$`d_0 = d_{\pi}`$，计算出来的平均状态价值就是$`\bar{v}_{\pi}`$。  
 我开始还有个疑问，真实情况下，不可能一开始就得到$`d_{\pi}`$啊，它是个长期迭代稳定后的分布，所以没有一个任务不是从$`d_0\ne d_{\pi}`$开始的啊。这就是实际和理论的差异了。理论分析的是$`\bar{v}_{\pi}`$，但实际任务运行时，得到的都是$`\bar{v}_{\pi}^0`$，所以才要区分这两个公式。需要论证，即使初始状态分布和稳定分布不一致，也能找到最优答案，以及和理想状态的差距是多少。  
+
+#### 策略梯度法公式期望表示
+$`J(\theta)`$的梯度为：  
+```math
+\begin{align}
+\nabla_\theta J(\theta) &= \sum_{s\in\mathcal{S}}\mu(s)\sum_{a\in\mathcal{A}}\nabla_{\theta}\pi(a|s,\theta)q_{\pi}(s,a)\\
+&=\mathbb{E}_{\mathcal{S}-\mu}[\sum_{a\in\mathcal{A}}\nabla_{\theta}\pi(a|S,\theta)q_{\pi}(S,a)]
+\end{align}
+```
+把状态分布$`\mu(s)`$转为期望。  
+下一步的思路是想把这个$`\sum_{a\in\mathcal{A}}`$去掉，换成期望。可是里边的$`\nabla_{\theta}\pi(a|s,\theta)`$是个梯度形式，不是概率分布形式。所以需要转换一下：  
+```math
+\begin{align}
+\nabla_{\theta} \ln \pi(a|s,\theta)&=\frac{\nabla_{\theta}\pi(a|s,\theta)}{\pi(a|s,\theta)}\\
+\pi(a|s,\theta) \nabla_{\theta} \ln \pi(a|s,\theta) &= \nabla_{\theta}\pi(a|s,\theta)
+\end{align}
+```
+因此代入前式：  
+```math
+\begin{align}
+\nabla_\theta J(\theta) &= \sum_{s\in\mathcal{S}}\mu(s)\sum_{a\in\mathcal{A}}\nabla_{\theta}\pi(a|s,\theta)q_{\pi}(s,a)\\
+&=\mathbb{E}_{\mathcal{S}-\mu}[\sum_{a\in\mathcal{A}}\nabla_{\theta}\pi(a|S,\theta)q_{\pi}(S,a)]\\
+&=\mathbb{E}_{\mathcal{S}-\mu}[\sum_{a\in\mathcal{A}}\pi(a|S,\theta) \nabla_{\theta} \ln \pi(a|S,\theta)q_{\pi}(S,a)]\\
+&=\mathbb{E}_{\mathcal{S}-\mu,\mathcal{A}-\pi(s,\theta)}\nabla_{\theta} \ln \pi(a|S,\theta)q_{\pi}(S,A)]
+\end{align}
+```
+这样就变换为了期望形式。期望形式有一个好处，就是方便利用蒙特卡洛法。
+
+#### $`\bar{v}_{\pi}`$和$`\bar{r}_{\pi}`$的等价性  
+$`v_{\pi}`$和$`r_{\pi}`$的定义：  
+```math
+\begin{align}
+\bar{v}_{\pi} = d_{\pi}^T v_{\pi}\\
+\bar{r}_{\pi} = d_{\pi}^T r_{\pi}
+\end{align}
+```
+而$`v_{\pi}`$和$`r_{\pi}`$满足贝尔曼方程(注意，是$`v_{\pi}`$满足贝尔曼方程，而不是$`\bar{v}_{\pi}`$)：
+```math
+\begin{align}
+v_{\pi} &= r_{\pi} + \gamma P_{\pi}v_{\pi}\\
+d_{\pi}^T v_{\pi}&= d_{\pi}^T(r_{\pi} + \gamma P_{\pi}v_{\pi})\\
+\bar{v}_{\pi} &= \bar{r}_{\pi} + \gamma d_{\pi}^TP_{\pi}v_{\pi}\\
+d_{\pi}^T&稳定分布定义： d_{\pi}^T = d_{\pi}^T P_{\pi}\\
+\bar{v}_{\pi} &= \bar{r}_{\pi} + \gamma d_{\pi}^Tv_{\pi}\\
+\bar{v}_{\pi} &= \bar{r}_{\pi} + \gamma \bar{v}_{\pi}\\
+(1-\gamma)\bar{v}_{\pi} &= \bar{r}_{\pi}
+\end{align}
+```
