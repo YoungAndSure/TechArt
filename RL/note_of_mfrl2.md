@@ -1794,3 +1794,93 @@ d_{\pi}^T&稳定分布定义： d_{\pi}^T = d_{\pi}^T P_{\pi}\\
 (1-\gamma)\bar{v}_{\pi} &= \bar{r}_{\pi}
 \end{align}
 ```
+没太搞明白这个等式的含义。  
+
+#### $`v_{\pi}(s)`$的梯度  
+根据定义：  
+```math
+v_{\pi}(s) = \sum_{a\in\mathcal{A}} \pi(a|s,\theta)q_{\pi}(s,a)
+```
+因此：  
+```math
+\nabla_{\theta} v_{\pi}(s) = \nabla_{\theta} [\sum_{a\in\mathcal{A}} \pi(a|s,\theta)q_{\pi}(s,a)]
+```
+$`q_{\pi}(s,a)`$里其实还包含了下一状态的状态价值，所以也是$`\theta`$的函数：  
+```math
+\begin{align}
+\nabla_{\theta} v_{\pi}(s) &= \nabla_{\theta} [\sum_{a\in\mathcal{A}} \pi(a|s,\theta)q_{\pi}(s,a)]\\
+&= \sum_{a\in\mathcal{A}}[\nabla_{\theta} (\pi(a|s,\theta)q_{\pi}(s,a))]\\
+&= \sum_{a\in\mathcal{A}}[q_{\pi}(s,a)\nabla_{\theta}\pi(a|s,\theta) + \pi(a|s,\theta) \nabla_{\theta}q_{\pi}(s,a)]\\
+&= \sum_{a\in\mathcal{A}}q_{\pi}(s,a)\nabla_{\theta}\pi(a|s,\theta) + \sum_{a\in\mathcal{A}}\pi(a|s,\theta) \nabla_{\theta}q_{\pi}(s,a)
+\end{align}
+```
+继续展开$`q_{\pi}(s,a)`$:  
+```math
+q_{\pi}(s,a) = r_{\pi}(s,a) + \gamma \sum_{s'\in\mathcal{S}}p(s'|s,a)v_{\pi}(s')
+```
+其中$`r_{\pi}(s,a)=\sum_{r\in\mathcal{R}}p(r|s,a)r`$，和$`\theta`$无关。所以：  
+```math
+\begin{align}
+\nabla_{\theta}q_{\pi}(s,a) &= \nabla_{\theta} r_{\pi}(s,a) + \gamma \nabla_{\theta} \sum_{s'\in\mathcal{S}}p(s'|s,a)v_{\pi}(s')\\
+&= 0 + \gamma \sum_{s'\in\mathcal{S}}p(s'|s,a)\nabla_{\theta}v_{\pi}(s')\\
+&= \gamma \sum_{s'\in\mathcal{S}}p(s'|s,a)\nabla_{\theta}v_{\pi}(s')
+\end{align}
+```
+代入上式：  
+```math
+\begin{align}
+\nabla_{\theta} v_{\pi}(s) &= \sum_{a\in\mathcal{A}}q_{\pi}(s,a)\nabla_{\theta}\pi(a|s,\theta) + \sum_{a\in\mathcal{A}}\pi(a|s,\theta) \nabla_{\theta}q_{\pi}(s,a)\\
+&= \sum_{a\in\mathcal{A}}q_{\pi}(s,a)\nabla_{\theta}\pi(a|s,\theta) + \gamma \sum_{a\in\mathcal{A}}\pi(a|s,\theta)\sum_{s'\in\mathcal{S}}p(s'|s,a)\nabla_{\theta}v_{\pi}(s')
+\end{align}
+```
+简化一下公式：  
+```math
+u(s)=\sum_{a\in\mathcal{A}}q_{\pi}(s,a)\nabla_{\theta}\pi(a|s,\theta)
+```
+```math
+\sum_{a\in\mathcal{A}}\pi(a|s,\theta)\sum_{s'\in\mathcal{S}}p(s'|s,a)\nabla_{\theta}v_{\pi}(s') = \sum_{s'\in\mathcal{S}}p(s'|s)\nabla_{\theta}v_{\pi}(s') = \sum_{s'\in\mathcal{S}}[P_{\pi}]_{ss'}\nabla_{\theta}v_{\pi}(s')
+```
+其中$`P_{\pi}`$是个矩阵，如果状态有n个，矩阵就是$`n \times n`$的。而$`[P_{\pi}]_{ss'}`$是矩阵中位于$`(s,s')`$的那个元素，是个标量。$`v_{\pi}`$是个n维的向量，其中的每个元素代表一个状态的状态价值，所以$`v_{\pi}(s')`$是向量中的一个元素，标量。假设$`\theta`$是m维的，那$`\nabla_{\theta} v_{\pi}`$是$`m \times n`$维的，每个状态$`s`$对$`\theta`$中每一维都有一个梯度分量。而$`\nabla_{\theta} v_{\pi}(s')`$就是矩阵中的一个向量，是$`m`$维列向量。因此，$`\sum_{s'\in\mathcal{S}}[P_{\pi}]_{ss'}\nabla_{\theta}v_{\pi}(s')`$整个式子最后得出一个m维向量。  
+再看$`u(s)`$。假设动作有$`k`$个，则$`\pi(a|s)`$是一个$`n \times k`$的矩阵。每个元素在求梯度时都会产生一个$`\theta`$上的分量，则$`\nabla_{\theta}\pi(a|s,\theta)`$是$`n\times k\times m`$维的矩阵。选定某个动作后，切出$`n \times m`$的矩阵。$`q_{\pi}`$是$`n \times k`$的，选中某个动作后切出$`n`$维行向量。因此，选定某个动作后$`q_{\pi}(s,a)\nabla_{\theta}\pi(a|s,\theta)`$为$`1 \times n * n times m= 1 \times m`$的向量。  
+把两式代入，得出：  
+```math
+\nabla_{\theta} v_{\pi}(s) = u(s) + \sum_{s'\in\mathcal{S}}[P_{\pi}]_{ss'}\nabla_{\theta}v_{\pi}(s')
+```
+最终得到的也是一个$`m`$维向量，shape对得上。  
+```math
+\underbrace{
+\left[\begin{array}{c}
+\vdots \\
+\nabla_{\theta} v_{\pi}(s) \\
+\vdots \\
+\end{array}\right]
+}_{\substack{\text{$\nabla_{\theta} v_{\pi} \in \mathbb{R}^{mn}$}}}
+=
+\underbrace{
+\left[\begin{array}{c}
+\vdots \\
+u(s) \\
+\vdots \\
+\vdots
+\end{array}\right]
+}_{\substack{u \in \mathbb{R}^{mn}}}
++ \gamma (P_{\pi} \otimes I_{m})
+\underbrace{
+\left[\begin{array}{c}
+\vdots \\
+\nabla_{\theta} v_{\pi}(s') \\
+\vdots \\
+\vdots
+\end{array}\right]
+}_{\substack{\nabla_{\theta} v_{\pi} \in \mathbb{R}^{mn}}}
+```
+再看下转成矩阵形式。  
+$`P_{\pi}`$是$`n \times n`$的，$`I_m`$是$`m \times m`$的单位矩阵。中间的克罗内克积会用$`P_{\pi}`$中每个元素乘单位矩阵$`I_m`$。也就是原来矩阵的一个元素变成了一个$`m \times m`$矩阵。因此$`P_{\pi} \otimes I_{m}`$后shape为$`nm \times nm`$的。  
+按照上面的分析$`\nabla_{\theta} v_{\pi}`$是$`n \times m`$的，但是公式中是$`nm`$的，因为被做了向量化，摊平了。也就是向量中每m个元素对应一个状态。所以上面公式中$`\nabla_{\theta} v_{\pi}`$是$`nm \times 1`$的。和$`P_{\pi} \otimes I_m`$乘，结果为$`nm \times nm * nm \times 1=nm \times 1`$。  
+这理解起来其实有点晦涩，主要是克罗内克积和向量化。其实没有这两个，shapey一样对得上。假如$`\nabla_{\theta} v_{\pi}`$是个$`n\times m`$的二维矩阵，而$`P_{\pi}`$是个$`n \times n`$的矩阵，相乘得$`n \times m`$的矩阵，而且含义也挺清晰。且那边的$`u`$也是一个$`n \times m`$的矩阵，维度都对得上。  
+但是如果$`\nabla_{\theta} v_{\pi}`$要向量化，那就必须加一个克罗内克积，让维度对齐了，其实含义没变。  
+  
+总之，可以简写为：  
+```math
+\nabla_{\theta} v_{\pi} = u + \gamma (P_{\pi} \otimes I_m)\nabla_{\theta} v_{\pi}
+```
