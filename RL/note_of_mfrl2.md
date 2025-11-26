@@ -1907,12 +1907,17 @@ $`P_{\pi}`$是$`n \times n`$的，$`I_m`$是$`m \times m`$的单位矩阵。中�
 ```math
 \begin{align}
 [I_n - \gamma P_{\pi}]^{-1}_{ss'} &= I_n + \gamma P_{\pi} + \gamma^2P_{\pi}^2 +...\\
-&= \sum_{k=0}^{\infty} [\gamma ^k P_{\pi}^k]_{ss'}
+&= \sum_{k=0}^{\infty} [\gamma ^k P_{\pi}^k]_{ss'} \\
+&= \mathrm{Pr}_{\pi}(s'|s)
 \end{align}
 ```
 因此，公式也可以写为：  
 ```math
-\nabla_{\theta}v_{\pi}(s) = \sum_{k=0}^{\infty} [\gamma ^k P_{\pi}^k]_{ss'}\sum_{a\in\mathcal{A}}q_{\pi}(s',a)\nabla_{\theta}\pi(a|s',\theta)
+\begin{align}
+\nabla_{\theta}v_{\pi}(s) &= \sum_{s'\in\mathcal{S}}\sum_{k=0}^{\infty} [\gamma ^k P_{\pi}^k]_{ss'}\sum_{a\in\mathcal{A}}q_{\pi}(s',a)\nabla_{\theta}\pi(a|s',\theta)\\
+&= \sum_{s'\in\mathcal{S}}\mathrm{Pr}_{\pi}(s'|s)\sum_{a\in\mathcal{A}}q_{\pi}(s',a)\nabla_{\theta}\pi(a|s',\theta)
+\end{align}
 ```
 至此，第一步，对$`v_{\pi}(s)`$求梯度，完成了。  
 
+#### $`\bar{v}_{\pi}^0(s)`$的梯度  
