@@ -1921,3 +1921,30 @@ $`P_{\pi}`$是$`n \times n`$的，$`I_m`$是$`m \times m`$的单位矩阵。中�
 至此，第一步，对$`v_{\pi}(s)`$求梯度，完成了。  
 
 #### $`\bar{v}_{\pi}^0(s)`$的梯度  
+$`\bar{v}_{\pi}^0(s)`$的意思是，回合开始收个状态的选择的分布是$`d_0`$，而不是$`d_{\pi}`$。选择好初始状态后，后面的状态分布，由于是策略$`\pi`$和环境概率分布决定的，因此是$`d_{\pi}`$。因此：  
+```math
+\begin{align}
+\bar{v}_{\pi}^0(s) &= \sum_{s\in\mathcal{S}} d_0(s)v_{\pi}(s)\\
+\nabla_{\theta}\bar{v}_{\pi}^0(s)&=\nabla_{\theta}\sum_{s\in\mathcal{S}} d_0(s)v_{\pi}(s)\\
+& d_0(s)和\theta无关，所以\\
+&= \sum_{s\in\mathcal{S}} d_0(s)\nabla_{\theta}v_{\pi}(s)
+\end{align}
+```
+后者在上面第一步已经证明过了，可以直接代入：  
+```math
+\begin{align}
+\nabla_{\theta}\bar{v}_{\pi}^0(s) &= \sum_{s\in\mathcal{S}} d_0(s)\nabla_{\theta}v_{\pi}(s)\\
+&= \sum_{s\in\mathcal{S}}d_0(s) \sum_{s'\in\mathcal{S}}\mathrm{Pr}_{\pi}(s'|s)\sum_{a\in\mathcal{A}}q_{\pi}(s',a)\nabla_{\theta}\pi(a|s',\theta)\\
+&= \sum_{s'\in\mathcal{S}} [\sum_{s\in\mathcal{S}}d_0(s) \mathrm{Pr}_{\pi}(s'|s)] \sum_{a\in\mathcal{A}}q_{\pi}(s',a)\nabla_{\theta}\pi(a|s',\theta)\\
+&= \sum_{s'\in\mathcal{S}} \rho_{\pi}(s')\sum_{a\in\mathcal{A}}q_{\pi}(s',a)\nabla_{\theta}\pi(a|s',\theta)\\
+& s'替换成s，反正都是遍历所有的状态\\
+&= \sum_{s\in\mathcal{S}} \rho_{\pi}(s)\sum_{a\in\mathcal{A}}q_{\pi}(s,a)\nabla_{\theta}\pi(a|s,\theta)\\
+& 由于\nabla_{\theta}\ln \pi(a|s,\theta) = \frac{\nabla_{\theta}\pi(a|s,\theta)}{\pi(a|s,\theta)}\\
+&= \sum_{s\in\mathcal{S}} \rho_{\pi}(s)\sum_{a\in\mathcal{A}}q_{\pi}(s,a)\pi(a|s,\theta)\nabla_{\theta}\ln \pi(a|s,\theta)\\
+&= \sum_{s\in\mathcal{S}} \rho_{\pi}(s)\sum_{a\in\mathcal{A}}\pi(a|s,\theta)q_{\pi}(s,a)\nabla_{\theta}\ln \pi(a|s,\theta)\\
+& 去掉概率分布，改成期望的形式\\
+&= \mathbb{E}[q_{\pi}(S,A)\nabla_{\theta}\ln \pi(A|S,\theta)]
+\end{align}
+```
+状态$`S`$遵循$`\rho_{\pi}`$，行动$`A`$遵循$`\pi(s,\theta)`$。  
+
