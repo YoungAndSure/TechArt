@@ -1884,3 +1884,26 @@ $`P_{\pi}`$是$`n \times n`$的，$`I_m`$是$`m \times m`$的单位矩阵。中�
 ```math
 \nabla_{\theta} v_{\pi} = u + \gamma (P_{\pi} \otimes I_m)\nabla_{\theta} v_{\pi}
 ```
+可以解出$`\nabla_{\theta}v_{\pi}`$:  
+```math
+\begin{align}
+\nabla_{\theta} v_{\pi} &= u + \gamma (P_{\pi} \otimes I_m)\nabla_{\theta} v_{\pi} \\
+\nabla_{\theta} v_{\pi} - \gamma (P_{\pi} \otimes I_m)\nabla_{\theta} v_{\pi} &= u\\
+(I_{nm} - \gamma (P_{\pi} \otimes I_m))\nabla_{\theta}v_{\pi} &= u\\
+\nabla_{\theta}v_{\pi} &= [I_{nm} - \gamma (P_{\pi} \otimes I_m)]^{-1}u\\
+\nabla_{\theta}v_{\pi} &= [I_n \otimes I_m - \gamma (P_{\pi} \otimes I_m)]^{-1}u \\
+\nabla_{\theta}v_{\pi} &= [(I_n - \gamma P_{\pi}) \otimes I_m]^{-1}u\\
+\nabla_{\theta}v_{\pi} &= [(I_n - \gamma P_{\pi})^{-1} \otimes I_m]u
+\end{align}
+```
+针对某个状态$`s`$再展开：  
+```math
+\begin{align}
+\nabla_{\theta}v_{\pi}(s) &= \sum_{s'\in\mathcal{S}}[I_n - \gamma P_{\pi}]^{-1}_{ss'} u(s')\\
+&= \sum_{s'\in\mathcal{S}}[I_n - \gamma P_{\pi}]^{-1}_{ss'}\sum_{a\in\mathcal{A}}q_{\pi}(s',a)\nabla_{\theta}\pi(a|s',\theta)
+\end{align}
+```
+根据诺伊曼级数定理，对于一个方阵A，如果其谱半径（所有特征值的最大绝对值）小于1，那么矩阵$`I-A`$是可逆的，并且其逆矩阵可以表示为无穷级数：$`(I-A)^{-1}=I+A+A^2+A^3+...`$。因此：  
+```math
+[I_n - \gamma P_{\pi}]^{-1}=I + 
+```
