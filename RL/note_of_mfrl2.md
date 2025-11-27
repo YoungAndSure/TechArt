@@ -2001,3 +2001,58 @@ d_{\pi}^T &= \frac{1}{1-\gamma}d_{\pi}^T(I_n - \gamma P_{\pi})\\
 &= \mathbb{E}[q_{\pi}(S,A)\nabla_{\theta}\ln\pi(A|S,\theta)]
 \end{align}
 ```
+
+#### Monte Carlo policy gradient(REINFORCE)
+收集下，梯度上升的目标函数为：  
+```math
+J(\theta) = \bar{r}_{\pi}
+```
+梯度为：  
+```math
+
+\nabla_{\theta} J(\theta) = \nabla_{\theta} \bar{r}_{\pi} = \mathbb{E}[q_{\pi}(S,A)\nabla_{\theta}\ln\pi(A|S,\theta)]
+```
+期望形式，为了应用蒙特卡洛法。  
+因此，梯度上升迭代公式为：  
+```math
+\begin{align}
+\theta_{t+1} &= \theta_{t} + \alpha \nabla_{\theta}J(\theta)\\
+&= \theta_{t} + \alpha \mathbb{E}\nabla_{\theta}\ln\pi(A|S,\theta) q_{\pi}(S,A)
+\end{align}
+```
+随机梯度下降是$`-`$,这里是随机上升，所以是+。  
+得不到期望，所以用随机采样的样本代替：  
+```math
+\theta_{t+1} = \theta_{t} + \alpha q_t(s_t,a_t) \nabla_{\theta} \ln\pi(a_t|s_t,\theta)
+```
+这里有一个事实让我给忽略了，期望形式中，行动价值是$`q_{\pi}(S,A)`$，但是随机梯度形式中，行动价值是$`q_t(s,a)`$。$`q_{\pi}`$是个理想值，也是个期望。但$`q_t`$只是单个样本。所以，这里还有一个估计，是用单条样本估计来代替了理想值$`q_{\pi}`$。这是蒙特卡洛法的做法，这个算法称为REINFORE。而这个估计也可以通过其他形式，类似之前估计状态价值，是用method approximation的方式，把s,a输入进某个神经网络，得到一个估计的行动价值，估摸这就是后面的ac法。  
+  
+变个形：  
+```math
+\begin{align}
+\theta_{t+1} &= \theta_{t} + \alpha q_t(s_t,a_t) \nabla_{\theta} \ln\pi(a_t|s_t,\theta) \\
+&= \theta_{t} + \alpha q_t(s_t,a_t) \frac{\nabla_{\theta} \pi(a_t|s_t,\theta)}{\pi(a_t|s_t,\theta)}\\
+&= \theta_{t} + \alpha \frac{q_t(s_t,a_t)}{\pi(a_t|s_t,\theta)}\nabla_{\theta} \pi(a_t|s_t,\theta)
+\end{align}
+```
+设$`\beta_t = \frac{q_t(s_t,a_t)}{\pi(a_t|s_t,\theta)}`$则：  
+```math
+\theta_{t+1} =\theta_{t} + \alpha \beta_t \nabla_{\theta} \pi(a_t|s_t,\theta)
+```
+这样公式就更简洁清晰了。可以理解，自变量是$`\theta`$，这个迭代公式就是调整$`\theta`$找$`\pi(a_t|s_t,\theta)`$的最大值，也就是选择动作$`a_t`$的概率。而$`\beta_t`$决定了调整的方向。  
+根据泰勒公式：  
+```math
+\begin{align}
+\pi(a_t|s_t,\theta_{t+1}) &\approx \pi(a_t|s_t,\theta_t) + \nabla_{\theta}\pi(a_t|s_t,\theta_t)(\theta_{t+1}-\theta_{t})\\
+&= \pi(a_t|s_t,\theta_t) + \nabla_{\theta}\pi(a_t|s_t,\theta_t)\alpha \beta_t \nabla_{\theta} \pi(a_t|s_t,\theta)\\
+&= \pi(a_t|s_t,\theta_t) + \alpha \beta_t ||\nabla_{\theta}\pi(a_t|s_t,\theta_t)||^2_2
+\end{align}
+```
+所以，如果$`\beta_t \gt 0`$，则$`\pi(a_t|s_t,\theta_{t+1}) \gt \pi(a_t|s_t,\theta_t)`$，也就是选择$`a_t`$的概率会加大。反之，则概率减小。而且，$`beta_t`$的大小还影响了概率调整的幅度。  
+  
+然后看$`\beta_t = \frac{q_t(s_t,a_t)}{\pi(a_t|s_t,\theta)}`$，挺有意思的。  
+$`\beta_t`$和$`q_t(s_t, a_t)`$成正比，也就是行动价值越大的动作，调整它的概率越大，让它有更多的可能被选中。而$`\beta_t`$和$`\pi(a_t|s_t,\theta)`$也就是动作选中的概率成反比，如果一个动作它被选中的概率比较小，那么它调整的幅度就更大。  
+说白了，这个公式，让行动价值更大的动作被选中概率更大，以更好的利用样本，让概率小的动作也更容易被选中，以更好探索。所以书上说，达到了探索与利用的平衡。  
+  
+最后，关于样本采样，说算法9.1提升了样本利用率，不太懂。  
+不过仔细看算法，其中的行动价值，也是需要未来的奖励计算得来的。这又回到之前的问题。一种是把数据都记下来，等回合结束从后往前计算行动价值。多回合的同一s,a行动价值组成期望来估计真实行动价值。一种是类似TD法，用下一个状态的行动价值估计值代替后面的计算。  
