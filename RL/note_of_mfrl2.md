@@ -1949,3 +1949,55 @@ $`\bar{v}_{\pi}^0(s)`$的意思是，回合开始收个状态的选择的分布�
 状态$`S`$遵循$`\rho_{\pi}`$，行动$`A`$遵循$`\pi(s,\theta)`$。  
 
 #### $`\bar{v}_{\pi}(s)`$的梯度
+```math
+\begin{align}
+\nabla_{\theta}\bar{v}_{\pi} &= \nabla_{\theta}\sum_{s\in\mathcal{S}} d_{\pi}(s) v_{\pi}(s)\\
+&= \sum_{s\in\mathcal{S}} \nabla_{\theta}d_{\pi}(s)v_{\pi}(s) + \sum_{s\in\mathcal{S}} d_{\pi}(s)\nabla_{\theta}v_{\pi}(s)
+\end{align}
+```
+后半部分$`\sum_{s\in\mathcal{S}} d_{\pi}(s)\nabla_{\theta}v_{\pi}(s)`$转为矩阵形式。$`d_{\pi}`$是$`n \times 1`$的，$`\nabla_{\theta}v_{\pi}(s)`$是$` nm \times 1`$的，所以还得克什么什么积转一下：  
+```math
+\begin{align}
+\sum_{s\in\mathcal{S}} d_{\pi}(s)\nabla_{\theta}v_{\pi}(s) &= (d_{\pi}^T \otimes I_m) \nabla_{\theta}v_{\pi}\\
+& 代入\nabla_{\theta}v_{\pi}\\
+&= (d_{\pi}^T \otimes I_m) [(I_n - \gamma P_{\pi})^{-1} \otimes I_m]u\\
+&= [d_{\pi}^T(I_n - \gamma P_{\pi})^{-1}]\otimes I_m u
+\end{align}
+```
+```math
+\begin{align}
+d_{\pi}^T(I_n - \gamma P_{\pi})^{-1}&=\frac{1}{1-\gamma}d_{\pi}^T\\
+d_{\pi}^T &= \frac{1}{1-\gamma}d_{\pi}^T(I_n - \gamma P_{\pi})\\
+(1-\gamma)d_{\pi}^T &= d_{\pi}^T(I_n - \gamma P_{\pi})\\
+(1-\gamma)d_{\pi}^T &= d_{\pi}^T - \gamma d_{\pi}^TP_{\pi}\\
+& 由于d_{\pi}^T=d_{\pi}^TP_{\pi}，所以\\
+(1-\gamma)d_{\pi}^T &= d_{\pi}^T - \gamma d_{\pi}^T
+\end{align}
+```
+得证，所以代入上式：  
+```math
+\begin{align}
+\sum_{s\in\mathcal{S}} d_{\pi}(s)\nabla_{\theta}v_{\pi}(s)
+&= [d_{\pi}^T(I_n - \gamma P_{\pi})^{-1}]\otimes I_m u\\
+&= \frac{1}{1-\gamma}d_{\pi}^T\otimes I_m u\\
+&= \frac{1}{1-\gamma}\sum_{s\in\mathcal{S}}d_{\pi}(s)\sum_{a\in\mathcal{A}}q_{\pi}(s,a)\nabla_{\theta}\pi(a|s,\theta)
+\end{align}
+```
+当$`\gamma \to 1`$时，$`\frac{1}{1-\gamma}\to\infty`$，所以第二项权重大，第一项可以省略（好吧，你说能省就能省），所以：  
+```math
+\begin{align}
+\nabla_{\theta}\bar{v}_{\pi} &\approx \frac{1}{1-\gamma}\sum_{s\in\mathcal{S}}d_{\pi}(s)\sum_{a\in\mathcal{A}}q_{\pi}(s,a)\nabla_{\theta}\pi(a|s,\theta)\\
+& 老套路，为了转成期望，需要把\pi从\nabla里提出来\\
+&= \frac{1}{1-\gamma}\sum_{s\in\mathcal{S}}d_{\pi}(s)\sum_{a\in\mathcal{A}}q_{\pi}(s,a)\pi(a|s,\theta)\nabla_{\theta}\ln \pi(a|s,\theta)\\
+&转成期望 \\
+&= \frac{1}{1-\gamma}\mathbb{E}[q_{\pi}(S,A)\nabla_{\theta}\ln\pi(A|S,\theta)]
+\end{align}
+```
+由于$`\bar{r}_{\pi} = (1-\gamma)\bar{v}_{\pi}`$，所以：  
+```math
+\begin{align}
+\nabla_{\theta}\bar{r}_{\pi} &= (1-\gamma)\nabla_{\theta}\bar{v}_{\pi}\\
+&\approx (1-\gamma) \frac{1}{1-\gamma}\mathbb{E}[q_{\pi}(S,A)\nabla_{\theta}\ln\pi(A|S,\theta)]\\
+&= \mathbb{E}[q_{\pi}(S,A)\nabla_{\theta}\ln\pi(A|S,\theta)]
+\end{align}
+```
