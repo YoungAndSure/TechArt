@@ -2126,3 +2126,71 @@ E[(X_2 - E[X_2])(X_1 - E[X_1])] & E[(X_2 - E[X_2])^2]
 ```
 可以看到，矩阵对角线是向量中随机变量自己的方差，矩阵中其他部分是随机变量和其他随机变量的协方差。  
 既然要最小化方差，就需要一个最小化的目标。这里用矩阵的迹来当做最小化目标。  
+迹就是矩阵的对角线和，也就是各个随机变量和自己的方差的和。  
+令$`\bar{x}=E[X]`$，$`\mathrm{tr}`$为迹，则：  
+```math
+\mathrm{tr}[\mathrm{Var}(X)]=\mathrm{tr}\mathbb{E}[(X-\bar{x})(X-\bar{x})^T]
+```
+分析一下这段，$`X`$是个由$`n`$个随机变量组成的向量，$`\bar{x}`$是它的期望，是个$`n`$个标量组成的向量。则$`(X-\bar{x})(X-\bar{x})^T`$是个$`n\times n`$的随机变量矩阵。$`\mathbb{E}[(X-\bar{x})(X-\bar{x})^T]`$是个$`n\times n`$的标量矩阵。而$`\mathrm{tr}`$意为标量矩阵的对角线和，是个标量。  
+继续：  
+```math
+\mathrm{tr}\mathbb{E}[(X-\bar{x})(X-\bar{x})^T]=\mathrm{tr}\mathbb{E}[XX^T-\bar{x}X^T-X\bar{x}^T+\bar{x}\bar{x}^T]
+```
+拆开之后每一步都是一个$`n \times n`$的矩阵。继续：  
+```math
+\mathrm{tr}\mathbb{E}[XX^T-\bar{x}X^T-X\bar{x}^T+\bar{x}\bar{x}^T]=\mathbb{E}[X^TX-X^T\bar{x}-\bar{x}^TX+\bar{x}^T\bar{x}]
+```
+也就是说，假设有两个n维向量$`Y,Z`$,则$`\mathrm{tr}[YZ^T]=Z^TY`$。举个具体例子：  
+```math
+Y=\begin{bmatrix}y_{1}\\y_{2}\end{bmatrix},\quad Z=\begin{bmatrix}z_{1}\\z_{2}\end{bmatrix}\\
+YZ^{T}={\begin{bmatrix}{y_{1}}\\{y_{2}}\end{bmatrix}}{\begin{bmatrix}{z_{1}}&{z_{2}}\end{bmatrix}}={\begin{bmatrix}{y_{1}z_{1}}&{y_{1}z_{2}}\\{y_{2}z_{1}}&{y_{2}z_{2}}\end{bmatrix}}\\
+\mathrm{tr}[YZ^{T}]=y_{1}z_{1}+y_{2}z_{2}\\
+Z^{T}Y=\begin{bmatrix}z_{1}&z_{2}\end{bmatrix}\begin{bmatrix}y_{1}\\y_{2}\end{bmatrix}=z_{1}y_{1}+z_{2}y_{2}=y_{1}z_{1}+y_{2}z_{2}\\
+\mathrm{tr}[YZ^{T}]=y_{1}z_{1}+y_{2}z_{2}=Z^{T}Y
+```
+主要是$`tr`$只关心对角线，所以调换顺序并没有改变对角线相乘之和。  
+继续：  
+```math
+\begin{align}
+&\mathbb{E}[X^TX-X^T\bar{x}-\bar{x}^TX+\bar{x}^T\bar{x}]\\
+&= \mathbb{E}[X^TX]-\mathbb{E}[X^T\bar{x}]-\mathbb{E}[\bar{x}^TX]+\mathbb{E}[\bar{x}^T\bar{x}]\\
+&= \mathbb{E}[X^TX] - \bar{x}^T\bar{x}-\bar{x}^T\bar{x} + \bar{x}^T\bar{x}\\
+&= \mathbb{E}[X^TX]- \bar{x}^T\bar{x}
+\end{align}
+```
+$`\bar{x}^T\bar{x}`$是固定的，所以只需要优化$`\mathbb{E}[X^TX]`$。  
+将$`X`$代入：  
+```math
+\begin{align}
+&\mathbb{E}[X^TX]\\
+&=\mathbb{E}[(\nabla_{\theta}\ln\pi(A|S,\theta)(q_{\pi}(S,A)-b(S)))^T(\nabla_{\theta}\ln\pi(A|S,\theta)(q_{\pi}(S,A)-b(S)))]\\
+&= \mathbb{E}[||\nabla_{\theta}\ln\pi(A|S,\theta||^2_2 (q_{\pi}(S,A)-b(S))^2]
+\end{align}
+```
+$`q_{\pi}(S,A)-b(S)`$是标量，（为什么呢？$`q_{\pi}`$是矩阵，$`q_{\pi}(S,A)-b(S)`$是其中一个元素了，当然是标量了，不要混淆)，$`\nabla_{\theta}\ln\pi(A|S,\theta)`$是向量（为什么？首先跟$`\pi(S,\theta)`$区分开，这个是action_size维的矩阵，但$`\pi(A|S,\theta)`$是其中一列。$`\theta`$会将一个action拓展到$`\theta`$维，所以。）  
+  
+现在得到了目标函数公式，其中$`b(S)`$是自变量。为了让目标函数最小，也就是目标函数梯度等于0：  
+```math
+\begin{align}
+\nabla_{b}\mathbb{E}[||\nabla_{\theta}\ln\pi(A|S,\theta||^2_2 (q_{\pi}(S,A)-b(S))^2]=0\\
+\mathbb{E}[\nabla_{b} ||\nabla_{\theta}\ln\pi(A|S,\theta||^2_2 (q_{\pi}(S,A)-b(S))^2 = 0\\
+-\mathbb{E}[2 ||\nabla_{\theta}\ln\pi(A|S,\theta||^2_2 (q_{\pi}(S,A)-b(S))]=0\\
+\mathbb{E}[2 ||\nabla_{\theta}\ln\pi(A|S,\theta||^2_2 q_{\pi}(S,A)] - \mathbb{E}[2 ||\nabla_{\theta}\ln\pi(A|S,\theta||^2_2 b(S)] = 0\\
+\mathbb{E}[2 ||\nabla_{\theta}\ln\pi(A|S,\theta||^2_2 q_{\pi}(S,A)]=\mathbb{E}[2 ||\nabla_{\theta}\ln\pi(A|S,\theta||^2_2 b(S)]\\
+b(S) = \frac{\mathbb{E}[2 ||\nabla_{\theta}\ln\pi(A|S,\theta||^2_2 q_{\pi}(S,A)]}{\mathbb{E}[2 ||\nabla_{\theta}\ln\pi(A|S,\theta||^2_2]}\\
+b(S) = \frac{\mathbb{E}[||\nabla_{\theta}\ln\pi(A|S,\theta||^2_2 q_{\pi}(S,A)]}{\mathbb{E}[||\nabla_{\theta}\ln\pi(A|S,\theta||^2_2]}
+\end{align}
+```
+这就是$`b(S)`$的最优值了。  
+>书里是把目标函数按$`S`$展开成$`s`$，我不明白为什么。  
+  
+这个$`b(S)`$取值过于复杂，不好应用，可以把$`\nabla_{\theta}\ln\pi(A|S,\theta||^2_2`$省略掉，变成:  
+```math
+\begin{align}
+b^{\dagger}(S) &= \mathbb{E}_{A-\pi}q_{\pi}(S,A)\\
+&= \sum_{a\in\mathcal{A}}\pi(a|S)q_{\pi}(S,a)\\
+&= v_{\pi}(S)
+\end{align}
+```
+就是状态价值。  
+
