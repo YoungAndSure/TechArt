@@ -2193,4 +2193,32 @@ b^{\dagger}(S) &= \mathbb{E}_{A-\pi}q_{\pi}(S,A)\\
 \end{align}
 ```
 就是状态价值。  
-
+  
+#### A2C算法描述  
+加上baseline之后的迭代公式:  
+```math
+\begin{align}
+\theta_{t+1} &= \theta_t + \nabla_{\theta}\ln\pi(A|S,\theta)(q_{\pi}(S,A) - v_{\pi}(S))\\
+&= \theta_t + \nabla_{\theta}\ln\pi(A|S,\theta)\delta_t(S,A)
+\end{align}
+```
+其中$`\delta_t(S,A)=q_{\pi}(S,A) - v_{\pi}(S)`$叫相对优势。啊，终于到相对优势了。  
+可以这么理解，$`q_{\pi}(S,A)`$是某个动作的价值，$`v_{\pi}(S)`$是所有动作的价值。这里计算的是某个动作相对于所有动作平均表现的优势。用更有用的相对值代替了绝对值。  
+随机梯度版：  
+```math
+\begin{align}
+\theta_{t+1} &= \theta_t + \nabla_{\theta}\ln\pi(a_t|s_t,\theta)(q_{t}(s_t,a_t) - v_{t}(s))\\
+&= \theta_t + \nabla_{\theta}\ln\pi(a_t|s_t,\theta)\delta_t(s_t,a_t)
+\end{align}
+```
+其中$`q_{t}(s,a)`$和$`v_{t}(s)`$有两种方法获取到，一种是等回合结束，逐个step计算行动价值和状态价值，代入到公式里迭代，也就是蒙特卡洛法。一种是边行动边计算，用估计值代替，也就是TD法。  
+用蒙特卡洛法的叫REINFORCE with baseline，用TD法的叫advantage actor-critic(A2C)。  
+TD法，要得到$`q_t(s,a)`$和$`v_t(s)`$可以用两个神经网络来估计，不过那样系统更复杂。由于行动价值可以用估计值代替:  
+```math
+q_t(s_t,a_t) \approx r_t(s_t,a_t) + \gamma v(s_{t+1})
+```
+因此：  
+```math
+\delta_t(s_t,a_t) \approx r_t(s_t,a_t) + \gamma v(s_{t+1}) - v(s_t)
+```
+这样，只需要一个神经网络用来估计状态价值就可以了，降低了系统复杂度。  
