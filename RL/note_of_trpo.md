@@ -51,3 +51,12 @@ $`\pi'`$:$`\pi'=\argmax L_{\pi_{old}}(\pi_{old})`$，根据老策略计算出的
 ```math
 L_{\pi_{\text{old}}}(\pi_{\text{new}}) - L_{\pi_{old}}(\pi_{old}) - \frac{2\epsilon\gamma}{(1 - \gamma)^2} \alpha^2
 ```
+
+#### 什么是total variation divergence  
+上边的Kakade & Langford策略，只能应用到类似九宫格这种，行为有限，且非神经网络的策略。在神经网络里，都是梯度下降更新策略，没法像公式里的，用个加权公式更新策略。这就是论文里说的，Kakade & Langford用于mixture policies,而TRPO可以用于general policies.  
+所以论文是要拓展这个策略更新公式，用一种可以求梯度的公式来衡量新老策略差异，反向传播更新策略。  
+total variation divergence是一种衡量两个策略差异的方法，叫总变差。  
+公式看着挺复杂，其实就是两个策略概率分布求差加和乘1/2。  
+强化学习里是每个状态一个策略，所以拓展为对所有状态求出的分布差异取max，就是公式7。  
+公式8给出了用TV衡量策略得到的目标更新下界。  
+
