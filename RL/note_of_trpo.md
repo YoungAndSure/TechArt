@@ -28,4 +28,26 @@ L_{\pi}(\tilde{\pi}) = \eta_{\pi} + \frac{1}{N}\sum_{i=1}^N \frac{\pi(s_i,a_i)}{
 
 这些都可能导致优势的估计错误。这时候如果完全按照估计值更新策略，就会放大错误，后续需要很多次正确迭代逐渐修复，如果误差持续累积，就会导致离真实期望越来越远。  
 
-
+#### Kakade & Langford 证明的下界怎么来的  
+几个符号概念：  
+$`\pi_{old}`$:老策略  
+$`\pi_{new}`$:新策略  
+$`L_{\pi_{old}}(\pi_{old})`$:在老策略$`\pi_{old}`$下得到的估计目标，其实就等于真实的目标$`\eta(\pi_{old})`$  
+$`L_{\pi_{old}}(\pi_{new})`$:在老策略$`\pi_{old}`$得到的价值体系下，应用新策略$`\pi_{new}`$得到的估计目标，理论上小于在新策略上运行得到的真实目标$`\eta(\pi_{new})`$  
+$`\pi'`$:$`\pi'=\argmax L_{\pi_{old}}(\pi_{old})`$，根据老策略计算出的目标，应用贪婪策略得到的策略，更新幅度会很大，注意，它等于$`\pi'=\argmax \eta(\pi_{old})`$,如果按照贪婪策略更新策略，$`\pi_{new}=\pi'`$了，现在是要取其中。由于是贪婪策略，所以必然$`L_{\pi_{old}}(\pi') \ge L_{\pi_{old}}(\pi_{old})`$  
+论文是说，如果新策略是老策略和最优策略的折中：  
+```math
+\pi_{new}(s,a) = (1-\alpha)\pi_{old}(s,a) + \alpha\pi'(s,a)
+```
+那么：  
+```math
+\begin{align}
+\eta(\pi_{\text{new}}) &\geq L_{\pi_{\text{old}}}(\pi_{\text{new}}) - \frac{2\epsilon\gamma}{(1 - \gamma)^2} \alpha^2\\
+\eta(\pi_{\text{new}}) - \eta(\pi_{\text{old}}) &\geq L_{\pi_{\text{old}}}(\pi_{\text{new}}) - \eta(\pi_{\text{old}}) - \frac{2\epsilon\gamma}{(1 - \gamma)^2} \alpha^2\\
+\eta(\pi_{\text{new}}) - \eta(\pi_{\text{old}}) &\geq L_{\pi_{\text{old}}}(\pi_{\text{new}}) - L_{\pi_{old}}(\pi_{old}) - \frac{2\epsilon\gamma}{(1 - \gamma)^2} \alpha^2\\
+\end{align}
+```
+因此，结论就是，如果按照以上折中的方式更新策略，目标更新的下界就是：  
+```math
+L_{\pi_{\text{old}}}(\pi_{\text{new}}) - L_{\pi_{old}}(\pi_{old}) - \frac{2\epsilon\gamma}{(1 - \gamma)^2} \alpha^2
+```
