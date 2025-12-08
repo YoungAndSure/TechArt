@@ -103,3 +103,25 @@ J(\theta)=\max_{\theta} [L_{\theta}(\tilde{\theta})]\\
 J(\theta)=\max_{\theta} [L_{\theta}(\tilde{\theta})]\\
 \text{subject to}\ \bar{D}_{KL}^{\rho_{\theta_{old}}}(\tilde{\theta},\theta) \le \delta
 ```
+
+#### 三个替换  
+原公式：  
+```math
+\max_{\theta} \sum_s \rho_{\theta_{old}}(s)\sum_a \pi_{\theta}(a|s)A_{\theta_{old}}(s,a)\\
+\text{suject to } \bar{D}_{KL}^{\rho_{\theta}}(\theta_{old}, \theta) \le \delta
+```
+状态访问换成期望：  
+```math
+\max_{\theta} \mathbb{E}_{s-\rho_{\theta_{old}}}[\sum_a \pi_{\theta}(a|s)A_{\theta_{old}}(s,a)]\\
+\text{suject to } \bar{D}_{KL}^{\rho_{\theta}}(\theta_{old}, \theta) \le \delta
+```
+相对优势换成行动价值：  
+```math
+\max_{\theta} \mathbb{E}_{s-\rho_{\theta_{old}}}[\sum_a \pi_{\theta}(a|s)Q_{\theta_{old}}(s,a)]\\
+\text{suject to } \bar{D}_{KL}^{\rho_{\theta}}(\theta_{old}, \theta) \le \delta
+```
+行动换成期望形式，为了在旧数据上跑新策略，需要增加重要度采样：  
+```math
+\max_{\theta} \mathbb{E}_{s-\rho_{\theta_{old},a-q}}[\frac{\pi_{\theta}(a|s)}{q(a|s)}Q_{\theta_{old}}(s,a)]\\
+\text{suject to } \bar{D}_{KL}^{\rho_{\theta}}(\theta_{old}, \theta) \le \delta
+```
