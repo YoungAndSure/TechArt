@@ -60,3 +60,46 @@ total variation divergence是一种衡量两个策略差异的方法，叫总变
 强化学习里是每个状态一个策略，所以拓展为对所有状态求出的分布差异取max，就是公式7。  
 公式8给出了用TV衡量策略得到的目标更新下界。  
 
+#### 怎么理解这个"下界"
+$`L_{\theta_{old}}(\theta)`$是对策略$`\theta`$下真实目标$`\eta(\theta)`$的估计。如果直接用$`\eta(\theta)`$做目标，策略更新后新的目标会更新到估计值$`L_{\theta_{old}}(\theta)`$。  
+但这样会导致以上说的误差累积问题。所以，需要一个公式来找到一个下界，下界就是说，更新多少，会保证策略是在提升的（比如更新0.00001）。  
+通过推演得出$`L_{\theta_{old}}(\theta)-CD_{KL}^{\max}(\theta_{old},\theta)`$是新策略下目标的下界。这个公式后半部分是$`CD_{KL}^{\max}(\theta_{old},\theta)`$,是个新老策略的度量，理论上如果新老策略没变化，这部分就是0，变化幅度越大，这部分值越大。  
+既然知道了下界，目标就可以更新为提升下界。因为下界更保守，既保证了会提升，又防止了提升过多。  
+
+#### 演化
+本来优化的目标是:  
+```math
+\eta(\theta)=\mathbb{E}_{s_0,a_0...}[\sum_{t=0}^{\infty}\gamma^tr(s_t)]
+```
+对于优化后的新策略$`\tilde{\theta}`$,目标可以拆解为：  
+```math
+\begin{align}
+\eta(\tilde{\theta}) &= \eta(\theta) + \mathbb{E}_{s_0,a_0...}[\sum_{t=0}^{\infty}\gamma^t A_{\theta}(s_t, a_t)]\\
+&= \eta(\theta) + \sum_s \rho_{\tilde{\theta}}(s)\sum_a \pi(a|s,\tilde{\theta}) A_{\theta}(s,a)
+\end{align}
+```
+也就是用新的策略加旧的价值体系计算相对优势，加上原来的目标，等于新策略目标。  
+但没按照新策略运行之前，没法得到新的状态分布，计算新的相对优势，所以用老策略的样本替代：  
+```math
+\begin{align}
+L_{\theta}(\tilde{\theta}) &= \eta(\theta) + \sum_s \rho_{\theta}(s)\sum_a \pi(a|s,\tilde{\theta}) A_{\theta}(s,a)\\
+&= L_{\theta}(\theta)+ \sum_s \rho_{\theta}(s)\sum_a \pi(a|s,\tilde{\theta}) A_{\theta}(s,a)
+\end{align}
+```
+得到的$`L_{\theta}(\tilde{\theta})`$是$`\eta(\tilde{\theta})`$的近似。  
+实际中以$`L_{\theta}(\tilde{\theta})`$为目标更新策略，会导致误差累积。因此在策略更新时，需要约束新策略的更新幅度。对于过去非神经网络的策略，可以直接对策略加权得到。对于现代的，基于神经网络的策略，需要用KL散度衡量新旧策略差异，通过差异构造目标函数下界，以下界作为目标，驱动参数更新。  
+因此，目标变为：  
+```math
+J(\theta)=\max_{\theta} [L_{\theta}(\tilde{\theta}) - CD_{KL}^{\max}(\tilde{\theta},\theta)]
+```
+也就是调整$`\theta`$提升下界。  
+但，这个公式会导致提升幅度很小，迭代很慢，因此，可以通过约束参数$`\theta`$的更新幅度来实现：  
+```math
+J(\theta)=\max_{\theta} [L_{\theta}(\tilde{\theta})]\\
+\text{subject to}\ D_{KL}^{\max}(\tilde{\theta},\theta) \le \delta
+```
+其中的$`\max`$算子的对象是所有状态。但对于状态连续、无限的任务来说，需要枚举所有状态，计算量太大，所以替换成期望：  
+```math
+J(\theta)=\max_{\theta} [L_{\theta}(\tilde{\theta})]\\
+\text{subject to}\ \bar{D}_{KL}^{\rho_{\theta_{old}}}(\tilde{\theta},\theta) \le \delta
+```
