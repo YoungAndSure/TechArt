@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram name="第 1 页" id="x_sHfSsqCgIbrhNbJAqp">
-        <mxGraphModel dx="3428" dy="1180" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="1" shadow="0">
+        <mxGraphModel dx="3034" dy="918" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="1" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -306,20 +306,23 @@
                 <mxCell id="71" value="&lt;font style=&quot;font-size: 36px;&quot;&gt;function approximation methods&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
                     <mxGeometry x="918" y="6580" width="570" height="50" as="geometry"/>
                 </mxCell>
-                <mxCell id="72" value="Policy Gradient Methods" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;" parent="1" vertex="1">
+                <mxCell id="105" style="edgeStyle=orthogonalEdgeStyle;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="72" target="104">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="72" value="目标函数、平稳分布、梯度" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;" parent="1" vertex="1">
                     <mxGeometry x="178" y="6700" width="510" height="120" as="geometry"/>
                 </mxCell>
-                <mxCell id="73" value="Actor-Critic Methods" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;" parent="1" vertex="1">
-                    <mxGeometry x="178" y="6970" width="510" height="120" as="geometry"/>
+                <mxCell id="73" value="Algorithm 10.1:QAC" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="260" y="7220" width="171" height="60" as="geometry"/>
                 </mxCell>
                 <mxCell id="74" value="TRPO" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;" parent="1" vertex="1">
-                    <mxGeometry x="178" y="7220" width="510" height="120" as="geometry"/>
+                    <mxGeometry x="178" y="7540" width="510" height="120" as="geometry"/>
                 </mxCell>
                 <mxCell id="75" value="PPO" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;" parent="1" vertex="1">
-                    <mxGeometry x="178" y="7480" width="510" height="120" as="geometry"/>
+                    <mxGeometry x="178" y="7800" width="510" height="120" as="geometry"/>
                 </mxCell>
                 <mxCell id="76" value="GRPO" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;" parent="1" vertex="1">
-                    <mxGeometry x="178" y="7730" width="510" height="120" as="geometry"/>
+                    <mxGeometry x="178" y="8050" width="510" height="120" as="geometry"/>
                 </mxCell>
                 <mxCell id="78" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=6;" parent="1" edge="1">
                     <mxGeometry width="50" height="50" relative="1" as="geometry">
@@ -390,6 +393,30 @@
                 </mxCell>
                 <mxCell id="101" style="edgeStyle=orthogonalEdgeStyle;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="-_xMZnbbGC9S2offaLYl-21" target="17">
                     <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="107" style="edgeStyle=orthogonalEdgeStyle;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="104" target="73">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="112" style="edgeStyle=orthogonalEdgeStyle;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="104" target="111">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="104" value="Actor:$$\theta_{t+1}=\theta_{t} + \alpha \nabla_{\theta}\ln\pi(a_t|s_t,\theta_t)q_{\pi}(s_t, a_t)$$" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry y="7030" width="280" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="108" style="edgeStyle=orthogonalEdgeStyle;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="106" target="73">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="106" value="Vaue(TD learning):$$w_{t+1}=w_{t}+\alpha_w [r_t + \gamma q(s_{t+1}, a_{t+1}, w_t) - q(s_t, a_t, w_t)]\nabla_w q(s_t, a_t, w_t)$$" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="400" y="7030" width="420" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="113" style="edgeStyle=orthogonalEdgeStyle;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="109" target="111">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="109" value="Vaue(Monte Carlo learning):$$q_t(s_t, a_t) = \sum_{k=t+1}^T \gamma^{k-t-1} r_k$$" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="1010" y="7030" width="270" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="111" value="Algorithm 9.1:Policy Gradient by Monte Carlo(REINFORCE)" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;" vertex="1" parent="1">
+                    <mxGeometry x="820" y="7220" width="210" height="60" as="geometry"/>
                 </mxCell>
             </root>
         </mxGraphModel>
