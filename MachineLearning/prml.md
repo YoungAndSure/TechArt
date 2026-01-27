@@ -53,4 +53,7 @@ effective complexity of the model，模型的有效复杂度。$\lambda$通过�
 in effect，翻译为实际上  
 看来，这书里有的句子看不懂有两种原因，一种是单词不会，一种是其中蕴含的概念不明白。每句都不可大意。  
 
-
+#### Here we simply note that, if we were trying to solve a practical
+application using this approach of minimizing an error function, we would have to find a way to determine a suitable value for the model complexity. The results above suggest a simple way of achieving this, namely by taking the available data and partitioning it into a training set, used to determine the coefficients w, and a separate validation set, also called a hold-out set, used to optimize the model complexity (either M or λ). In many cases, however, this will prove to be too wasteful of valuable training data, and we have to seek more sophisticated approaches.
+训练集和验证集都用的一个带了正则化的损失函数。  
+训练集只能得出损失函数最小，无法评估泛化能力，验证集独立于训练集，用来评估泛化能力。由于不确定参数M和lambda的取值，需要在训练集上取各种值进行训练，在验证集上看哪个效果最好。
