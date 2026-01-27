@@ -43,3 +43,11 @@ Note that often the coefficient w0 is omitted from the regularizer because its i
 然后，这里说的是为什么正则化的时候一般不处理$w_0$。  
 $w_0$是多项式里的常数项，控制的是拟合函数曲线的平移。对这个项进行惩罚，限制它的大小，等于限制了拟合函数曲线的平移。其他参数，控制的是曲线的形状。而正则化要解决的是，参数过大，导致曲线形状扭曲去适配噪声数据的问题，要解决的是让曲线形状不要那么的适配输入数据，重点调整的应该是影响曲线形状的参数。限制调整$w_0$不能解决曲线形状的问题。  
 另外，限制调整$w_0$导致曲线需要平移变更基线时受阻，其他参数为了损失函数最小会在基线错误的情况下拟合，得到更差的拟合效果。  
+
+#### 为什么公式里用$\lambda$，但图例里用$\ln \lambda$?  
+
+
+#### We see that in effect λ now controls the effective complexity
+of the model and hence determines the degree of over-fitting.effective什么意思？  
+effective complexity of the model，模型的有效复杂度。$\lambda$通过限制$w$的大小，实际限制了多项式的表达范围，也就是有效复杂度，强迫模型用更简单的曲线来拟合数据。  
+
