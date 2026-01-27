@@ -50,4 +50,7 @@ $w_0$是多项式里的常数项，控制的是拟合函数曲线的平移。对
 #### We see that in effect λ now controls the effective complexity
 of the model and hence determines the degree of over-fitting.effective什么意思？  
 effective complexity of the model，模型的有效复杂度。$\lambda$通过限制$w$的大小，实际限制了多项式的表达范围，也就是有效复杂度，强迫模型用更简单的曲线来拟合数据。  
+in effect，翻译为实际上  
+看来，这书里有的句子看不懂有两种原因，一种是单词不会，一种是其中蕴含的概念不明白。每句都不可大意。  
+
 
