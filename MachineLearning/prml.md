@@ -65,3 +65,11 @@ in effect，翻译为实际上
 #### and that when we remove an item of fruit from a box we are equally likely to select any of the pieces of fruit in the box.  
 remove这里是取出的意思，短暂的去除。  
 equally likely，等可能  
+
+#### the identity of the box 
+反正和the box不同，难准确翻译。  
+
+#### we shall define the probability of an event to be the fraction of times that event occurs out of the total number of trials, in the limit that the total number of trials goes to infinity.  
+the fraction of times, 次数的比值，这个要整体看  
+out of : 解释前面比值到底是哪个和哪个  
+in the limit : 表示一种极限条件， goes to infinity，说明具体是什么极限
