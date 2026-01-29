@@ -72,4 +72,16 @@ equally likely，等可能
 #### we shall define the probability of an event to be the fraction of times that event occurs out of the total number of trials, in the limit that the total number of trials goes to infinity.  
 the fraction of times, 次数的比值，这个要整体看  
 out of : 解释前面比值到底是哪个和哪个  
-in the limit : 表示一种极限条件， goes to infinity，说明具体是什么极限
+in the limit : 表示一种极限条件， goes to infinity，说明具体是什么极限  
+
+#### We can answer questions such as these, and indeed much more complex questions associated with
+problems in pattern recognition, once we have equipped ourselves with the two elementary rules of probability, known as the sum rule and the product rule.  
+indeed: 这里的意思是"甚至"  
+equipped: 掌握  
+
+#### $p(X|Y)$  
+很基础的概念，但看着看着就混淆了。因为公式简化了，很多信息很容易忽略。  
+$P(X|Y)$是个随机"变量"，不是具体值。因为$X$可以取各种值$x_i$。  
+$p(X)=p(X|Y)p(Y)$，首先，展开成一个具体的取值，更容易理解：  
+$p(X=x_i)=p(X=x_i|Y=y_j)p(Y=y_j)$  
+翻译：$p(X=x_i|Y=y_j)$是把$Y=y_j$事件的点全都圈出来作为分母，然后挑出$X=x_i$事件的点作为分子，相除。这里分子分母还挺明确的。$p(Y=y_j)$比较狗的一点是，隐含了分母是什么。$p(Y=y_j)$的分母是全体样本，包含所有$X=x_*$和$Y=y_*$的样本，分子是其中$Y=y_j$的事件数量。  
