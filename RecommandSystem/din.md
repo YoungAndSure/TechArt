@@ -25,3 +25,12 @@ DIN这里说的是，一般这个正则化项是针对网络里的所有参数�
 - 指出固定长度vector对user建模的缺陷，提出通过候选item对user特征加权的网络  
 - L2范数正则优化  
 - 数据自适应激活函数  
+
+#### multi hot  
+分类里只能命中一个的，是onehot，可以命中多个的，是multi hot  
+比如性别，男女未知，[0,0,1][1,0,0]只能有一个，加起来必须是1.
+比如爱好，政治，经济，历史，[0,1,1][1,1,1]，可以命中多个，加起来大于1.  
+
+#### As the inputs are high dimensional binary vectors, embedding layer is used to transform them into low dimensional dense representations.为什么输入是hign dimensional?  
+一个特征，比如item_id，有上亿个，经过one hot编码，形成一个长度上亿的向量，其中要表达的那个item的位置是1.这就是hign dimensional binary vector。  
+转成low dimensional dense representations，就是说one hot向量长度有上亿个，就需要构建一个行数上亿维度为D的矩阵。从矩阵中取出one hot 向量中为1的项对应的向量，就是将上亿维的onehot向量转成了一个1 * D维的稠密表示。  

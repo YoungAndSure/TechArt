@@ -85,3 +85,7 @@ $P(X|Y)$是个随机"变量"，不是具体值。因为$X$可以取各种值$x_i
 $p(X)=p(X|Y)p(Y)$，首先，展开成一个具体的取值，更容易理解：  
 $p(X=x_i)=p(X=x_i|Y=y_j)p(Y=y_j)$  
 翻译：$p(X=x_i|Y=y_j)$是把$Y=y_j$事件的点全都圈出来作为分母，然后挑出$X=x_i$事件的点作为分子，相除。这里分子分母还挺明确的。$p(Y=y_j)$比较狗的一点是，隐含了分母是什么。$p(Y=y_j)$的分母是全体样本，包含所有$X=x_*$和$Y=y_*$的样本，分子是其中$Y=y_j$的事件数量。  
+
+#### For the moment, we shall once again be explicit about distinguishing between the random variables and their instantiations
+be explicit about，明确，explicit是明确的意思  
+
