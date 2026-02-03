@@ -93,4 +93,13 @@ be explicit about，明确，explicit是明确的意思
 第一人称陈述，we shall，翻译成“将要”  
 第一人称疑问，shall we? 表询问  
 第二三人称陈述，you shall，表强烈语气的要求  
-should是应该的意思。
+should是应该的意思。  
+
+#### 概率函数必然是正的、递增的，所以它的导数概率密度函数必然是正的
+
+#### Now consider a probability density $p_x(x)$ that corresponds to a density $p_y(y)$ with respect to the new variable y, where the suffices denote the fact that $p_x(x)$ and $p_y(y)$ are different densities.  
+suffices: 下标  
+corresponds to: 这里意思是，通过一个概率分布的两个不同概率密度表示，这两个不同的概率密度表示，它用了corresponds。好难理解，这个"对应"包含的信息也太多了吧。  
+
+#### One consequence of this property is that the concept of the maximum of a probability density is dependent on the choice of variable.  
+说的是，概率分布是固有性质，一个概率分布可以由不同的概率密度函数表示，而概率密度函数的形状取决于选择的自变量。同一个概率分布中的不同概率密度函数之间的关系是乘了一个雅可比因子。所以，“概率密度最大值”这个属性，取决于概率密度函数，也就是概率密度函数自变量的选择。和概率分布无关。  
