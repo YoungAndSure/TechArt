@@ -89,3 +89,8 @@ $p(X=x_i)=p(X=x_i|Y=y_j)p(Y=y_j)$
 #### For the moment, we shall once again be explicit about distinguishing between the random variables and their instantiations
 be explicit about，明确，explicit是明确的意思  
 
+#### We shall limit ourselves to a relatively informal discussion.  
+第一人称陈述，we shall，翻译成“将要”  
+第一人称疑问，shall we? 表询问  
+第二三人称陈述，you shall，表强烈语气的要求  
+should是应该的意思。
