@@ -291,8 +291,14 @@
                 <mxCell id="64" value="&lt;font style=&quot;font-size: 12px;&quot;&gt;n-step Sarsa&lt;br&gt;$$G_t^{(n)} = R_{t+1} + \gamma R_{t+2} + ... + \gamma^{n-1}R_{t+n} + \gamma^n Q(S_{t+n},A_{t+n})$$&lt;br&gt;n=1时为Sarsa，n→∞时为MC&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=24;" parent="1" vertex="1">
                     <mxGeometry x="150" y="4320" width="470" height="130" as="geometry"/>
                 </mxCell>
-                <mxCell id="65" value="&lt;font style=&quot;font-size: 12px;&quot;&gt;Q-learning (Off-policy TD Control)&lt;br&gt;$$Q(S_t,A_t) \leftarrow Q(S_t,A_t) + \alpha[R_{t+1} + \gamma \max_a Q(S_{t+1},a) - Q(S_t,A_t)]$$&lt;br&gt;与Sarsa的区别：用max而非实际执行的动作&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=24;" parent="1" vertex="1">
+                <mxCell id="65" value="&lt;font style=&quot;font-size: 12px;&quot;&gt;Q-learning (Off-policy TD Control)&lt;br&gt;$$Q(S_t,A_t) \leftarrow Q(S_t,A_t) + \alpha[R_{t+1} + \gamma \max_a Q(S_{t+1},a) - Q(S_t,A_t)]$$&lt;br&gt;与Sarsa的区别：用max而非实际执行的动作&lt;br&gt;Off-policy原因：目标值与行为策略无关&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=24;" parent="1" vertex="1">
                     <mxGeometry x="150" y="4600" width="470" height="130" as="geometry"/>
+                </mxCell>
+                <mxCell id="117" value="&lt;font style=&quot;font-size: 12px;&quot;&gt;Expected Sarsa&lt;br&gt;$$Q(S_t,A_t) \leftarrow Q(S_t,A_t) + \alpha[R_{t+1} + \gamma \sum_a \pi(a|S_{t+1})Q(S_{t+1},a) - Q(S_t,A_t)]$$&lt;br&gt;用下一状态的期望值代替单个动作值，方差更低&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=24;" parent="1" vertex="1">
+                    <mxGeometry x="680" y="4320" width="470" height="130" as="geometry"/>
+                </mxCell>
+                <mxCell id="118" style="edgeStyle=orthogonalEdgeStyle;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=12;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="63" target="117">
+                    <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="69" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=6;" parent="1" edge="1">
                     <mxGeometry width="50" height="50" relative="1" as="geometry">
@@ -309,13 +315,19 @@
                 <mxCell id="105" style="edgeStyle=orthogonalEdgeStyle;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="72" target="104" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="72" value="&lt;b&gt;Policy Gradient&lt;/b&gt;&lt;br&gt;目标: $$J(\theta) = \mathbb{E}_{\pi_\theta}[G_0]$$&lt;br&gt;策略梯度定理: $$\nabla_\theta J(\theta) = \mathbb{E}_{\pi_\theta}[\nabla_\theta \ln\pi_\theta(a|s) \cdot Q^{\pi_\theta}(s,a)]$$&lt;br&gt;log-likelihood trick避免对未知的状态转移概率求导" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;" parent="1" vertex="1">
+                <mxCell id="119" value="&lt;b&gt;函数逼近 (Function Approximation)&lt;/b&gt;&lt;br&gt;用参数化函数代替表格：$$\hat{v}(s,w) = \phi^T(s)w$$&lt;br&gt;线性逼近：$$\phi(s)$$为状态特征向量&lt;br&gt;非线性逼近：神经网络&lt;br&gt;损失函数：$$J(w)=\mathbb{E}[(v_\pi(S)-\hat{v}(S,w))^2]$$" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="700" y="5270" width="410" height="190" as="geometry"/>
+                </mxCell>
+                <mxCell id="72" value="&lt;b&gt;Policy Gradient&lt;/b&gt;&lt;br&gt;目标: $$J(\theta) = \mathbb{E}_{\pi_\theta}[G_0]$$&lt;br&gt;策略梯度定理: $$\nabla_\theta J(\theta) = \mathbb{E}_{\pi_\theta}[\nabla_\theta \ln\pi_\theta(a|s) \cdot Q^{\pi_\theta}(s,a)]$$&lt;br&gt;log-likelihood trick避免对未知的状态转移概率求导&lt;br&gt;代理损失函数: $$L(\theta) = -\sum_{t=0}^T G_t \log\pi_\theta(a_t|s_t)$$" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;" parent="1" vertex="1">
                     <mxGeometry x="105.5" y="5270" width="510" height="190" as="geometry"/>
                 </mxCell>
                 <mxCell id="73" value="&lt;b&gt;A2C (Advantage Actor-Critic)&lt;/b&gt;&lt;br&gt;用TD法估计Advantage&lt;br&gt;$$\delta_t \approx r_t + \gamma V(s_{t+1}) - V(s_t)$$&lt;br&gt;只需一个V网络(不需Q网络)" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;" parent="1" vertex="1">
                     <mxGeometry x="177.5" y="5860" width="220" height="130" as="geometry"/>
                 </mxCell>
-                <mxCell id="74" value="&lt;b&gt;TRPO (Trust Region Policy Optimization)&lt;/b&gt;&lt;br&gt;问题：策略更新步长过大导致性能崩塌&lt;br&gt;解决：限制策略变化范围(KL散度约束)&lt;br&gt;$$\max_\theta \mathbb{E}[\frac{\pi_\theta(a|s)}{\pi_{\theta_{old}}(a|s)}A^{\pi_{old}}(s,a)]\ s.t.\ D_{KL}(\pi_{\theta_{old}}||\pi_\theta)\leq\delta$$" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;" parent="1" vertex="1">
+                <mxCell id="120" value="&lt;b&gt;Importance Sampling (重要性采样)&lt;/b&gt;&lt;br&gt;用旧策略$$\pi_{old}$$的样本估计新策略$$\pi$$的期望&lt;br&gt;$$\mathbb{E}_{x\sim p_0}[X] = \mathbb{E}_{x\sim p_1}[\frac{p_0(x)}{p_1(x)}X]$$&lt;br&gt;允许off-policy学习，但会增大方差" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="700" y="6050" width="360" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="74" value="&lt;b&gt;TRPO (Trust Region Policy Optimization)&lt;/b&gt;&lt;br&gt;问题：策略更新步长过大导致性能崩塌&lt;br&gt;解决：限制策略变化范围(KL散度约束)&lt;br&gt;$$\max_\theta \mathbb{E}[\frac{\pi_\theta(a|s)}{\pi_{\theta_{old}}(a|s)}A^{\pi_{old}}(s,a)]\ s.t.\ D_{KL}(\pi_{\theta_{old}}||\pi_\theta)\leq\delta$$&lt;br&gt;代理目标: $$L_{\theta_{old}}(\theta)$$" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;" parent="1" vertex="1">
                     <mxGeometry x="105.5" y="6180" width="510" height="120" as="geometry"/>
                 </mxCell>
                 <mxCell id="75" value="&lt;b&gt;PPO (Proximal Policy Optimization)&lt;/b&gt;&lt;br&gt;简化TRPO的KL约束为clip机制&lt;br&gt;$$L^{CLIP}(\theta) = \mathbb{E}[\min(r_t(\theta)A_t, \text{clip}(r_t(\theta), 1-\epsilon, 1+\epsilon)A_t)]$$&lt;br&gt;其中$$r_t(\theta)=\frac{\pi_\theta(a_t|s_t)}{\pi_{\theta_{old}}(a_t|s_t)}$$" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;" parent="1" vertex="1">
@@ -423,6 +435,9 @@
                 </mxCell>
                 <mxCell id="109" value="&lt;b&gt;Critic-MC&lt;/b&gt;&lt;br&gt;用实际回报估计:$$G_t = \sum_{k=0}^{T-t-1} \gamma^k r_{t+k+1}$$&lt;br&gt;无偏但高方差" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="937.5" y="5600" width="270" height="150" as="geometry"/>
+                </mxCell>
+                <mxCell id="122" value="&lt;b&gt;Baseline与Advantage Function&lt;/b&gt;&lt;br&gt;Baseline $$b(s)$$：减小方差，不改变期望&lt;br&gt;常选$$b(s)=V_\pi(s)$$&lt;br&gt;Advantage: $$A_\pi(s,a)=Q_\pi(s,a)-V_\pi(s)$$&lt;br&gt;表示动作相对平均水平的优劣" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="450" y="5860" width="220" height="130" as="geometry"/>
                 </mxCell>
                 <mxCell id="111" value="&lt;b&gt;REINFORCE with Baseline&lt;/b&gt;&lt;br&gt;用MC估计回报$$G_t$$&lt;br&gt;$$\theta \leftarrow \theta + \alpha \nabla_\theta \ln\pi(a_t|s_t)(G_t - V(s_t))$$&lt;br&gt;需等回合结束后更新" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;" parent="1" vertex="1">
                     <mxGeometry x="687.5" y="5860" width="270" height="170" as="geometry"/>
