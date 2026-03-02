@@ -276,23 +276,23 @@
                 <mxCell id="66" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=12;" parent="1" source="61" target="63" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="61" value="&lt;font style=&quot;font-size: 12px;&quot;&gt;Temporal-Difference Methods&lt;br&gt;结合MC和DP的优点：像MC一样从经验中学习(model-free)，像DP一样bootstrapping(用估计值更新估计值)&lt;br&gt;核心思想：用TD error更新价值&lt;br&gt;$$\delta_t = R_{t+1} + \gamma V(S_{t+1}) - V(S_t)$$&lt;br&gt;TD(0): $$V(S_t) \leftarrow V(S_t) + \alpha[R_{t+1} + \gamma V(S_{t+1}) - V(S_t)]$$&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=24;" parent="1" vertex="1">
-                    <mxGeometry x="150" y="3760" width="470" height="160" as="geometry"/>
+                <mxCell id="61" value="&lt;font style=&quot;font-size: 12px;&quot;&gt;Temporal-Difference Methods&lt;br&gt;TD(0): $$V(S_t) \leftarrow V(S_t) + \alpha[R_{t+1} + \gamma V(S_{t+1}) - V(S_t)]$$&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=24;" parent="1" vertex="1">
+                    <mxGeometry x="150" y="3760" width="470" height="130" as="geometry"/>
                 </mxCell>
                 <mxCell id="67" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=12;" parent="1" source="63" target="64" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="63" value="&lt;font style=&quot;font-size: 12px;&quot;&gt;Sarsa (State-Action-Reward-State-Action)&lt;br&gt;on-policy TD control，用当前策略采样，更新当前策略&lt;br&gt;$$q(s_t,a_t) \leftarrow q(s_t,a_t) + \alpha[r_{t+1} + \gamma q(s_{t+1},a_{t+1}) - q(s_t,a_t)]$$&lt;br&gt;TD target: $$r_{t+1} + \gamma q(s_{t+1},a_{t+1})$$&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=24;" parent="1" vertex="1">
+                <mxCell id="63" value="&lt;font style=&quot;font-size: 12px;&quot;&gt;Sarsa (On-policy TD Control)&lt;br&gt;$$Q(S_t,A_t) \leftarrow Q(S_t,A_t) + \alpha[R_{t+1} + \gamma Q(S_{t+1},A_{t+1}) - Q(S_t,A_t)]$$&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=24;" parent="1" vertex="1">
                     <mxGeometry x="150" y="4020" width="470" height="130" as="geometry"/>
                 </mxCell>
                 <mxCell id="68" style="edgeStyle=orthogonalEdgeStyle;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=12;" parent="1" source="64" target="65" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="64" value="&lt;font style=&quot;font-size: 12px;&quot;&gt;n-step Sarsa&lt;br&gt;Sarsa只用1步TD target，n-step Sarsa用n步：&lt;br&gt;$$G_t^{(n)} = R_{t+1} + \gamma R_{t+2} + ... + \gamma^{n-1}R_{t+n} + \gamma^n q(S_{t+n}, A_{t+n})$$&lt;br&gt;$$q(s_t,a_t) \leftarrow q(s_t,a_t) + \alpha[G_t^{(n)} - q(s_t,a_t)]$$&lt;br&gt;n=1时退化为Sarsa，n=∞时退化为MC&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=24;" parent="1" vertex="1">
-                    <mxGeometry x="150" y="4320" width="470" height="150" as="geometry"/>
+                <mxCell id="64" value="&lt;font style=&quot;font-size: 12px;&quot;&gt;n-step Sarsa&lt;br&gt;$$G_t^{(n)} = R_{t+1} + \gamma R_{t+2} + ... + \gamma^{n-1}R_{t+n} + \gamma^n Q(S_{t+n},A_{t+n})$$&lt;br&gt;n=1时为Sarsa，n→∞时为MC&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=24;" parent="1" vertex="1">
+                    <mxGeometry x="150" y="4320" width="470" height="130" as="geometry"/>
                 </mxCell>
-                <mxCell id="65" value="&lt;font style=&quot;font-size: 12px;&quot;&gt;Q-learning&lt;br&gt;off-policy TD control，用行为策略(如ε-greedy)采样，更新目标策略(greedy)&lt;br&gt;$$q(s_t,a_t) \leftarrow q(s_t,a_t) + \alpha[r_{t+1} + \gamma \max_{a} q(s_{t+1},a) - q(s_t,a_t)]$$&lt;br&gt;TD target: $$r_{t+1} + \gamma \max_{a} q(s_{t+1},a)$$&lt;br&gt;与Sarsa的区别：用max选择下一步最优动作，而非实际执行的动作&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=24;" parent="1" vertex="1">
-                    <mxGeometry x="150" y="4620" width="470" height="150" as="geometry"/>
+                <mxCell id="65" value="&lt;font style=&quot;font-size: 12px;&quot;&gt;Q-learning (Off-policy TD Control)&lt;br&gt;$$Q(S_t,A_t) \leftarrow Q(S_t,A_t) + \alpha[R_{t+1} + \gamma \max_a Q(S_{t+1},a) - Q(S_t,A_t)]$$&lt;br&gt;与Sarsa的区别：用max而非实际执行的动作&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=24;" parent="1" vertex="1">
+                    <mxGeometry x="150" y="4600" width="470" height="130" as="geometry"/>
                 </mxCell>
                 <mxCell id="69" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=6;" parent="1" edge="1">
                     <mxGeometry width="50" height="50" relative="1" as="geometry">
@@ -309,20 +309,20 @@
                 <mxCell id="105" style="edgeStyle=orthogonalEdgeStyle;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="72" target="104">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="72" value="&lt;div style=&quot;text-align: left;&quot;&gt;&lt;b&gt;策略梯度法 (Policy Gradient)&lt;/b&gt;&lt;br&gt;目标函数：$$J(\theta) = \mathbb{E}_{\tau \sim \pi_\theta}[G(\tau)] = \sum_\tau \text{Pr}(\tau|\theta)G(\tau)$$&lt;br&gt;策略梯度定理：$$\nabla_\theta J(\theta) = \mathbb{E}_{\tau \sim \pi_\theta}[G(\tau) \sum_{t=0}^T \nabla_\theta \log \pi_\theta(A_t|S_t)]$$&lt;br&gt;关键技巧：&lt;br&gt;1. log-likelihood trick：消除状态转移概率&lt;br&gt;2. 期望的梯度 → 梯度的期望，可用MC采样近似&lt;br&gt;代理损失函数：$$L(\theta) = -\sum_{t=0}^T G(\tau) \log \pi_\theta(A_t|S_t)$$&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;" parent="1" vertex="1">
-                    <mxGeometry x="178" y="6700" width="510" height="200" as="geometry"/>
+                <mxCell id="72" value="&lt;b&gt;Policy Gradient&lt;/b&gt;&lt;br&gt;目标: $$J(\theta) = \mathbb{E}_{\pi_\theta}[G_0]$$&lt;br&gt;策略梯度定理: $$\nabla_\theta J(\theta) = \mathbb{E}_{\pi_\theta}[\nabla_\theta \ln\pi_\theta(a|s) \cdot Q^{\pi_\theta}(s,a)]$$&lt;br&gt;log-likelihood trick避免对未知的状态转移概率求导" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="178" y="6700" width="510" height="120" as="geometry"/>
                 </mxCell>
-                <mxCell id="73" value="&lt;b&gt;A2C/A3C (Advantage Actor-Critic)&lt;/b&gt;&lt;br&gt;用Advantage代替Q值，减少方差&lt;br&gt;A3C: 异步多线程训练" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;" parent="1" vertex="1">
-                    <mxGeometry x="260" y="7320" width="300" height="80" as="geometry"/>
+                <mxCell id="73" value="&lt;b&gt;A2C/A3C&lt;/b&gt;&lt;br&gt;(Advantage Actor-Critic)" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="260" y="7220" width="171" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="74" value="&lt;div style=&quot;text-align: left;&quot;&gt;&lt;b&gt;TRPO (Trust Region Policy Optimization)&lt;/b&gt;&lt;br&gt;问题：直接用策略梯度更新可能导致策略崩溃（步长太大）&lt;br&gt;解决：限制新旧策略的KL散度，在信赖域内优化&lt;br&gt;替代目标：$$L_{\theta_{old}}(\theta) = \mathbb{E}[\frac{\pi_\theta(a|s)}{\pi_{\theta_{old}}(a|s)}A_{\theta_{old}}(s,a)]$$&lt;br&gt;优化问题：$$\max_\theta L_{\theta_{old}}(\theta) \quad s.t. \quad \bar{D}_{KL}(\theta_{old}, \theta) \le \delta$$&lt;br&gt;重要性采样：用旧策略样本评估新策略&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;" parent="1" vertex="1">
-                    <mxGeometry x="178" y="7540" width="510" height="180" as="geometry"/>
+                <mxCell id="74" value="&lt;b&gt;TRPO (Trust Region Policy Optimization)&lt;/b&gt;&lt;br&gt;问题：策略更新步长过大导致性能崩塌&lt;br&gt;解决：限制策略变化范围(KL散度约束)&lt;br&gt;$$\max_\theta \mathbb{E}[\frac{\pi_\theta(a|s)}{\pi_{\theta_{old}}(a|s)}A^{\pi_{old}}(s,a)]\ s.t.\ D_{KL}(\pi_{\theta_{old}}||\pi_\theta)\leq\delta$$" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="178" y="7540" width="510" height="120" as="geometry"/>
                 </mxCell>
-                <mxCell id="75" value="&lt;div style=&quot;text-align: left;&quot;&gt;&lt;b&gt;PPO (Proximal Policy Optimization)&lt;/b&gt;&lt;br&gt;TRPO的简化版，更易实现&lt;br&gt;用clip代替KL散度约束，限制策略更新幅度：&lt;br&gt;$$r_t(\theta) = \frac{\pi_\theta(a_t|s_t)}{\pi_{\theta_{old}}(a_t|s_t)}$$&lt;br&gt;$$L^{CLIP}(\theta) = \mathbb{E}[\min(r_t(\theta)A_t, \text{clip}(r_t(\theta), 1-\epsilon, 1+\epsilon)A_t)]$$&lt;br&gt;当A&gt;0且r&gt;1+ε，或A&lt;0且r&lt;1-ε时，clip生效防止过度更新&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;" parent="1" vertex="1">
-                    <mxGeometry x="178" y="7860" width="510" height="180" as="geometry"/>
+                <mxCell id="75" value="&lt;b&gt;PPO (Proximal Policy Optimization)&lt;/b&gt;&lt;br&gt;简化TRPO的KL约束为clip机制&lt;br&gt;$$L^{CLIP}(\theta) = \mathbb{E}[\min(r_t(\theta)A_t, \text{clip}(r_t(\theta), 1-\epsilon, 1+\epsilon)A_t)]$$&lt;br&gt;其中$$r_t(\theta)=\frac{\pi_\theta(a_t|s_t)}{\pi_{\theta_{old}}(a_t|s_t)}$$" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="178" y="7800" width="510" height="120" as="geometry"/>
                 </mxCell>
-                <mxCell id="76" value="&lt;div style=&quot;text-align: left;&quot;&gt;&lt;b&gt;GRPO (Group Relative Policy Optimization)&lt;/b&gt;&lt;br&gt;DeepSeek提出，用于LLM对齐&lt;br&gt;改进PPO：用组内相对奖励代替绝对奖励&lt;br&gt;对同一prompt采样多个response，计算组内相对优势&lt;br&gt;优点：无需单独训练Critic/Value网络，减少资源消耗&lt;br&gt;$$A_i = \frac{r_i - \text{mean}(r_{group})}{\text{std}(r_{group})}$$&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;" parent="1" vertex="1">
-                    <mxGeometry x="178" y="8180" width="510" height="160" as="geometry"/>
+                <mxCell id="76" value="&lt;b&gt;GRPO (Group Relative Policy Optimization)&lt;/b&gt;&lt;br&gt;来源：DeepSeek用于LLM对齐&lt;br&gt;改进：不需要Critic网络，用组内相对奖励作为Advantage&lt;br&gt;$$\hat{A}_i = \frac{r_i - \text{mean}(r_1,...,r_G)}{\text{std}(r_1,...,r_G)}$$" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="178" y="8050" width="510" height="120" as="geometry"/>
                 </mxCell>
                 <mxCell id="78" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=6;" parent="1" edge="1">
                     <mxGeometry width="50" height="50" relative="1" as="geometry">
@@ -333,11 +333,11 @@
                 <mxCell id="79" value="" style="shape=curlyBracket;whiteSpace=wrap;html=1;rounded=1;flipH=1;labelPosition=right;verticalLabelPosition=middle;align=left;verticalAlign=middle;" parent="1" vertex="1">
                     <mxGeometry x="757" y="3760" width="20" height="690" as="geometry"/>
                 </mxCell>
-                <mxCell id="80" value="&lt;b&gt;on-policy&lt;/b&gt;&lt;br&gt;用当前策略采样&lt;br&gt;更新当前策略" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
-                    <mxGeometry x="820" y="4070" width="100" height="60" as="geometry"/>
+                <mxCell id="80" value="on-policy&lt;br&gt;(采样策略=目标策略)" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="820" y="4090" width="60" height="30" as="geometry"/>
                 </mxCell>
-                <mxCell id="81" value="&lt;b&gt;off-policy&lt;/b&gt;&lt;br&gt;用行为策略采样&lt;br&gt;更新目标策略" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
-                    <mxGeometry x="820" y="4670" width="100" height="60" as="geometry"/>
+                <mxCell id="81" value="off-policy&lt;br&gt;(采样策略≠目标策略)" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="827" y="4670" width="60" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="93" style="edgeStyle=orthogonalEdgeStyle;html=1;" parent="1" source="82" target="91" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
@@ -400,81 +400,23 @@
                 <mxCell id="112" style="edgeStyle=orthogonalEdgeStyle;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="104" target="111">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="104" value="&lt;b&gt;Actor (策略网络)&lt;/b&gt;&lt;br&gt;输入：状态s&lt;br&gt;输出：动作概率分布 π(a|s,θ)&lt;br&gt;更新：$$\theta_{t+1}=\theta_{t} + \alpha \nabla_{\theta}\ln\pi(a_t|s_t,\theta_t)q_{\pi}(s_t, a_t)$$&lt;br&gt;用Advantage代替q：$$\nabla_\theta J(\theta) = \mathbb{E}[\nabla_\theta \log\pi_\theta(a|s) A^\pi(s,a)]$$" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-                    <mxGeometry y="7030" width="310" height="130" as="geometry"/>
+                <mxCell id="104" value="&lt;b&gt;Actor (策略网络)&lt;/b&gt;&lt;br&gt;输入s，输出π(a|s)&lt;br&gt;$$\theta \leftarrow \theta + \alpha \nabla_\theta \ln\pi(a|s,\theta) \cdot A(s,a)$$&lt;br&gt;A可用q、q-V、TD error" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry y="7030" width="280" height="80" as="geometry"/>
                 </mxCell>
                 <mxCell id="108" style="edgeStyle=orthogonalEdgeStyle;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="106" target="73">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="106" value="&lt;b&gt;Critic (价值网络) - TD Learning&lt;/b&gt;&lt;br&gt;输入：状态s (或状态-动作对)&lt;br&gt;输出：价值估计 V(s,w) 或 Q(s,a,w)&lt;br&gt;更新：$$w_{t+1}=w_{t}+\alpha_w [r_t + \gamma q(s_{t+1}, a_{t+1}, w_t) - q(s_t, a_t, w_t)]\nabla_w q(s_t, a_t, w_t)$$&lt;br&gt;Advantage: $$A^\pi(s,a) = Q^\pi(s,a) - V^\pi(s)$$" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-                    <mxGeometry x="400" y="7030" width="420" height="130" as="geometry"/>
+                <mxCell id="106" value="&lt;b&gt;Critic-TD (价值网络)&lt;/b&gt;&lt;br&gt;输入(s,a)或s，输出Q或V&lt;br&gt;$$w \leftarrow w + \alpha_w \delta_t \nabla_w V(s_t,w)$$&lt;br&gt;其中$$\delta_t = r_t + \gamma V(s_{t+1}) - V(s_t)$$" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="400" y="7030" width="420" height="80" as="geometry"/>
                 </mxCell>
                 <mxCell id="113" style="edgeStyle=orthogonalEdgeStyle;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="109" target="111">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="109" value="&lt;b&gt;Critic (价值网络) - MC Learning&lt;/b&gt;&lt;br&gt;用完整回合的实际回报估计价值：&lt;br&gt;$$G_t = \sum_{k=t+1}^T \gamma^{k-t-1} r_k$$&lt;br&gt;无偏估计，但方差大&lt;br&gt;需要等待回合结束" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-                    <mxGeometry x="1010" y="7030" width="270" height="130" as="geometry"/>
+                <mxCell id="109" value="&lt;b&gt;Critic-MC&lt;/b&gt;&lt;br&gt;用实际回报估计:$$G_t = \sum_{k=0}^{T-t-1} \gamma^k r_{t+k+1}$$&lt;br&gt;无偏但高方差" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="1010" y="7030" width="270" height="80" as="geometry"/>
                 </mxCell>
-                <mxCell id="111" value="Algorithm 9.1:Policy Gradient by Monte Carlo(REINFORCE)" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;" vertex="1" parent="1">
+                <mxCell id="111" value="&lt;b&gt;REINFORCE&lt;/b&gt;&lt;br&gt;(MC策略梯度)" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;" vertex="1" parent="1">
                     <mxGeometry x="820" y="7220" width="210" height="60" as="geometry"/>
-                </mxCell>
-                <mxCell id="114" style="edgeStyle=orthogonalEdgeStyle;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="73" target="74">
-                    <mxGeometry relative="1" as="geometry"/>
-                </mxCell>
-                <mxCell id="115" style="edgeStyle=orthogonalEdgeStyle;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="74" target="75">
-                    <mxGeometry relative="1" as="geometry"/>
-                </mxCell>
-                <mxCell id="116" style="edgeStyle=orthogonalEdgeStyle;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="75" target="76">
-                    <mxGeometry relative="1" as="geometry"/>
-                </mxCell>
-                <mxCell id="117" value="&lt;b&gt;重要性采样 (Importance Sampling)&lt;/b&gt;&lt;br&gt;用旧策略的样本估计新策略下的期望&lt;br&gt;$$\mathbb{E}_{x\sim p}[f(x)] = \mathbb{E}_{x\sim q}[\frac{p(x)}{q(x)}f(x)]$$&lt;br&gt;off-policy学习的基础" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;" vertex="1" parent="1">
-                    <mxGeometry x="750" y="7540" width="280" height="100" as="geometry"/>
-                </mxCell>
-                <mxCell id="118" style="edgeStyle=none;html=1;dashed=1;" edge="1" parent="1" source="117" target="74">
-                    <mxGeometry relative="1" as="geometry"/>
-                </mxCell>
-                <mxCell id="119" value="&lt;b&gt;基线 (Baseline)&lt;/b&gt;&lt;br&gt;减少方差的技巧&lt;br&gt;$$\nabla_\theta J(\theta) = \mathbb{E}[\nabla_\theta\log\pi_\theta(a|s)(G_t - b(s))]$$&lt;br&gt;常用基线：状态价值 V(s)" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;" vertex="1" parent="1">
-                    <mxGeometry x="750" y="7370" width="280" height="100" as="geometry"/>
-                </mxCell>
-                <mxCell id="120" style="edgeStyle=none;html=1;dashed=1;" edge="1" parent="1" source="119" target="73">
-                    <mxGeometry relative="1" as="geometry"/>
-                </mxCell>
-                <mxCell id="121" value="" style="shape=curlyBracket;whiteSpace=wrap;html=1;rounded=1;flipH=1;labelPosition=right;verticalLabelPosition=middle;align=left;verticalAlign=middle;" vertex="1" parent="1">
-                    <mxGeometry x="700" y="7200" width="20" height="600" as="geometry"/>
-                </mxCell>
-                <mxCell id="122" value="Actor-Critic框架&lt;br&gt;结合策略梯度和价值函数" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-                    <mxGeometry x="730" y="7470" width="140" height="30" as="geometry"/>
-                </mxCell>
-                <mxCell id="123" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;RL算法总览&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1" vertex="1" parent="1">
-                    <mxGeometry x="400" y="160" width="160" height="40" as="geometry"/>
-                </mxCell>
-                <mxCell id="124" value="" style="shape=curlyBracket;whiteSpace=wrap;html=1;rounded=1;flipH=1;labelPosition=right;verticalLabelPosition=middle;align=left;verticalAlign=middle;rotation=-90;" vertex="1" parent="1">
-                    <mxGeometry x="263.5" y="1005" width="20" height="550" as="geometry"/>
-                </mxCell>
-                <mxCell id="125" value="需要环境模型&lt;br&gt;(状态转移概率、奖励)" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-                    <mxGeometry x="440" y="1380" width="140" height="30" as="geometry"/>
-                </mxCell>
-                <mxCell id="126" value="" style="endArrow=classic;html=1;strokeWidth=2;fontSize=14;" edge="1" parent="1">
-                    <mxGeometry width="50" height="50" relative="1" as="geometry">
-                        <mxPoint x="-700" y="300" as="sourcePoint"/>
-                        <mxPoint x="-700" y="8400" as="targetPoint"/>
-                    </mxGeometry>
-                </mxCell>
-                <mxCell id="127" value="算法演进" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;fontStyle=1" vertex="1" connectable="0" parent="126">
-                    <mxGeometry x="-0.4832" y="1" relative="1" as="geometry">
-                        <mxPoint x="-1" y="581" as="offset"/>
-                    </mxGeometry>
-                </mxCell>
-                <mxCell id="128" value="&lt;b&gt;DQN (Deep Q-Network)&lt;/b&gt;&lt;br&gt;用神经网络逼近Q函数&lt;br&gt;经验回放 + 目标网络&lt;br&gt;off-policy, value-based" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;" vertex="1" parent="1">
-                    <mxGeometry x="750" y="4850" width="280" height="100" as="geometry"/>
-                </mxCell>
-                <mxCell id="129" style="edgeStyle=orthogonalEdgeStyle;html=1;dashed=1;" edge="1" parent="1" source="65" target="128">
-                    <mxGeometry relative="1" as="geometry"/>
-                </mxCell>
-                <mxCell id="130" value="神经网络逼近" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="129">
-                    <mxGeometry x="-0.2" relative="1" as="geometry">
-                        <mxPoint as="offset"/>
-                    </mxGeometry>
                 </mxCell>
             </root>
         </mxGraphModel>
