@@ -73,8 +73,112 @@ $\theta_{i+1} = \theta_i + \eta \nabla f(\theta_i)$
 还有一个重要问题是，这种方法需要大量样本做训练才能估的准。而每次ab实验的成本是比较高的。
 
 #### Bayesian Optimization  
-但这里的问题是，实验成本比较高，攒够样本需要足够长时间，动用资源比较多，线上不能频繁调整实验。  
+以上函数逼近法的问题是，实验成本比较高，攒够样本需要足够长时间，动用资源比较多，线上不能频繁调整实验。  
 所以问题变为，如何用更少的尝试次数，最大可能的逼近$f$。
-这种的解决思路其实就是，每次尝试之后，要评估这次尝试结果的可信度，根据可信度去评估下一步要怎么调。
+当实验的次数比较少的时候，每次实验就必须评估可信度。这时候贝叶斯就上场了。  
+贝叶斯的哲学，先假设一个分布，然后用数据来修正分布。贝叶斯不假设f的形式，而是假设f的输出服从某个概率分布。通过收集的样本，来修正对f输出的信念分布。  
+  
+##### 先验分布假设
+现在有一系列超参，作为f的输入：  
+$$\theta_1, \theta_2, \theta_3...$$
+通过定义kernel，可以衡量输入之间的相似性，kernel选RBF：  
+$$k(\theta_i, \theta_j) = \exp(-\frac{||\theta_i-\theta_j||^2}{2l^2})$$
+定义输出$f(\theta_i)$的相似性和输入相关：  
+$$\mathrm{Cov}(f(\theta_i),f(\theta_j)) = k(\theta_i, \theta_j)$$
+假设，f输出服从多元高斯分布：  
+$$f(\theta_1),f(\theta_2),f(\theta_3)... \sim \mathcal{N}(\mathrm{m}, \mathrm{K})$$  
+假设m=0,  
+$$
+K = \begin{bmatrix}
+  k(\theta_{1},\theta_{1})  &  k(\theta_{1},\theta_{2}) &  \cdots &  k(\theta_{1},\theta_{k})\\
+  k(\theta_{2},\theta_{1})  &  k(\theta_{2},\theta_{2}) &  \cdots &  k(\theta_{2},\theta_{k})\\
+  \vdots &  \vdots &  \ddots &  \vdots \\
+  k(\theta_{k},\theta_{1})  &  k(\theta_{k},\theta_{2}) &  \cdots &  k(\theta_{k},\theta_{k})
+\end{bmatrix}
+$$
+也就是$$f(\theta_1),f(\theta_2),f(\theta_3)... \sim \mathcal{N}(\mathrm{0}, \mathrm{K})$$
+这定义了函数在任意有限点集合上的联合分布，因此构成了高斯过程先验。  
+  
+每次实验，对于一个输入$\theta_i$，经过f的输出$f(\theta_i)$是一个随机变量，
+现在我们通过实验得到了带噪声的真实的输出：$r(\theta_1),r(\theta_2),r(\theta_3)...$  其中：  
+$$r(\theta_t) = f(\theta_t)+\epsilon, \epsilon \sim \mathcal{N}(0, \sigma_n^2)$$
+  
+根据前面对$f(\theta_i)$的假设和$\epsilon$的假设，可以得出输出$r(\theta_i)$的假设：  
+$$\mathbf{r}\sim \mathcal{N}(0,K+\sigma_n^2I)$$
+因为两个独立高斯随机向量相加，结果仍然是高斯；均值相加，协方差相加。  
 
-#### Bandit methods (UCB)
+##### 数据收集
+然后，我们做k次实验，得到k组数据：  
+$$D=\{\theta_1, r(\theta_1)\},\{\theta_2, r(\theta_2)\}...\{\theta_k, r(\theta_k)\}$$  
+
+在已有数据$D$条件下，求新点函数值的后验分布。
+
+##### 后验更新
+现在有了对输出$r$的分布假设：  
+$$\mathbf{r}\sim \mathcal{N}(0,K+\sigma_n^2I)$$
+，有了真实的数据：  
+$$\{\theta_1, r(\theta_1)\},\{\theta_2, r(\theta_2)\}...\{\theta_k, r(\theta_k)\}$$
+可以通过这些已收集到的数据对新的点$\theta_*$进行估计了。  
+所谓估计就是，评估$p(f(\theta_*)|\{\theta_1, r(\theta_1)\},\{\theta_2, r(\theta_2)\}...\{\theta_k, r(\theta_k)\})$的概率。  
+先看只有一个数据点$$\{\theta_1, r(\theta_1)\}$$的推导。也就是求$p(f(\theta_*)|r(\theta_1))$。  
+根据假设，$f(\theta_*)$和$r(\theta_1)$的联合分布为：  
+$$
+\begin{bmatrix}
+r(\theta_1) \\
+f(\theta_*)
+\end{bmatrix}
+\sim
+\mathcal{N}\left(
+\begin{bmatrix}
+0 \\
+0
+\end{bmatrix},
+\begin{bmatrix}
+k_{11} + \sigma_n^2 & k_{1*} \\
+k_{*1} & k_{**}
+\end{bmatrix}
+\right)
+$$
+其中：  
+$k_{11}=k(\theta_1, \theta_1)$  
+$k_{1*}=k(\theta_1, \theta_*)$  
+$k_{**}=k(\theta_*, \theta_*)$  
+又根据二维高斯条件分布公式：  
+如果：
+$$
+\begin{bmatrix}
+x \\
+y
+\end{bmatrix}
+\sim
+\mathcal{N}\left(
+\begin{bmatrix}
+0 \\
+0
+\end{bmatrix},
+\begin{bmatrix}
+A & C \\
+C & B
+\end{bmatrix}
+\right)
+$$
+
+那么：
+$$
+y \mid x \sim \mathcal{N}\left( \frac{C}{A}x, \ B - \frac{C^{2}}{A} \right)
+$$
+所以：  
+$$f(\theta_*)|r(\theta_1)\sim \mathcal{N}(\mu_* = \frac{k_{1*}}{k_{11} + \sigma_n^2} \cdot r_1, \sigma_*^2 = k_{**} - \frac{k_{1*}^2}{k_{11} + \sigma_n^2})$$
+
+这就是由已知的一个样本点估计新点的概率分布公式。  
+推广到k个点：  
+$$D=\{\theta_1, r(\theta_1)\},\{\theta_2, r(\theta_2)\}...\{\theta_k, r(\theta_k)\}$$
+$$
+f(\theta_*) \mid D \sim \mathcal{N}\left(k_*^\top (K + \sigma_n^2 I)^{-1} \mathbf{r}, \ k_{**} - k_*^\top (K + \sigma_n^2 I)^{-1} k_*\right)
+$$
+这样就可以根据数据得到任意候选点的后验均值和方差，进而通过 acquisition function 选择下一次实验的点。  
+
+##### 找最优值点  
+
+
+#### LLM 调超参
