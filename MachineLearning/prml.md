@@ -211,3 +211,53 @@ $$= \sum_{n=1}^{N} \left[ -\frac{1}{2}\ln(2\pi\sigma^2) - \frac{1}{2\sigma^2}(x_
 
 $$= -\frac{N}{2}\ln(2\pi\sigma^2) - \frac{1}{2\sigma^2}\sum_{n=1}^{N}(x_n-\mu)^2$$
 
+利用 $\ln(AB) = \ln A + \ln B$，将第一项展开：
+
+$$= -\frac{N}{2}\ln(2\pi) - \frac{N}{2}\ln(\sigma^2) - \frac{1}{2\sigma^2}\sum_{n=1}^{N}(x_n-\mu)^2$$
+
+**第三步：对 $\mu$ 求偏导，令其为零**
+
+前两项与 $\mu$ 无关，求导后消掉，只剩第三项：
+
+$$\frac{\partial}{\partial\mu}\ln p(\mathbf{x}|\mu,\sigma^2) = \frac{1}{\sigma^2}\sum_{n=1}^{N}(x_n-\mu) = 0$$
+
+两边乘以 $\sigma^2$（因为 $\sigma^2 > 0$，不影响等号）：
+
+$$\sum_{n=1}^{N}(x_n-\mu) = 0$$
+
+展开求和，将 $\mu$ 项移到右边：
+
+$$\sum_{n=1}^{N}x_n = N\mu$$
+
+两边除以 $N$，得到 $\mu$ 的最大似然估计：
+
+$$\mu_{ML} = \frac{1}{N}\sum_{n=1}^{N}x_n$$
+
+即样本均值。
+
+**第四步：对 $\sigma^2$ 求偏导，令其为零**
+
+令 $v = \sigma^2$，简化书写：
+
+$$\frac{\partial}{\partial v}\ln p(\mathbf{x}|\mu,v) = \frac{\partial}{\partial v}\left[-\frac{N}{2}\ln(2\pi) - \frac{N}{2}\ln(v) - \frac{1}{2v}\sum_{n=1}^{N}(x_n-\mu)^2\right] = 0$$
+
+逐项求导：
+
+- 第一项：常数，导数为 $0$
+- 第二项：$\frac{\partial}{\partial v}\left[-\frac{N}{2}\ln(v)\right] = -\frac{N}{2v}$
+- 第三项：将 $\frac{1}{v}$ 视为 $v^{-1}$，求导后指数变 $-2$，即 $v^{-2} = \frac{1}{v^2}$：$\frac{\partial}{\partial v}\left[-\frac{1}{2v}\sum_{n=1}^{N}(x_n-\mu)^2\right] = \frac{1}{2v^2}\sum_{n=1}^{N}(x_n-\mu)^2$
+
+合并三项：
+
+$$-\frac{N}{2v} + \frac{1}{2v^2}\sum_{n=1}^{N}(x_n-\mu)^2 = 0$$
+
+两边同时乘以 $2v^2$：
+
+$$-Nv + \sum_{n=1}^{N}(x_n-\mu)^2 = 0$$
+
+移项，两边除以 $-N$，代回 $v = \sigma^2$，得到 $\sigma^2$ 的最大似然估计：
+
+$$\sigma^2_{ML} = \frac{1}{N}\sum_{n=1}^{N}(x_n-\mu_{ML})^2$$
+
+即样本方差。
+
