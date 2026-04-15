@@ -261,3 +261,110 @@ $$\sigma^2_{ML} = \frac{1}{N}\sum_{n=1}^{N}(x_n-\mu_{ML})^2$$
 
 即样本方差。
 
+---
+
+#### 为什么最大化似然会低估方差——$\mu_{ML}$ 和 $\sigma_{ML}^2$ 的期望推导
+
+**问题**：对估计量 $\mu_{ML}$ 和 $\sigma_{ML}^2$ 求期望，观察它们是否等于真实参数 $\mu$ 和 $\sigma^2$。
+
+**背景**：$\mu_{ML}$ 和 $\sigma_{ML}^2$ 本身是随机变量，因为它们依赖于随机采样的数据集。如果重复采样多次，每次都会得到不同的估计值。求期望就是在问：这些估计值的平均行为是什么。
+
+**前提准备**：样本 $x_n$ 由高斯分布 $\mathcal{N}(\mu, \sigma^2)$ 独立生成。
+
+---
+
+##### 第一部分：$\mathbb{E}[\mu_{ML}] = \mu$（均值估计无偏）
+
+对 $\mu_{ML} = \frac{1}{N}\sum x_i$ 取期望：
+
+$$\mathbb{E}[\mu_{ML}] = \mathbb{E}\left[\frac{1}{N}\sum_{i=1}^{N}x_i\right] = \frac{1}{N}\sum_{i=1}^{N}\mathbb{E}[x_i] = \frac{1}{N}\sum_{i=1}^{N}\mu = \mu$$
+
+每个样本的期望都是 $\mu$，所以均值的估计无偏。
+
+---
+
+##### 第二部分：$\mathbb{E}[\sigma_{ML}^2] = \frac{N-1}{N}\sigma^2$（方差估计有偏）
+
+**从定义出发，逐步变形**
+
+$$\sigma_{ML}^2 = \frac{1}{N}\sum_{i=1}^{N}(x_i - \mu_{ML})^2$$
+
+**为什么要展开？**
+
+$\sigma_{ML}^2 = \frac{1}{N}\sum(x_i - \mu_{ML})^2$ 直接求期望是困难的——分子里 $\mu_{ML}$ 和 $x_i$ 纠缠在一起（$\mu_{ML}$ 本身是 $x_i$ 的函数），无法分别处理。
+
+但更重要的是：我们需要**显式地把 $\mu_{ML}$ 和 $\mu$ 的偏差衡量出来**，因为偏差（bias）才是导致方差被低估的根源。
+
+通过恒等变形，将 $\mu_{ML}$ 从平方和中剥离出来：
+
+$$\sigma_{ML}^2 = \frac{1}{N}\sum(x_i - \mu)^2 - (\mu_{ML} - \mu)^2$$
+
+分解后的两项各有清晰的概率含义：
+- $\frac{1}{N}\sum(x_i-\mu)^2$：样本围绕**真实均值** $\mu$ 的偏差平方和，期望是 $\sigma^2$
+- $(\mu_{ML} - \mu)^2$：**样本均值**偏离真实均值的平方，期望是 $\sigma^2/N$
+
+两项都能独立求出期望，合并后即可得到 $\mathbb{E}[\sigma_{ML}^2]$。
+
+**展开步骤**：把 $\mu_{ML}$ 拆成 $\mu + (\mu_{ML} - \mu)$，对每个偏差项做展开：
+
+$$x_i - \mu_{ML} = x_i - \mu - (\mu_{ML} - \mu)$$
+
+$$(x_i - \mu_{ML})^2 = [(x_i - \mu) - (\mu_{ML} - \mu)]^2 = (x_i - \mu)^2 - 2(x_i - \mu)(\mu_{ML} - \mu) + (\mu_{ML} - \mu)^2$$
+
+对 $i = 1$ 到 $N$ 求和：
+
+$$\sum_{i=1}^{N}(x_i - \mu_{ML})^2 = \sum_{i=1}^{N}(x_i - \mu)^2 - 2(\mu_{ML} - \mu)\sum_{i=1}^{N}(x_i - \mu) + N(\mu_{ML} - \mu)^2$$
+
+中间项展开：
+
+$$\sum_{i=1}^{N}(x_i - \mu) = \sum_{i=1}^{N}x_i - N\mu = N\mu_{ML} - N\mu = N(\mu_{ML} - \mu)$$
+
+代入后化简得到：
+
+$$\sum_{i=1}^{N}(x_i - \mu_{ML})^2 = \sum_{i=1}^{N}(x_i - \mu)^2 - N(\mu_{ML} - \mu)^2$$
+
+因此：
+
+$$\sigma_{ML}^2 = \frac{1}{N}\sum_{i=1}^{N}(x_i - \mu)^2 - (\mu_{ML} - \mu)^2$$
+
+**对两边取期望**
+
+对各项分别求期望：
+
+第一项：$\mathbb{E}\left[\frac{1}{N}\sum(x_i-\mu)^2\right] = \frac{1}{N}\sum\mathbb{E}[(x_i-\mu)^2] = \frac{1}{N}\sum\sigma^2 = \sigma^2$
+
+第二项：$\mu_{ML}$ 本身是随机变量，其分布由样本均值决定：
+
+$$\mu_{ML} = \frac{1}{N}\sum_{i=1}^{N}x_i$$
+
+由于 $x_i \sim \mathcal{N}(\mu, \sigma^2)$ 且独立同分布，样本均值也服从高斯分布（高斯变量的线性组合仍是高斯）：
+
+$$\mu_{ML} \sim \mathcal{N}\left(\mu, \frac{\sigma^2}{N}\right)$$
+
+**为什么方差是 $\sigma^2/N$？**
+
+- 均值：$\mathbb{E}[\mu_{ML}] = \mathbb{E}\left[\frac{1}{N}\sum x_i\right] = \frac{1}{N}\sum\mathbb{E}[x_i] = \mu$
+
+- 方差：$\text{Var}(\mu_{ML}) = \text{Var}\left(\frac{1}{N}\sum x_i\right) = \frac{1}{N^2}\sum\text{Var}(x_i) = \frac{1}{N^2}\cdot N\cdot\sigma^2 = \frac{\sigma^2}{N}$
+
+直观理解：样本均值是对 $N$ 个独立噪声的"平均"，平均操作把噪声压低了 $N$ 倍，方差因此减小到 $1/N$。
+
+因此：
+
+$$\mathbb{E}[(\mu_{ML} - \mu)^2] = \text{Var}(\mu_{ML}) = \frac{\sigma^2}{N}$$
+
+代入：
+
+$$\mathbb{E}[\sigma_{ML}^2] = \sigma^2 - \frac{\sigma^2}{N} = \frac{N-1}{N}\sigma^2$$
+
+---
+
+##### 结论
+
+- $\mu_{ML}$ 是无偏估计：$\mathbb{E}[\mu_{ML}] = \mu$
+- $\sigma_{ML}^2$ 是有偏估计：$\mathbb{E}[\sigma_{ML}^2] = \frac{N-1}{N}\sigma^2 < \sigma^2$，系统性低估真实方差
+
+**偏差的根源**：用样本均值 $\mu_{ML}$ 替代真实均值 $\mu$ 计算方差时，$\mu_{ML}$ 自身的采样方差在计算中被扣掉了但没有被补偿回来。具体来说，$\sigma_{ML}^2 = \frac{1}{N}\sum(x_i-\mu)^2 - (\mu_{ML}-\mu)^2$ 中的第二项 $(\mu_{ML}-\mu)^2$ 是正的，其期望 $\sigma^2/N$ 被扣掉了，导致结果偏小。
+
+**与过拟合的关系**：在多项式拟合中，高阶模型能更好地拟合训练数据（残差小），但这会让 $\sigma_{ML}^2$ 更小，因为它把模型复杂度"消化"进了残差里。数据少时尤其严重，此时偏差在分子不变的情况下让分母效应更显著。
+
