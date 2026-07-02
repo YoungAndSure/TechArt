@@ -332,7 +332,7 @@ $$\sum_{a\in\mathcal{A}}\pi(a|s,\theta)\sum_{s'\in\mathcal{S}}p(s'|s,a)\nabla_{\
 把两式代入，得出：  
 $$\nabla_{\theta} v_{\pi}(s) = u(s) + \sum_{s'\in\mathcal{S}}[P_{\pi}]_{ss'}\nabla_{\theta}v_{\pi}(s')$$
 最终得到的也是一个$m$维向量，shape对得上。  
-$$\underbrace{ \left[\begin{array}{c} \vdots \\ \nabla_{\theta} v_{\pi}(s) \\ \vdots \\ \end{array}\right] }_{\substack{\text{$\nabla_{\theta} v_{\pi} \in \mathbb{R}^{mn}$}}} = \underbrace{ \left[\begin{array}{c} \vdots \\ u(s) \\ \vdots \\ \vdots \end{array}\right] }_{\substack{u \in \mathbb{R}^{mn}}} + \gamma (P_{\pi} \otimes I_{m}) \underbrace{ \left[\begin{array}{c} \vdots \\ \nabla_{\theta} v_{\pi}(s') \\ \vdots \\ \vdots \end{array}\right] }_{\substack{\nabla_{\theta} v_{\pi} \in \mathbb{R}^{mn}}}$$
+$$\underbrace{ \left[\begin{array}{c} \vdots \\ \nabla_{\theta} v_{\pi}(s) \\ \vdots \\ \end{array}\right] }_{\substack{\text{\nabla_{\theta} v_{\pi} \in \mathbb{R}^{mn}}}} = \underbrace{ \left[\begin{array}{c} \vdots \\ u(s) \\ \vdots \\ \vdots \end{array}\right] }_{\substack{u \in \mathbb{R}^{mn}}} + \gamma (P_{\pi} \otimes I_{m}) \underbrace{ \left[\begin{array}{c} \vdots \\ \nabla_{\theta} v_{\pi}(s') \\ \vdots \\ \vdots \end{array}\right] }_{\substack{\nabla_{\theta} v_{\pi} \in \mathbb{R}^{mn}}}$$
 再看下转成矩阵形式。  
 $P_{\pi}$是$n \times n$的，$I_m$是$m \times m$的单位矩阵。中间的克罗内克积会用$P_{\pi}$中每个元素乘单位矩阵$I_m$。也就是原来矩阵的一个元素变成了一个$m \times m$矩阵。因此$P_{\pi} \otimes I_{m}$后shape为$nm \times nm$的。  
 按照上面的分析$\nabla_{\theta} v_{\pi}$是$n \times m$的，但是公式中是$nm$的，因为被做了向量化，摊平了。也就是向量中每m个元素对应一个状态。所以上面公式中$\nabla_{\theta} v_{\pi}$是$nm \times 1$的。和$P_{\pi} \otimes I_m$乘，结果为$nm \times nm * nm \times 1=nm \times 1$。  
