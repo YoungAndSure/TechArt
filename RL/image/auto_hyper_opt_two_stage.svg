@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 540" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif">
+  <defs>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#6c8ebf"/>
+    </marker>
+    <marker id="arrow-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#b85450"/>
+    </marker>
+
+    <style>
+      .h1 { font-size: 13px; font-weight: bold; }
+      .h2 { font-size: 13px; font-weight: bold; }
+      .body { font-size: 11px; }
+      .small { font-size: 10px; }
+    </style>
+  </defs>
+
+  <rect width="720" height="540" fill="#ffffff"/>
+
+  <!-- ============================================================== -->
+  <!-- 左列:参数 / 公式 / 排序结果 (竖排,各 100 高) -->
+  <!-- ============================================================== -->
+
+  <rect x="40" y="80" width="240" height="100" rx="8" fill="#dae8fc" stroke="#6c8ebf" stroke-width="1.8"/>
+  <text x="160" y="125" text-anchor="middle" class="h1" fill="#1a3a6c">参数</text>
+  <text x="160" y="148" text-anchor="middle" class="body" fill="#1a3a6c">w₁, w₂, w₃, ...</text>
+  <text x="160" y="165" text-anchor="middle" class="small" fill="#1a3a6c" font-style="italic">待调权重</text>
+
+  <rect x="40" y="220" width="240" height="100" rx="8" fill="#d5e8d4" stroke="#82b366" stroke-width="1.8"/>
+  <text x="160" y="265" text-anchor="middle" class="h1" fill="#1d4421">公式</text>
+  <text x="160" y="288" text-anchor="middle" class="body" fill="#1d4421">Score = wᵢ · pXTRᵢ</text>
+  <text x="160" y="305" text-anchor="middle" class="small" fill="#1d4421" font-style="italic">加权融合</text>
+
+  <rect x="40" y="360" width="240" height="100" rx="8" fill="#e1d5e7" stroke="#9673a6" stroke-width="2.2"/>
+  <text x="160" y="405" text-anchor="middle" class="h1" fill="#4a2d5e">排序结果</text>
+  <text x="160" y="428" text-anchor="middle" class="body" fill="#4a2d5e">Top-K 候选列表</text>
+  <text x="160" y="445" text-anchor="middle" class="small" fill="#4a2d5e" font-style="italic">推给用户</text>
+
+  <!-- 左列竖向箭头 -->
+  <line x1="160" y1="180" x2="160" y2="218" stroke="#6c8ebf" stroke-width="2" marker-end="url(#arrow-blue)"/>
+  <line x1="160" y1="320" x2="160" y2="358" stroke="#6c8ebf" stroke-width="2" marker-end="url(#arrow-blue)"/>
+
+  <!-- ============================================================== -->
+  <!-- 右列:用户 (与参数平齐) / 用户行为 / AB 指标 -->
+  <!-- ============================================================== -->
+
+  <!-- 用户标签 -->
+  <text x="520" y="72" text-anchor="middle" class="h2" fill="#7a4a00">用户</text>
+
+  <!-- 用户身体 (肩膀 + 躯干,蓝色衬衫,椭圆弧肩膀) -->
+  <path d="M 485,180 L 485,150 A 35,24 0 0 1 555,150 L 555,180 Z"
+        fill="#cce4f7" stroke="#6c8ebf" stroke-width="2"/>
+
+  <!-- 用户头部 (画在身体之上,看起来坐在肩膀上) -->
+  <circle cx="520" cy="104" r="22" fill="#ffe6cc" stroke="#d79b00" stroke-width="2"/>
+
+  <!-- 眼睛 -->
+  <circle cx="512" cy="100" r="2.2" fill="#7a4a00"/>
+  <circle cx="528" cy="100" r="2.2" fill="#7a4a00"/>
+
+  <!-- 微笑 -->
+  <path d="M 510,114 Q 520,121 530,114" stroke="#7a4a00" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+
+  <!-- 脖子 (头和身体之间一小段) -->
+  <rect x="514" y="125" width="12" height="6" fill="#ffe6cc" stroke="#d79b00" stroke-width="1"/>
+
+  <!-- 用户行为 -->
+  <rect x="400" y="220" width="240" height="100" rx="8" fill="#ffe6cc" stroke="#d79b00" stroke-width="1.8"/>
+  <text x="520" y="265" text-anchor="middle" class="h1" fill="#7a4a00">用户行为</text>
+  <text x="520" y="288" text-anchor="middle" class="body" fill="#7a4a00">点击 / 完播 / 点赞</text>
+  <text x="520" y="305" text-anchor="middle" class="small" fill="#7a4a00" font-style="italic">真实反馈</text>
+
+  <!-- AB 指标 -->
+  <rect x="400" y="360" width="240" height="100" rx="8" fill="#d5e8d4" stroke="#82b366" stroke-width="1.8"/>
+  <text x="520" y="405" text-anchor="middle" class="h1" fill="#1d4421">AB 指标</text>
+  <text x="520" y="428" text-anchor="middle" class="body" fill="#1d4421">CTR / 完播率 / 留存</text>
+  <text x="520" y="445" text-anchor="middle" class="small" fill="#1d4421" font-style="italic">调优目标</text>
+
+  <!-- 右列竖向箭头 (用户 → 用户行为 → AB 指标) -->
+  <line x1="520" y1="180" x2="520" y2="218" stroke="#6c8ebf" stroke-width="2" marker-end="url(#arrow-blue)"/>
+  <line x1="520" y1="320" x2="520" y2="358" stroke="#6c8ebf" stroke-width="2" marker-end="url(#arrow-blue)"/>
+
+  <!-- ============================================================== -->
+  <!-- 排序结果 → 用户 (直角折线) -->
+  <!-- ============================================================== -->
+  <path d="M 280,410 H 340 V 152 H 484"
+        fill="none" stroke="#6c8ebf" stroke-width="2.2" marker-end="url(#arrow-blue)"/>
+  <!-- 标签 -->
+  <rect x="305" y="338" width="90" height="22" rx="5" fill="#ffffff" stroke="#6c8ebf" stroke-width="1"/>
+  <text x="350" y="354" text-anchor="middle" class="small" fill="#6c8ebf" font-weight="bold">看到推荐</text>
+
+  <!-- ============================================================== -->
+  <!-- 反馈环:已删除 -->
+  <!-- ============================================================== -->
+
+</svg>

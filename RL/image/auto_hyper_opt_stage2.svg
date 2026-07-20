@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 940" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif">
+  <defs>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#6c8ebf"/>
+    </marker>
+
+    <style>
+      .h1 { font-size: 13px; font-weight: bold; }
+      .body { font-size: 11px; }
+      .small { font-size: 10px; }
+      .item { font-size: 11px; }
+    </style>
+  </defs>
+
+  <rect width="720" height="940" fill="#ffffff"/>
+
+  <!-- ============================================================== -->
+  <!-- 图 1:同一排序 / 不同时间 / 同一用户 -->
+  <!-- ============================================================== -->
+
+  <text x="180" y="30" text-anchor="middle" class="h1" fill="#333">图 1:同一排序 / 不同时间 / 同一用户</text>
+  <text x="180" y="52" text-anchor="middle" class="small" fill="#666" font-style="italic">用户状态随时间变化 → 行为数据不同</text>
+
+  <!-- 排序结果 (list, 4 items) -->
+  <rect x="40" y="75" width="140" height="130" rx="6" fill="#e1d5e7" stroke="#9673a6" stroke-width="1.8"/>
+  <text x="110" y="95" text-anchor="middle" class="body" fill="#4a2d5e" font-weight="bold">排序结果</text>
+  <line x1="55" y1="108" x2="165" y2="108" stroke="#9673a6" stroke-width="1"/>
+  <text x="110" y="128" text-anchor="middle" class="item" fill="#4a2d5e">item1</text>
+  <text x="110" y="148" text-anchor="middle" class="item" fill="#4a2d5e">item2</text>
+  <text x="110" y="168" text-anchor="middle" class="item" fill="#4a2d5e">item3</text>
+  <text x="110" y="188" text-anchor="middle" class="item" fill="#4a2d5e">item4</text>
+
+  <!-- 用户 A -->
+  <circle cx="315" cy="125" r="14" fill="#ffe6cc" stroke="#d79b00" stroke-width="1.8"/>
+  <rect x="292" y="140" width="46" height="46" rx="23" fill="#cce4f7" stroke="#6c8ebf" stroke-width="1.8"/>
+  <text x="315" y="205" text-anchor="middle" class="small" fill="#7a4a00" font-weight="bold">用户 A</text>
+
+  <!-- 行为 B₀, B₁ -->
+  <rect x="400" y="90" width="130" height="40" rx="5" fill="#fff2cc" stroke="#d6b656" stroke-width="1.5"/>
+  <text x="465" y="115" text-anchor="middle" class="body" fill="#5d4d1a" font-weight="bold">行为 B₀</text>
+
+  <rect x="400" y="165" width="130" height="40" rx="5" fill="#fff2cc" stroke="#d6b656" stroke-width="1.5"/>
+  <text x="465" y="190" text-anchor="middle" class="body" fill="#5d4d1a" font-weight="bold">行为 B₁</text>
+
+  <!-- 箭头 t₀ 和 t₁ -->
+  <line x1="180" y1="100" x2="291" y2="125" stroke="#6c8ebf" stroke-width="1.8" marker-end="url(#arrow-blue)"/>
+  <text x="225" y="95" text-anchor="middle" class="small" fill="#6c8ebf" font-weight="bold">t₀</text>
+
+  <line x1="180" y1="180" x2="291" y2="170" stroke="#6c8ebf" stroke-width="1.8" marker-end="url(#arrow-blue)"/>
+  <text x="225" y="195" text-anchor="middle" class="small" fill="#6c8ebf" font-weight="bold">t₁</text>
+
+  <!-- 注解 -->
+  <rect x="60" y="225" width="340" height="50" rx="8" fill="#fde2e2" stroke="#b85450" stroke-width="1.5"/>
+  <text x="230" y="250" text-anchor="middle" class="body" fill="#5e1f1a" font-weight="bold">B₀ ≠ B₁</text>
+  <text x="230" y="267" text-anchor="middle" class="small" fill="#5e1f1a" font-style="italic">同一用户不同时间的行为不可直接比较</text>
+
+  <!-- ============================================================== -->
+  <!-- 图 2:不同排序 / 同一时间 / 同一用户 -->
+  <!-- ============================================================== -->
+
+  <text x="180" y="305" text-anchor="middle" class="h1" fill="#333">图 2:不同排序 / 同一时间 / 同一用户</text>
+  <text x="180" y="327" text-anchor="middle" class="small" fill="#666" font-style="italic">一个用户同一时刻只能看一个排序</text>
+
+  <!-- 排序结果₁ -->
+  <rect x="40" y="350" width="140" height="100" rx="6" fill="#e1d5e7" stroke="#9673a6" stroke-width="1.8"/>
+  <text x="110" y="370" text-anchor="middle" class="body" fill="#4a2d5e" font-weight="bold">排序结果₁</text>
+  <line x1="55" y1="383" x2="165" y2="383" stroke="#9673a6" stroke-width="1"/>
+  <text x="110" y="402" text-anchor="middle" class="item" fill="#4a2d5e">item1</text>
+  <text x="110" y="420" text-anchor="middle" class="item" fill="#4a2d5e">item2</text>
+  <text x="110" y="438" text-anchor="middle" class="item" fill="#4a2d5e">item3</text>
+
+  <!-- 排序结果₂ (顺序打乱) -->
+  <rect x="40" y="465" width="140" height="100" rx="6" fill="#e1d5e7" stroke="#9673a6" stroke-width="1.8"/>
+  <text x="110" y="485" text-anchor="middle" class="body" fill="#4a2d5e" font-weight="bold">排序结果₂</text>
+  <line x1="55" y1="498" x2="165" y2="498" stroke="#9673a6" stroke-width="1"/>
+  <text x="110" y="517" text-anchor="middle" class="item" fill="#4a2d5e">item3</text>
+  <text x="110" y="535" text-anchor="middle" class="item" fill="#4a2d5e">item1</text>
+  <text x="110" y="553" text-anchor="middle" class="item" fill="#4a2d5e">item4</text>
+
+  <!-- 用户 A (放在两个 ranking 之间) -->
+  <circle cx="315" cy="410" r="14" fill="#ffe6cc" stroke="#d79b00" stroke-width="1.8"/>
+  <rect x="292" y="425" width="46" height="60" rx="23" fill="#cce4f7" stroke="#6c8ebf" stroke-width="1.8"/>
+  <text x="315" y="505" text-anchor="middle" class="small" fill="#7a4a00" font-weight="bold">用户 A</text>
+
+  <!-- 两个箭头交叉指向用户 A -->
+  <line x1="180" y1="375" x2="291" y2="410" stroke="#6c8ebf" stroke-width="1.8" marker-end="url(#arrow-blue)"/>
+  <text x="225" y="370" text-anchor="middle" class="small" fill="#6c8ebf" font-weight="bold">t₀</text>
+
+  <line x1="180" y1="555" x2="291" y2="475" stroke="#6c8ebf" stroke-width="1.8" marker-end="url(#arrow-blue)"/>
+  <text x="225" y="565" text-anchor="middle" class="small" fill="#6c8ebf" font-weight="bold">t₀</text>
+
+  <!-- 红色 X 覆盖在用户 A 上 -->
+  <line x1="285" y1="395" x2="345" y2="500" stroke="#b85450" stroke-width="4" stroke-linecap="round"/>
+  <line x1="345" y1="395" x2="285" y2="500" stroke="#b85450" stroke-width="4" stroke-linecap="round"/>
+
+  <!-- 注解 -->
+  <rect x="60" y="600" width="340" height="50" rx="8" fill="#fde2e2" stroke="#b85450" stroke-width="1.5"/>
+  <text x="230" y="625" text-anchor="middle" class="body" fill="#5e1f1a" font-weight="bold">不可能</text>
+  <text x="230" y="642" text-anchor="middle" class="small" fill="#5e1f1a" font-style="italic">同一用户同一时刻无法同时看两个排序</text>
+
+  <!-- ============================================================== -->
+  <!-- 图 3:不同排序 / 同一时间 / 不同用户 (近似实验) -->
+  <!-- ============================================================== -->
+
+  <text x="180" y="680" text-anchor="middle" class="h1" fill="#333">图 3:不同排序 / 同一时间 / 不同用户</text>
+  <text x="180" y="702" text-anchor="middle" class="small" fill="#666" font-style="italic">两组类似用户对比 → 近似实验</text>
+
+  <!-- 排序结果₁ -->
+  <rect x="40" y="725" width="140" height="90" rx="6" fill="#e1d5e7" stroke="#9673a6" stroke-width="1.8"/>
+  <text x="110" y="745" text-anchor="middle" class="body" fill="#4a2d5e" font-weight="bold">排序结果₁</text>
+  <line x1="55" y1="757" x2="165" y2="757" stroke="#9673a6" stroke-width="1"/>
+  <text x="110" y="775" text-anchor="middle" class="item" fill="#4a2d5e">item1</text>
+  <text x="110" y="791" text-anchor="middle" class="item" fill="#4a2d5e">item2</text>
+  <text x="110" y="807" text-anchor="middle" class="item" fill="#4a2d5e">item3</text>
+
+  <!-- 排序结果₂ (顺序打乱) -->
+  <rect x="40" y="830" width="140" height="90" rx="6" fill="#e1d5e7" stroke="#9673a6" stroke-width="1.8"/>
+  <text x="110" y="850" text-anchor="middle" class="body" fill="#4a2d5e" font-weight="bold">排序结果₂</text>
+  <line x1="55" y1="862" x2="165" y2="862" stroke="#9673a6" stroke-width="1"/>
+  <text x="110" y="880" text-anchor="middle" class="item" fill="#4a2d5e">item3</text>
+  <text x="110" y="896" text-anchor="middle" class="item" fill="#4a2d5e">item1</text>
+  <text x="110" y="912" text-anchor="middle" class="item" fill="#4a2d5e">item4</text>
+
+  <!-- 用户 A (与 排序结果₁ 平行) -->
+  <circle cx="315" cy="755" r="14" fill="#ffe6cc" stroke="#d79b00" stroke-width="1.8"/>
+  <rect x="292" y="770" width="46" height="44" rx="23" fill="#cce4f7" stroke="#6c8ebf" stroke-width="1.8"/>
+  <text x="315" y="833" text-anchor="middle" class="small" fill="#7a4a00" font-weight="bold">用户 A</text>
+
+  <!-- 用户 B (与 排序结果₂ 平行) -->
+  <circle cx="315" cy="858" r="14" fill="#ffe6cc" stroke="#d79b00" stroke-width="1.8"/>
+  <rect x="292" y="873" width="46" height="44" rx="23" fill="#cce4f7" stroke="#6c8ebf" stroke-width="1.8"/>
+  <text x="315" y="936" text-anchor="middle" class="small" fill="#7a4a00" font-weight="bold">用户 B</text>
+
+  <!-- 两个独立的水平箭头 (不交叉) -->
+  <line x1="180" y1="770" x2="291" y2="770" stroke="#6c8ebf" stroke-width="1.8" marker-end="url(#arrow-blue)"/>
+  <text x="225" y="763" text-anchor="middle" class="small" fill="#6c8ebf" font-weight="bold">t₀</text>
+
+  <line x1="180" y1="873" x2="291" y2="873" stroke="#6c8ebf" stroke-width="1.8" marker-end="url(#arrow-blue)"/>
+  <text x="225" y="866" text-anchor="middle" class="small" fill="#6c8ebf" font-weight="bold">t₀</text>
+
+</svg>
