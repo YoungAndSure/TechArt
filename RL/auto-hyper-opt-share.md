@@ -51,13 +51,13 @@ $a_i = f(\theta_i,z_i)+\epsilon_i$
 这公式相当简化，因为用户行为受多种因素影响，比如此时的天气（晴天看啥都感兴趣）、刚发的工资(工资低看啥都烦)等等，且随着时间推移在变动，每个特征都是一个复杂函数，而要调整的参数只是其中一个。这里为了示意，简化掉其他因素的影响，环境统一用$z$表示。而观测噪声用$\epsilon$表示。  
 可以纯想象一下，假设黑盒函数是这样的：
 ![黑盒函数示意](image/blackbox_function.png)
-我们主要想看的是策略$\theta$对ab指标的影响，所以假定短时间内环境是不变化的，消掉环境$z$的影响，对$z$取期望，则：  
-$J(\theta) = \mathbb{E}_{z}[f(\theta,z)+\epsilon]$  
-相当于在上面三维图上找个了$z$期望处的切面：
+我们主要想看的是策略$\theta$对ab指标的影响，所以假定短时间内环境是不变化的，消掉环境$z$的影响，对$z$取期望，且噪声期望假设为0，则：  
+$J(\theta) = \mathbb{E}_{z}[f(\theta,z)]$  
+相当于在上面三维图上对z进行加权积分：
 ![J(θ) 曲线](image/blackbox_curve_1d.svg)
 我们想得到的是：  
-$\theta^* = \mathrm{argmax}_{\theta}J(\theta)= \mathrm{argmax}_{\theta}\mathbb{E}_{z}[f(\theta, z)+\epsilon]$  
-即在这个切面下，让目标$J(\theta)$最大的$\theta$是多少。
+$\theta^* = \mathrm{argmax}_{\theta}J(\theta)= \mathrm{argmax}_{\theta}\mathbb{E}_{z}[f(\theta, z)]$  
+即在这个曲线下，让目标$J(\theta)$最大的$\theta$是多少。
 
   
 ### step2 训练
