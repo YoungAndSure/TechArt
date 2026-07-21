@@ -122,7 +122,7 @@ $\theta_{i+1} = \theta_i + \eta_i \nabla_{\theta}g(W^*, \theta)$
   
 贝叶斯优化和神经网络拟合的不同是，贝叶斯是给出参数$\theta$的概率分布为先验，然后输入样本对$\{\theta_i, a_i\}$，得到$\theta$的后验分布。  
 ![贝叶斯更新示意](image/bayesian_update.png)
-#### 先验分布假设
+### 先验分布假设
 现在有一系列超参，作为f的输入：  
 ```math
 \theta_1, \theta_2, \theta_3...
@@ -131,6 +131,7 @@ $\theta_{i+1} = \theta_i + \eta_i \nabla_{\theta}g(W^*, \theta)$
 ```math
 k(\theta_i, \theta_j) = \exp(-\frac{||\theta_i-\theta_j||^2}{2l^2})
 ```
+![RBF Kernel 可视化](image/rbf_kernel.png)
 定义输出$f(\theta_i)$的相似性和输入相关：  
 ```math
 \mathrm{Cov}(f(\theta_i),f(\theta_j)) = k(\theta_i, \theta_j)
@@ -166,7 +167,7 @@ r(\theta_t) = f(\theta_t)+\epsilon, \epsilon \sim \mathcal{N}(0, \sigma_n^2)
 ```
 因为两个独立高斯随机向量相加，结果仍然是高斯；均值相加，协方差相加。  
 
-#### 数据收集
+### 数据收集
 然后，我们做k次实验，得到k组数据：  
 ```math
 D=\{\theta_1, r(\theta_1)\},\{\theta_2, r(\theta_2)\}...\{\theta_k, r(\theta_k)\}
@@ -185,6 +186,7 @@ D=\{\theta_1, r(\theta_1)\},\{\theta_2, r(\theta_2)\}...\{\theta_k, r(\theta_k)\
 ```
 可以通过这些已收集到的数据对新的点$\theta_*$进行估计了。  
 所谓估计就是，评估$p(f(\theta_*)|\{\theta_1, r(\theta_1)\},\{\theta_2, r(\theta_2)\}...\{\theta_k, r(\theta_k)\})$的概率。  
+  
 先看只有一个数据点
 ```math
 \{\theta_1, r(\theta_1)\}
@@ -249,7 +251,16 @@ D=\{\theta_1, r(\theta_1)\},\{\theta_2, r(\theta_2)\}...\{\theta_k, r(\theta_k)\
 ```math
 f(\theta_*) \mid D \sim \mathcal{N}\left(\mu_*=k_*^\top (K + \sigma_n^2 I)^{-1} \mathbf{r}, \sigma_*^2=\ k_{**} - k_*^\top (K + \sigma_n^2 I)^{-1} k_*\right)
 ```
-这样就可以根据数据得到任意候选点的后验均值和方差，进而通过 acquisition function 选择下一次实验的点。  
+这样就可以根据样本数据得到任意候选点的后验均值和方差。均值衡量了参数可能获得的收益，方差衡量了不确定性。  
+
+### 选择下一个采样点
+通过以上贝叶斯建模，知道了每个策略可能获得的收益均值$\mu(\theta_*)$，以及不确定性$\sigma(\theta_*)$。下一步，需要选一个点进行尝试。  
+一方面可以直接选评估出来收益均值最高的点，另一方面，也可以采取上面说过的主动探索策略，尝试结合均值和方差找更优点。  
+方法之一是UCB算法，下一个点为：  
+$\argmax \alpha(\theta_*) = \argmax [\mu(\theta_*)+\beta\sigma(\theta_*)]$  
+同时考虑了收益均值和不确定性，通过参数$\alpha$可以控制不确定性的占比。  
+如$\alpha=0$，则完全不考虑不确定性，就选收益均值最高的点尝试，比较冒险。  
+如$\alpha=1$，则不确定性也在考虑内，收益均值相同的两个点，优先选不确定性高的，因为不确定性高的点样本量少，更值得冒险。不确定性相同的两个点，优先选择收益均值高的尝试。  
 
 
 
