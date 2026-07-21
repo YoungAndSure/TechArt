@@ -103,7 +103,32 @@ def axes_and_labels():
             parts.append(f'  <text x="{ML-8}" y="{y+3:.1f}" text-anchor="end" font-size="10" fill="#666">{j}</text>\n')
     # 轴标题
     parts.append(f'  <text x="{ML+PW/2:.1f}" y="{MT+PH+40}" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">θ (待调参数)</text>\n')
-    parts.append(f'  <text x="15" y="{MT+PH/2:.1f}" text-anchor="middle" font-size="13" fill="#333" font-weight="bold" transform="rotate(-90,15,{MT+PH/2:.1f})">g(W*, θ) ≈ E_z[f(θ, z)]</text>\n')
+    parts.append(f'  <text x="15" y="{MT+PH/2:.1f}" text-anchor="middle" font-size="13" fill="#333" font-weight="bold" transform="rotate(-90,15,{MT+PH/2:.1f})">E_z[f(θ, z) + ε]</text>\n')
+    return "".join(parts)
+
+
+def axes_and_labels_g_ascent():
+    """图 c (梯度上升) 用: Y 轴 g(W*, θ)。"""
+    parts = []
+    for i in range(-5, 6):
+        x, _ = to_px(i, 0)
+        if ML <= x <= ML + PW:
+            parts.append(f'  <line x1="{x:.1f}" y1="{MT}" x2="{x:.1f}" y2="{MT+PH}" stroke="#eeeeee" stroke-width="1"/>\n')
+    parts.append(f'  <line x1="{ML}" y1="{MT+PH}" x2="{ML+PW}" y2="{MT+PH}" stroke="#666" stroke-width="1.5"/>\n')
+    parts.append(f'  <line x1="{ML}" y1="{MT}" x2="{ML}" y2="{MT+PH}" stroke="#666" stroke-width="1.5"/>\n')
+    for i in range(-5, 6):
+        x, _ = to_px(i, 0)
+        parts.append(f'  <line x1="{x:.1f}" y1="{MT+PH}" x2="{x:.1f}" y2="{MT+PH+4}" stroke="#666"/>\n')
+        parts.append(f'  <text x="{x:.1f}" y="{MT+PH+18}" text-anchor="middle" font-size="10" fill="#666">{i}</text>\n')
+    j_lo = int(np.floor(J_MIN))
+    j_hi = int(np.ceil(J_MAX))
+    for j in range(j_lo, j_hi + 1):
+        _, y = to_px(0, j)
+        if MT <= y <= MT + PH:
+            parts.append(f'  <line x1="{ML-4}" y1="{y:.1f}" x2="{ML}" y2="{y:.1f}" stroke="#666"/>\n')
+            parts.append(f'  <text x="{ML-8}" y="{y+3:.1f}" text-anchor="end" font-size="10" fill="#666">{j}</text>\n')
+    parts.append(f'  <text x="{ML+PW/2:.1f}" y="{MT+PH+40}" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">θ (待调参数)</text>\n')
+    parts.append(f'  <text x="15" y="{MT+PH/2:.1f}" text-anchor="middle" font-size="13" fill="#333" font-weight="bold" transform="rotate(-90,15,{MT+PH/2:.1f})">g(W*, θ)</text>\n')
     return "".join(parts)
 
 
@@ -145,7 +170,7 @@ def make_c_svg():
     traj = grad_ascent(1.0, eta=1.0, n_steps=6)
     out = [SVG_HEADER.format(w=VB_W, h=VB_H)]
     out.append(f'  <text x="{VB_W/2}" y="28" text-anchor="middle" font-size="14" fill="#222" font-weight="bold">θ ← θ + η · ∂g(W*, θ) / ∂θ</text>\n')
-    out.append(axes_and_labels())
+    out.append(axes_and_labels_g_ascent())
     # g(W*, θ) 曲线 (淡蓝背景)
     out.append(f'  <path d="{curve_path}" fill="none" stroke="#3a7bd9" stroke-width="2.5" stroke-linejoin="round" opacity="0.85"/>\n')
 
