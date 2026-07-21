@@ -38,7 +38,7 @@ fig, axes = plt.subplots(3, 1, figsize=(10, 10), sharex=True)
 axes[0].plot(THETA, P_PRIOR, color="#3a7bd9", linewidth=2.8)
 axes[0].fill_between(THETA, P_PRIOR, alpha=0.15, color="#3a7bd9")
 axes[0].axvline(x=0, color="gray", linestyle="--", alpha=0.6, linewidth=1)
-axes[0].text(0, P_PRIOR.max() * 0.92, "μ=0", ha="center", color="gray", fontsize=10, style="italic")
+axes[0].text(0, P_PRIOR.max() * 0.92, r"$\mu=0$", ha="center", color="gray", fontsize=11, style="italic")
 axes[0].set_title("先验  p(θ)  —  N(μ=0, σ=1.5)",
                   fontsize=14, color="#3a7bd9", fontweight="bold", loc="left")
 axes[0].set_ylabel("密度", fontsize=11)
@@ -48,13 +48,16 @@ axes[0].text(0.02, 0.92, "宽分布:对 θ 一无所知",
              transform=axes[0].transAxes, fontsize=10, color="#666", style="italic")
 
 # ---------- Panel 2: 观测样本 ----------
-# 用 stripplot 风格: 一行散点 + jitter
+# 用 stripplot 风格: 散点 + 下方波浪基线 (代表测量序列/时间轴)
 np.random.seed(99)
 y_jitter = np.random.uniform(-0.08, 0.08, size=len(SAMPLE_THETAS))
 axes[1].scatter(SAMPLE_THETAS, y_jitter, s=120, color="#222",
                 edgecolors="white", linewidths=1.5, zorder=3)
-axes[1].axhline(y=0, color="#999", linewidth=1, zorder=1)
-axes[1].set_title(f"观测样本  D  —  {len(SAMPLE_THETAS)} 个 (θᵢ, aᵢ) 点,集中在 θ≈2",
+# 波浪基线 (替代原本的直线, 表示测量的波动)
+wave_x = np.linspace(*THETA_RANGE, 200)
+wave_y = 0.05 * np.sin(wave_x * 2.5) + 0.02 * np.sin(wave_x * 6.0)
+axes[1].plot(wave_x, wave_y, color="#999", linewidth=1.2, zorder=1)
+axes[1].set_title(f"观测样本  D  —  {len(SAMPLE_THETAS)} 个 ($\\theta_i$, $a_i$) 点,集中在 $\\theta \\approx 2$",
                   fontsize=14, color="#222", fontweight="bold", loc="left")
 axes[1].set_ylabel("样本", fontsize=11)
 axes[1].set_ylim(-0.4, 0.4)
@@ -67,7 +70,7 @@ axes[1].text(0.02, 0.85, "看到这些样本",
 axes[2].plot(THETA, P_POST, color="#d9534f", linewidth=2.8)
 axes[2].fill_between(THETA, P_POST, alpha=0.15, color="#d9534f")
 axes[2].axvline(x=2.0, color="#5cb85c", linestyle="--", alpha=0.7, linewidth=1.5,
-                label="真实最优点 θ* ≈ 2.0")
+                label=r"真实最优点 $\theta^* \approx 2.0$")
 axes[2].set_title("后验  p(θ | D)  —  N(μ=1.9, σ=0.5)",
                   fontsize=14, color="#d9534f", fontweight="bold", loc="left")
 axes[2].set_xlabel("θ", fontsize=12)
