@@ -118,7 +118,7 @@ $\theta_{i+1} = \theta_i + \eta_i \nabla_{\theta}g(W^*, \theta)$
 
 ## 贝叶斯优化  
 书接上回，神经网络建了模，但缺点是，当算出一个最优参数时，无法评估这个参数有多大概率是最优参数。  
-这是最大化似然方法的通病，只会用已有数据拟合，容易过拟合。  
+这是最大化似然方法的通病，只会用已有数据拟合，不会评估可信度，容易过拟合。  
   
 贝叶斯优化和神经网络拟合的不同是，贝叶斯是给出参数$\theta$的概率分布为先验，然后输入样本对$\{\theta_i, a_i\}$，得到$\theta$的后验分布。  
 ![贝叶斯更新示意](image/bayesian_update.png)
@@ -175,7 +175,7 @@ D=\{\theta_1, r(\theta_1)\},\{\theta_2, r(\theta_2)\}...\{\theta_k, r(\theta_k)\
 
 在已有数据$D$条件下，求新点函数值的后验分布。
 
-#### 后验更新
+### 后验更新
 现在有了对输出$r$的分布假设：  
 ```math
 \mathbf{r}\sim \mathcal{N}(0,K+\sigma_n^2I)
@@ -252,6 +252,26 @@ D=\{\theta_1, r(\theta_1)\},\{\theta_2, r(\theta_2)\}...\{\theta_k, r(\theta_k)\
 f(\theta_*) \mid D \sim \mathcal{N}\left(\mu_*=k_*^\top (K + \sigma_n^2 I)^{-1} \mathbf{r}, \sigma_*^2=\ k_{**} - k_*^\top (K + \sigma_n^2 I)^{-1} k_*\right)
 ```
 这样就可以根据样本数据得到任意候选点的后验均值和方差。均值衡量了参数可能获得的收益，方差衡量了不确定性。  
+  
+代码示例：
+```
+kernel = ConstantKernel(1.0, constant_value_bounds=(0.1, 10.0)) * \
+         RBF(length_scale=1.0, length_scale_bounds=(0.1, 10.0)) + \
+         WhiteKernel(noise_level=0.1, noise_level_bounds=(1e-5, 1.0))
+
+gp = GaussianProcessRegressor(
+    kernel=kernel,
+    alpha=1e-6,            # 岭正则项(防止 K 接近奇异),默认 1e-10
+    normalize_y=True,      # 归一化 y(均值0方差1),小样本时推荐 True
+    n_restarts_optimizer=10,  # 超参优化重启次数(0 = 不优化)
+    random_state=42,
+)
+
+gp.fit(X_train, y_train)
+mu_post, std_post = gp.predict(X_test, return_std=True)
+```
+可以看到，设置好kernel等参数后，通过样本数据训练，之后输入测试点可以输出均值和方差。  
+其实过程和神经网络方法差不多，只是贝叶斯的模型，是人工选择的，且可以评估不确定性。  
 
 ### 选择下一个采样点
 通过以上贝叶斯建模，知道了每个策略可能获得的收益均值$\mu(\theta_*)$，以及不确定性$\sigma(\theta_*)$。下一步，需要选一个点进行尝试。  
