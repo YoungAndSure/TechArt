@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 360" font-family="'Noto Sans CJK JP','PingFang SC','Microsoft YaHei',sans-serif">
+  <defs>
+    <marker id="arrow-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#888"/>
+    </marker>
+  </defs>
+  <rect width="760" height="360" fill="#ffffff"/>
+
+  <!-- 标题 -->
+  <text x="380.0" y="30" text-anchor="middle" font-size="15" fill="#222" font-weight="bold">贝叶斯优化: 先验 → 观测 → 后验</text>
+
+  <!-- ============== Panel 1: 先验 ============== -->
+  <text x="140.0" y="60" text-anchor="middle" font-size="14" fill="#3a7bd9" font-weight="bold">先验  p(θ)</text>
+  <text x="140.0" y="76" text-anchor="middle" font-size="10" fill="#666">N(0, σ=1.5), 均匀信念</text>
+
+  <!-- 面板边框 -->
+  <rect x="30" y="70" width="220" height="240" rx="8" fill="#f5f9ff" stroke="#3a7bd9" stroke-width="1.5"/>
+
+  <!-- 基线 -->
+  <line x1="50" y1="280" x2="230" y2="280" stroke="#999" stroke-width="1"/>
+
+  <!-- θ=0 标注 -->
+  <line x1="140.0" y1="100" x2="140.0" y2="280" stroke="#ccc" stroke-width="1" stroke-dasharray="3,2"/>
+  <text x="140.0" y="295" text-anchor="middle" font-size="10" fill="#666">θ=0</text>
+
+  <!-- 先验曲线 -->
+  <path d="M 50.0,278.5 L 51.8,278.3 L 53.6,278.0 L 55.5,277.7 L 57.3,277.4 L 59.1,277.1 L 60.9,276.7 L 62.7,276.2 L 64.5,275.7 L 66.4,275.2 L 68.2,274.6 L 70.0,273.9 L 71.8,273.2 L 73.6,272.5 L 75.5,271.6 L 77.3,270.7 L 79.1,269.8 L 80.9,268.7 L 82.7,267.6 L 84.5,266.5 L 86.4,265.2 L 88.2,263.9 L 90.0,262.6 L 91.8,261.2 L 93.6,259.7 L 95.5,258.2 L 97.3,256.6 L 99.1,255.0 L 100.9,253.3 L 102.7,251.6 L 104.5,250.0 L 106.4,248.2 L 108.2,246.5 L 110.0,244.9 L 111.8,243.2 L 113.6,241.5 L 115.5,240.0 L 117.3,238.4 L 119.1,236.9 L 120.9,235.5 L 122.7,234.2 L 124.5,233.0 L 126.4,231.9 L 128.2,230.9 L 130.0,230.1 L 131.8,229.3 L 133.6,228.7 L 135.5,228.3 L 137.3,228.0 L 139.1,227.8 L 140.9,227.8 L 142.7,228.0 L 144.5,228.3 L 146.4,228.7 L 148.2,229.3 L 150.0,230.1 L 151.8,230.9 L 153.6,231.9 L 155.5,233.0 L 157.3,234.2 L 159.1,235.5 L 160.9,236.9 L 162.7,238.4 L 164.5,240.0 L 166.4,241.5 L 168.2,243.2 L 170.0,244.9 L 171.8,246.5 L 173.6,248.2 L 175.5,250.0 L 177.3,251.6 L 179.1,253.3 L 180.9,255.0 L 182.7,256.6 L 184.5,258.2 L 186.4,259.7 L 188.2,261.2 L 190.0,262.6 L 191.8,263.9 L 193.6,265.2 L 195.5,266.5 L 197.3,267.6 L 199.1,268.7 L 200.9,269.8 L 202.7,270.7 L 204.5,271.6 L 206.4,272.5 L 208.2,273.2 L 210.0,273.9 L 211.8,274.6 L 213.6,275.2 L 215.5,275.7 L 217.3,276.2 L 219.1,276.7 L 220.9,277.1 L 222.7,277.4 L 224.5,277.7 L 226.4,278.0 L 228.2,278.3 L 230.0,278.5" fill="none" stroke="#3a7bd9" stroke-width="2.5"/>
+
+  <!-- 顶部标注: "信心低" -->
+  <text x="140.0" y="115" text-anchor="middle" font-size="10" fill="#3a7bd9" font-style="italic">宽分布 → 不知道最优 θ 在哪</text>
+
+
+  <!-- ============== Panel 2: 样本 ============== -->
+  <text x="390.0" y="60" text-anchor="middle" font-size="14" fill="#222" font-weight="bold">观测样本  D</text>
+  <text x="390.0" y="76" text-anchor="middle" font-size="10" fill="#666">10 个样本, 集中在 θ≈2</text>
+
+  <rect x="280" y="70" width="220" height="240" rx="8" fill="#fafafa" stroke="#888" stroke-width="1.5"/>
+
+  <!-- 基线 -->
+  <line x1="300" y1="280" x2="480" y2="280" stroke="#999" stroke-width="1"/>
+
+  <!-- θ 轴刻度 -->
+  <text x="300" y="295" font-size="10" fill="#666">-4</text>
+  <text x="480" y="295" text-anchor="end" font-size="10" fill="#666">4</text>
+
+  <!-- 样本点 (堆叠在基线下方, jitter y) -->
+  <text x="390.0" y="250" text-anchor="middle" font-size="10" fill="#666" font-style="italic">(θᵢ, aᵢ) 样本对</text>
+  <circle cx="442.8" cy="258.9" r="4" fill="#222" stroke="white" stroke-width="1.2"/>
+  <line x1="442.8" y1="265.0" x2="442.8" y2="258.9" stroke="#bbb" stroke-width="0.8"/>
+  <circle cx="432.8" cy="260.6" r="4" fill="#222" stroke="white" stroke-width="1.2"/>
+  <line x1="432.8" y1="265.0" x2="432.8" y2="260.6" stroke="#bbb" stroke-width="0.8"/>
+  <circle cx="445.2" cy="257.6" r="4" fill="#222" stroke="white" stroke-width="1.2"/>
+  <line x1="445.2" y1="265.0" x2="445.2" y2="257.6" stroke="#bbb" stroke-width="0.8"/>
+  <circle cx="459.0" cy="264.7" r="4" fill="#222" stroke="white" stroke-width="1.2"/>
+  <line x1="459.0" y1="265.0" x2="459.0" y2="264.7" stroke="#bbb" stroke-width="0.8"/>
+  <circle cx="431.3" cy="257.7" r="4" fill="#222" stroke="white" stroke-width="1.2"/>
+  <line x1="431.3" y1="265.0" x2="431.3" y2="257.7" stroke="#bbb" stroke-width="0.8"/>
+  <circle cx="431.3" cy="259.9" r="4" fill="#222" stroke="white" stroke-width="1.2"/>
+  <line x1="431.3" y1="265.0" x2="431.3" y2="259.9" stroke="#bbb" stroke-width="0.8"/>
+  <circle cx="459.9" cy="262.3" r="4" fill="#222" stroke="white" stroke-width="1.2"/>
+  <line x1="459.9" y1="265.0" x2="459.9" y2="262.3" stroke="#bbb" stroke-width="0.8"/>
+  <circle cx="447.1" cy="264.6" r="4" fill="#222" stroke="white" stroke-width="1.2"/>
+  <line x1="447.1" y1="265.0" x2="447.1" y2="264.6" stroke="#bbb" stroke-width="0.8"/>
+  <circle cx="427.6" cy="256.1" r="4" fill="#222" stroke="white" stroke-width="1.2"/>
+  <line x1="427.6" y1="265.0" x2="427.6" y2="256.1" stroke="#bbb" stroke-width="0.8"/>
+  <circle cx="443.5" cy="264.9" r="4" fill="#222" stroke="white" stroke-width="1.2"/>
+  <line x1="443.5" y1="265.0" x2="443.5" y2="264.9" stroke="#bbb" stroke-width="0.8"/>
+
+  <!-- ============== 箭头 1: 样本 → 后验 ============== -->
+  <line x1="505" y1="190.0" x2="522" y2="190.0" stroke="#888" stroke-width="2" marker-end="url(#arrow-gray)"/>
+  <text x="515.0" y="182.0" text-anchor="middle" font-size="11" fill="#666" font-weight="bold">贝叶斯更新</text>
+  <text x="515.0" y="202.0" text-anchor="middle" font-size="9" fill="#888">p(θ&#124;D) ∝ p(D&#124;θ)·p(θ)</text>
+
+
+  <!-- ============== Panel 3: 后验 ============== -->
+  <text x="640.0" y="60" text-anchor="middle" font-size="14" fill="#d9534f" font-weight="bold">后验  p(θ&#124;D)</text>
+  <text x="640.0" y="76" text-anchor="middle" font-size="10" fill="#666">N(1.9, σ=0.5), 集中在样本附近</text>
+
+  <rect x="530" y="70" width="220" height="240" rx="8" fill="#fdf2f2" stroke="#d9534f" stroke-width="1.5"/>
+
+  <line x1="550" y1="280" x2="730" y2="280" stroke="#999" stroke-width="1"/>
+  <line x1="685.0" y1="100" x2="685.0" y2="280" stroke="#5cb85c" stroke-width="1.5" stroke-dasharray="3,2"/>
+  <text x="685.0" y="295" text-anchor="middle" font-size="10" fill="#5cb85c" font-weight="bold">θ* ≈ 2.0</text>
+  <!-- 后验曲线 -->
+  <path d="M 550.0,280.0 L 551.8,280.0 L 553.6,280.0 L 555.5,280.0 L 557.3,280.0 L 559.1,280.0 L 560.9,280.0 L 562.7,280.0 L 564.5,280.0 L 566.4,280.0 L 568.2,280.0 L 570.0,280.0 L 571.8,280.0 L 573.6,280.0 L 575.5,280.0 L 577.3,280.0 L 579.1,280.0 L 580.9,280.0 L 582.7,280.0 L 584.5,280.0 L 586.4,280.0 L 588.2,280.0 L 590.0,280.0 L 591.8,280.0 L 593.6,280.0 L 595.5,280.0 L 597.3,280.0 L 599.1,280.0 L 600.9,280.0 L 602.7,280.0 L 604.5,280.0 L 606.4,280.0 L 608.2,280.0 L 610.0,280.0 L 611.8,280.0 L 613.6,280.0 L 615.5,280.0 L 617.3,280.0 L 619.1,280.0 L 620.9,280.0 L 622.7,280.0 L 624.5,280.0 L 626.4,280.0 L 628.2,280.0 L 630.0,280.0 L 631.8,280.0 L 633.6,280.0 L 635.5,280.0 L 637.3,280.0 L 639.1,279.9 L 640.9,279.8 L 642.7,279.7 L 644.5,279.5 L 646.4,279.2 L 648.2,278.6 L 650.0,277.7 L 651.8,276.4 L 653.6,274.5 L 655.5,271.8 L 657.3,268.0 L 659.1,262.9 L 660.9,256.2 L 662.7,247.9 L 664.5,237.7 L 666.4,225.8 L 668.2,212.3 L 670.0,197.7 L 671.8,182.4 L 673.6,167.3 L 675.5,153.2 L 677.3,141.0 L 679.1,131.5 L 680.9,125.6 L 682.7,123.5 L 684.5,125.5 L 686.4,131.3 L 688.2,140.7 L 690.0,152.8 L 691.8,166.9 L 693.6,182.0 L 695.5,197.3 L 697.3,212.0 L 699.1,225.5 L 700.9,237.5 L 702.7,247.7 L 704.5,256.0 L 706.4,262.7 L 708.2,267.8 L 710.0,271.7 L 711.8,274.4 L 713.6,276.4 L 715.5,277.7 L 717.3,278.6 L 719.1,279.2 L 720.9,279.5 L 722.7,279.7 L 724.5,279.8 L 726.4,279.9 L 728.2,280.0 L 730.0,280.0" fill="none" stroke="#d9534f" stroke-width="2.5"/>
+  <text x="640.0" y="115" text-anchor="middle" font-size="10" fill="#d9534f" font-style="italic">窄分布 → 高概率在 θ≈2 附近</text>
+
+
+  <!-- 底部说明 -->
+  <text x="380.0" y="348" text-anchor="middle" font-size="11" fill="#666" font-style="italic">
+    概率分布天然能评估 "θ 是最优参数" 的概率 (面积 / 峰值)
+  </text>
+
+</svg>

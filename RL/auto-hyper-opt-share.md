@@ -102,30 +102,154 @@ $\theta_{i+1} = \theta_i + \eta_i \nabla_{\theta}g(W^*, \theta)$
 当前方法，有2个问题：  
 - 由于本身样本量少，样本相当于只在一个复杂函数的局部进行了采样，拟合出来的网络只在样本点密集的局部估计准确，其他地方估计偏差会很大
 - $\theta$的初始值设定，会影响梯度上升能获取到局部最优解。  
+  
+这会导致，实验要么在数据密集区附近采样，导致密集区估计准，稀疏区估计不准，无法找到全局最优。要么由于估计错误尝试数据稀疏区，浪费实验。
 
 解法：  
-- 梯度上升进行多次，每次用不同的初始随机值，试图找到多个局部最优解。  
-- 选择下一次尝试的参数时，不完全选择上一次梯度上升得到的最优参数$\theta$，而是故意选择数据稀疏区的$\theta$，来提升各个区间样本估计的准确度。  
+- 在梯度上升进行多次，每次用不同的初始随机值，试图找到当前估计下的全局最优解。  
+- 选择下一次尝试的参数时，不完全选择上一次梯度上升得到的最优参数$\theta$，而是故意在部分实验中选择数据稀疏区的$\theta$，来提升各个区间样本估计的准确度。  
   
 后者是一种利用加主动探索的思想。
 
   
-经过这个建模，可以意识到，建模其实是不难，难就难在样本数据采集上。样本必须量大且均匀分布在$\theta$值域上，才能更好的做估计，但这要求大量样本，和实验成本高的事实违背。当样本少的时候，如果太集中，就会导致样本密集的地方估计准，其他地方估计不准。所以，最理想的情况是，样本刚好落在最可能是全局最优解的附近。  
+经过这个建模，可以意识到，建模其实是不难。难在单次实验成本高之后，如果高效选择更有可能成功的采样点上。  
+上次agent比赛，will问：我跑各种参数值，在后台统计各个参数的指标，也能找到一个最优解啊，你的方法又强在哪呢？  
+如果成本忽略，理论上只要参数试的次数足够多、覆盖足够全，不需要模型建模，直接就能统计出来一个最优参数。所以，核心难点是，如何用更少的次数找到优的参数。
 
 ## 贝叶斯优化  
-优化以上神经网络有一种方法。  
-既然当前的最优值估计，都是在已经试过的样本点附近。那我是不是可以故意去哪些没有试过的点里试试，来提升附近估计的准确度？  
-这就涉及，没试过的点那么多，我该从哪个开始试？理论上说，应该从我当前觉得最有可能获得最优值的那个点开始试。但神经网络并没有告诉我哪个点获得收益的概率。那我只好随机但尽量均匀的试了。  
-这种方法虽然有所提升，但随机试，想覆盖好整个值域，成本高。  
-  
-所以就需要一种方法，能直接给出$\theta$的概率分布，表示哪些区间获得高收益的概率高，哪些低。然后我们尽量去尝试没有试过的点、收益概率高的点。  
+书接上回，神经网络建了模，但缺点是，当算出一个最优参数时，无法评估这个参数有多大概率是最优参数。  
+这是最大化似然方法的通病，只会用已有数据拟合，容易过拟合。  
   
 贝叶斯优化和神经网络拟合的不同是，贝叶斯是给出参数$\theta$的概率分布为先验，然后输入样本对$\{\theta_i, a_i\}$，得到$\theta$的后验分布。  
-高斯分布先验下的后验长这样：  
+![贝叶斯更新示意](image/bayesian_update.png)
+#### 先验分布假设
+现在有一系列超参，作为f的输入：  
+```math
+\theta_1, \theta_2, \theta_3...
+```
+定义kernel，衡量输入之间的相似性，假设kernel选RBF：  
+```math
+k(\theta_i, \theta_j) = \exp(-\frac{||\theta_i-\theta_j||^2}{2l^2})
+```
+定义输出$f(\theta_i)$的相似性和输入相关：  
+```math
+\mathrm{Cov}(f(\theta_i),f(\theta_j)) = k(\theta_i, \theta_j)
+```
+假设，f输出服从多元高斯分布：  
+```math
+f(\theta_1),f(\theta_2),f(\theta_3)... \sim \mathcal{N}(\mathrm{m}, \mathrm{K})
+```
+假设m=0,  
+```math
+K = \begin{bmatrix}
+  k(\theta_{1},\theta_{1})  &  k(\theta_{1},\theta_{2}) &  \cdots &  k(\theta_{1},\theta_{k})\\
+  k(\theta_{2},\theta_{1})  &  k(\theta_{2},\theta_{2}) &  \cdots &  k(\theta_{2},\theta_{k})\\
+  \vdots &  \vdots &  \ddots &  \vdots \\
+  k(\theta_{k},\theta_{1})  &  k(\theta_{k},\theta_{2}) &  \cdots &  k(\theta_{k},\theta_{k})
+\end{bmatrix}
+```
+也就是
+```math
+f(\theta_1),f(\theta_2),f(\theta_3)... \sim \mathcal{N}(\mathrm{0}, \mathrm{K})
+```
+这定义了函数在任意有限点集合上的联合分布，因此构成了高斯过程先验。  
+  
+每次实验，对于一个输入$\theta_i$，经过f的输出$f(\theta_i)$是一个随机变量，
+现在我们通过实验得到了带噪声的真实的输出：$r(\theta_1),r(\theta_2),r(\theta_3)...$  其中：  
+```math
+r(\theta_t) = f(\theta_t)+\epsilon, \epsilon \sim \mathcal{N}(0, \sigma_n^2)
+```
+  
+根据前面对$f(\theta_i)$的假设和$\epsilon$的假设，可以得出输出$r(\theta_i)$的假设：  
+```math
+\mathbf{r}\sim \mathcal{N}(0,K+\sigma_n^2I)
+```
+因为两个独立高斯随机向量相加，结果仍然是高斯；均值相加，协方差相加。  
+
+#### 数据收集
+然后，我们做k次实验，得到k组数据：  
+```math
+D=\{\theta_1, r(\theta_1)\},\{\theta_2, r(\theta_2)\}...\{\theta_k, r(\theta_k)\}
+```
+
+在已有数据$D$条件下，求新点函数值的后验分布。
+
+#### 后验更新
+现在有了对输出$r$的分布假设：  
+```math
+\mathbf{r}\sim \mathcal{N}(0,K+\sigma_n^2I)
+```
+，有了真实的数据：  
+```math
+\{\theta_1, r(\theta_1)\},\{\theta_2, r(\theta_2)\}...\{\theta_k, r(\theta_k)\}
+```
+可以通过这些已收集到的数据对新的点$\theta_*$进行估计了。  
+所谓估计就是，评估$p(f(\theta_*)|\{\theta_1, r(\theta_1)\},\{\theta_2, r(\theta_2)\}...\{\theta_k, r(\theta_k)\})$的概率。  
+先看只有一个数据点
+```math
+\{\theta_1, r(\theta_1)\}
+```
+的推导。也就是求$p(f(\theta_*)|r(\theta_1))$。  
+根据假设，$f(\theta_*)$和$r(\theta_1)$的联合分布为：  
+```math
+\begin{bmatrix}
+ r(\theta_1) \\
+f(\theta_*)
+\end{bmatrix}
+\sim
+\mathcal{N}\left(
+\begin{bmatrix}
+0 \\
+0
+\end{bmatrix},
+\begin{bmatrix}
+k_{11} + \sigma_n^2 & k_{1*} \\
+k_{*1} & k_{**}
+\end{bmatrix}
+\right)
+```
+其中：  
+$k_{11}=k(\theta_1, \theta_1)$  
+$k_{1*}=k(\theta_1, \theta_*)$  
+$k_{**}=k(\theta_*, \theta_*)$  
+又根据二维高斯条件分布公式：  
+如果：
+```math
+\begin{bmatrix}
+x \\
+y
+\end{bmatrix}
+\sim
+\mathcal{N}\left(
+\begin{bmatrix}
+0 \\
+0
+\end{bmatrix},
+\begin{bmatrix}
+A & C \\
+C & B
+\end{bmatrix}
+\right)
+```
+
+那么：
+```math
+y \mid x \sim \mathcal{N}\left( \frac{C}{A}x, \ B - \frac{C^{2}}{A} \right)
+```
+所以：  
+```math
+f(\theta_*)|r(\theta_1)\sim \mathcal{N}(\mu_* = \frac{k_{1*}}{k_{11} + \sigma_n^2} \cdot r_1, \sigma_*^2 = k_{**} - \frac{k_{1*}^2}{k_{11} + \sigma_n^2})
+```
+
+这就是由已知的一个样本点估计新点的概率分布公式。  
+推广到k个点：  
+```math
+D=\{\theta_1, r(\theta_1)\},\{\theta_2, r(\theta_2)\}...\{\theta_k, r(\theta_k)\}
+```
 ```math
 f(\theta_*) \mid D \sim \mathcal{N}\left(\mu_*=k_*^\top (K + \sigma_n^2 I)^{-1} \mathbf{r}, \sigma_*^2=\ k_{**} - k_*^\top (K + \sigma_n^2 I)^{-1} k_*\right)
 ```
-比较复杂，总之，输入是样本对，输出是最优值$\theta_*$的概率分布。  
+这样就可以根据数据得到任意候选点的后验均值和方差，进而通过 acquisition function 选择下一次实验的点。  
 
 
 
