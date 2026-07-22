@@ -98,6 +98,6 @@ plt.tight_layout()
 
 # 保存
 out_png = "/home/youngsure/Code/TechArt/RL/image/blackbox_function.png"
-plt.savefig(out_png, dpi=140, bbox_inches="tight", facecolor="white")
+plt.savefig(out_png, dpi=90, bbox_inches="tight", facecolor="white")
 print(f"[OK] 保存 PNG: {out_png}")
 plt.close()

@@ -124,5 +124,5 @@ ax.annotate("样本密集区\n拟合准", xy=(0, mu_post[100]), xytext=(-3.5, 0.
 
 plt.tight_layout()
 out = "/home/youngsure/Code/TechArt/RL/image/sklearn_gp_demo.png"
-plt.savefig(out, dpi=140, bbox_inches="tight", facecolor="white")
+plt.savefig(out, dpi=90, bbox_inches="tight", facecolor="white")
 print(f"\n[OK] 保存: {out}")

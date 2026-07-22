@@ -150,7 +150,7 @@ plt.tight_layout()
 plt.subplots_adjust(top=0.93, hspace=0.45)
 
 out = "/home/youngsure/Code/TechArt/RL/image/bayesian_update.png"
-plt.savefig(out, dpi=140, bbox_inches="tight", facecolor="white")
+plt.savefig(out, dpi=90, bbox_inches="tight", facecolor="white")
 print(f"[OK] 保存: {out}")
 print(f"[INFO] 先验 std 范围: [{prior_std.min():.2f}, {prior_std.max():.2f}] (到处都 ~ {prior_std.mean():.2f})")
 print(f"[INFO] 后验 std 范围: [{post_std.min():.2f}, {post_std.max():.2f}] (观测点附近小,远处大)")

@@ -150,6 +150,6 @@ ax.text(
 plt.tight_layout()
 
 out = "/home/youngsure/Code/TechArt/RL/image/loss_function_gradient_descent.png"
-plt.savefig(out, dpi=140, bbox_inches="tight", facecolor="white")
+plt.savefig(out, dpi=90, bbox_inches="tight", facecolor="white")
 print(f"[OK] 保存: {out}")
 plt.close()

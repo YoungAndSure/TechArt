@@ -94,6 +94,6 @@ fig.suptitle(
 plt.tight_layout()
 
 out = "/home/youngsure/Code/TechArt/RL/image/rbf_kernel.png"
-plt.savefig(out, dpi=140, bbox_inches="tight", facecolor="white")
+plt.savefig(out, dpi=90, bbox_inches="tight", facecolor="white")
 print(f"[OK] 保存: {out}")
 plt.close()

@@ -123,7 +123,7 @@ ax.annotate(
 
 plt.tight_layout()
 out = "/home/youngsure/Code/TechArt/RL/image/gp_regression.png"
-plt.savefig(out, dpi=140, bbox_inches="tight", facecolor="white")
+plt.savefig(out, dpi=90, bbox_inches="tight", facecolor="white")
 print(f"[OK] 保存: {out}")
 print(f"[INFO] σ_n (观测噪声)   = {sigma_n}")
 print(f"[INFO] l   (长度尺度)   = {length_scale}")
