@@ -2,7 +2,7 @@
 
 ## 全局视角
 
-![推荐系统在线调参流程](https://raw.githubusercontent.com/YoungAndSure/TechArt/main/RL/image/recsys_online_tuning_flow.svg)
+![推荐系统在线调参流程](https://raw.githubusercontent.com/YoungAndSure/TechArt/main/RL/image/recsys_online_tuning_flow.png)
 
 如图，是推荐系统框架示意图。  
 在线从召回到混排有多个环节，每个环节都是在融合多个信号，之后做排序截断。
@@ -10,18 +10,18 @@
 而调参，其实就是调公式中的参数，来影响排序结果，从而影响最终输出给用户的结果。  
   
 ## 调参问题难点
-![两阶段](https://raw.githubusercontent.com/YoungAndSure/TechArt/main/RL/image/auto_hyper_opt_two_stage.svg)
+![两阶段](https://raw.githubusercontent.com/YoungAndSure/TechArt/main/RL/image/auto_hyper_opt_two_stage.png)
 一次调参过程的作用链路可以分为两个阶段：  
 阶段一：参数->公式->排序结果  
 阶段二：排序结果->用户行为->ab指标  
 这两个阶段各有特点。  
 阶段一中，调整参数之后看排序结果，中间的执行代码是固定的。可以不断调整参数，试无数次，获取各种参数下的排序结果。  
 比如现在的近线系统，分数上报+算子复用之后，可以在离线不断回放，获取参数变化对排序结果的影响。  
-![阶段一近线回放示意](https://raw.githubusercontent.com/YoungAndSure/TechArt/main/RL/image/auto_hyper_opt_stage1.svg)  
+![阶段一近线回放示意](https://raw.githubusercontent.com/YoungAndSure/TechArt/main/RL/image/auto_hyper_opt_stage1.png)  
   
 阶段二中，从排序结果到用户行为这一步，一个是没有任何确定的模型，比如某个排序一定好某个排序一定不好，只能给用户之后看数据；一个是无法通过回放来探究参数和用户行为之间的关系。  
 因为时间在流逝，用户的状态在发生变化。同一个排序结果，在不同时间给用户，得到的行为数据不同。不同的排序结果，也无法在同一时间给同一个用户获取两个行为数据。因此，这一阶段只能做线上实验：随机分配两组用户，生效不同参数，结果做对比。这大大限制了样本采集的效率。  
-![阶段二:无法回放,只能做近似实验](https://raw.githubusercontent.com/YoungAndSure/TechArt/main/RL/image/auto_hyper_opt_stage2.svg)
+![阶段二:无法回放,只能做近似实验](https://raw.githubusercontent.com/YoungAndSure/TechArt/main/RL/image/auto_hyper_opt_stage2.png)
   
 《强化学习的数学原理》中介绍蒙特卡洛法等无模型算法时，说过一句话：The philosophy is simple: If we do not have a model, we must have some data. If we do not have data, we must have a model. If we have neither, then we are not able to find optimal policies.  
 从model和data的视角看，阶段一属于有模型（代码）数据易得（不断回放）。  
@@ -51,7 +51,7 @@ $a_i = f(\theta_i,z_i)+\epsilon_i$
 我们主要想看的是策略$\theta$对ab指标的影响，所以假定短时间内环境是不变化的，消掉环境$z$的影响，对$z$取期望，且噪声期望假设为0，则：  
 $J(\theta) = \mathbb{E}_{z}[f(\theta,z)]$  
 相当于在上面三维图上对z进行加权积分：
-![J(θ) 曲线](https://raw.githubusercontent.com/YoungAndSure/TechArt/main/RL/image/blackbox_curve_1d.svg)
+![J(θ) 曲线](https://raw.githubusercontent.com/YoungAndSure/TechArt/main/RL/image/blackbox_curve_1d.png)
 我们想得到的是：  
 $\theta^* = \mathrm{argmax}_{\theta}J(\theta)= \mathrm{argmax}_{\theta}\mathbb{E}_{z}[f(\theta, z)]$  
 即在这个曲线下，让目标$J(\theta)$最大的$\theta$是多少。
@@ -75,7 +75,7 @@ $W_{i+1} = W_i - \eta_i \nabla L(W_i)$
 得到让$L(W)$最小的权重参数$W^*$。  
 此时就可以得到一个神经网络：  
 $y = g(W^*, \theta)$  
-![训练好的代理模型 g(W*, θ) 曲线](https://raw.githubusercontent.com/YoungAndSure/TechArt/main/RL/image/g_surrogate_curve.svg)
+![训练好的代理模型 g(W*, θ) 曲线](https://raw.githubusercontent.com/YoungAndSure/TechArt/main/RL/image/g_surrogate_curve.png)
 输入任意$\theta_i$，可以得到估计ab指标$y$。  
 这是第一步，通过神经网络+反向传播找到了代理函数。  
 
@@ -85,7 +85,7 @@ $\theta^* = \mathrm{argmax}_{\theta}J(\theta)= \mathrm{argmax}_{\theta}\mathbb{E
 ，因此还要对训练好的$y=g(W^*,\theta)$求解能让y最大的$\theta$。  
 这时候让$\theta$成为变量，进行梯度上升:  
 $\theta_{i+1} = \theta_i + \eta_i \nabla_{\theta}g(W^*, \theta)$  
-![梯度上升](https://raw.githubusercontent.com/YoungAndSure/TechArt/main/RL/image/blackbox_gradient_ascent.svg)
+![梯度上升](https://raw.githubusercontent.com/YoungAndSure/TechArt/main/RL/image/blackbox_gradient_ascent.png)
 就能找到能使y最大的参数$\theta^*$。  
   
 ### step4 验证最优参数
@@ -95,7 +95,7 @@ $\theta_{i+1} = \theta_i + \eta_i \nabla_{\theta}g(W^*, \theta)$
 所以，整个过程是个循环，不是一锤子买卖，一次训练之后就结束了。  
 
 ### 问题
-![稀疏采样下的代理模型拟合](https://raw.githubusercontent.com/YoungAndSure/TechArt/main/RL/image/sparse_sample_curve.svg)
+![稀疏采样下的代理模型拟合](https://raw.githubusercontent.com/YoungAndSure/TechArt/main/RL/image/sparse_sample_curve.png)
 当前方法，有2个问题：  
 - 由于本身样本量少，样本相当于只在一个复杂函数的局部进行了采样，拟合出来的网络只在样本点密集的局部估计准确，其他地方估计偏差会很大
 - $\theta$的初始值设定，会影响梯度上升能获取到局部最优解。  
